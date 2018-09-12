@@ -41,6 +41,22 @@ public class CacheConfiguration {
             cm.createCache(com.baosong.supplyme.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(com.baosong.supplyme.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(com.baosong.supplyme.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Project.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Project.class.getName() + ".demands", jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Material.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Material.class.getName() + ".codes", jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Material.class.getName() + ".demands", jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Supplier.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Supplier.class.getName() + ".names", jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.MaterialAvailability.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Demand.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.PurchaseOrder.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.PurchaseOrderLine.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.DeliveryNote.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.DeliveryNoteLine.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Invoice.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.InvoiceLine.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.MutableProperties.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

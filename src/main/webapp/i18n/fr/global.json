@@ -7,6 +7,18 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entités",
+                "project": "Project",
+                "material": "Material",
+                "supplier": "Supplier",
+                "materialAvailability": "Material Availability",
+                "demand": "Demand",
+                "purchaseOrder": "Purchase Order",
+                "purchaseOrderLine": "Purchase Order Line",
+                "deliveryNote": "Delivery Note",
+                "deliveryNoteLine": "Delivery Note Line",
+                "invoice": "Invoice",
+                "invoiceLine": "Invoice Line",
+                "mutableProperties": "Mutable Properties",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

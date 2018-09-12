@@ -1,0 +1,28 @@
+
+{
+    "supplyMeApp": {
+        "deliveryNote" : {
+            "home": {
+                "title": "DeliveryNotes",
+                "createLabel": "Créer un nouveau Delivery Note",
+                "createOrEditLabel": "Créer ou éditer un Delivery Note",
+                "search": "Recherche pour Delivery Note"
+            },
+            "created": "Un nouveau Delivery Note a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Delivery Note avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Delivery Note avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Delivery Note {{ id }} ?"
+            },
+            "detail": {
+                "title": "Delivery Note"
+            },
+            "code": "Code",
+            "deliveryDate": "Delivery Date",
+            "status": "Status",
+            "creationDate": "Creation Date",
+            "supplier": "Supplier",
+            "creationUser": "Creation User"
+        }
+    }
+}

@@ -1,0 +1,28 @@
+
+{
+    "supplyMeApp": {
+        "invoice" : {
+            "home": {
+                "title": "Invoices",
+                "createLabel": "Créer un nouveau Invoice",
+                "createOrEditLabel": "Créer ou éditer un Invoice",
+                "search": "Recherche pour Invoice"
+            },
+            "created": "Un nouveau Invoice a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Invoice avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Invoice avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Invoice {{ id }} ?"
+            },
+            "detail": {
+                "title": "Invoice"
+            },
+            "code": "Code",
+            "status": "Status",
+            "sendingDate": "Sending Date",
+            "dueDate": "Due Date",
+            "supplier": "Supplier",
+            "creationUser": "Creation User"
+        }
+    }
+}

@@ -1,0 +1,27 @@
+
+{
+    "supplyMeApp": {
+        "deliveryNoteLine" : {
+            "home": {
+                "title": "DeliveryNoteLines",
+                "createLabel": "Créer un nouveau Delivery Note Line",
+                "createOrEditLabel": "Créer ou éditer un Delivery Note Line",
+                "search": "Recherche pour Delivery Note Line"
+            },
+            "created": "Un nouveau Delivery Note Line a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Delivery Note Line avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Delivery Note Line avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Delivery Note Line {{ id }} ?"
+            },
+            "detail": {
+                "title": "Delivery Note Line"
+            },
+            "lineNumber": "Line Number",
+            "quantity": "Quantity",
+            "deliveryNote": "Delivery Note",
+            "purchaseOrderLine": "Purchase Order Line",
+            "material": "Material"
+        }
+    }
+}

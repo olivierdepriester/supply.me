@@ -1,0 +1,93 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="supplyMeApp.materialAvailability.home.title">Material Availabilities</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-material-availability" [routerLink]="['/material-availability/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span class="hidden-sm-down"  jhiTranslate="supplyMeApp.materialAvailability.home.createLabel">
+            Create new Material Availability
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'supplyMeApp.materialAvailability.home.search' | translate }}">
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <fa-icon [icon]="'search'"></fa-icon>
+                    </button>
+                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="materialAvailabilities">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="startDate"><span jhiTranslate="supplyMeApp.materialAvailability.startDate">Start Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="endDate"><span jhiTranslate="supplyMeApp.materialAvailability.endDate">End Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="purchasePrice"><span jhiTranslate="supplyMeApp.materialAvailability.purchasePrice">Purchase Price</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="material.id"><span jhiTranslate="supplyMeApp.materialAvailability.material">Material</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="supplier.id"><span jhiTranslate="supplyMeApp.materialAvailability.supplier">Supplier</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let materialAvailability of materialAvailabilities ;trackBy: trackId">
+                <td><a [routerLink]="['/material-availability', materialAvailability.id, 'view' ]">{{materialAvailability.id}}</a></td>
+                <td>{{materialAvailability.startDate | date:'medium'}}</td>
+                <td>{{materialAvailability.endDate | date:'medium'}}</td>
+                <td>{{materialAvailability.purchasePrice}}</td>
+                <td>
+                    <div *ngIf="materialAvailability.material">
+                        <a [routerLink]="['../material', materialAvailability.material?.id, 'view' ]" >{{materialAvailability.material?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="materialAvailability.supplier">
+                        <a [routerLink]="['../supplier', materialAvailability.supplier?.id, 'view' ]" >{{materialAvailability.supplier?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/material-availability', materialAvailability.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/material-availability', materialAvailability.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'material-availability/'+ materialAvailability.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="materialAvailabilities && materialAvailabilities.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</div>

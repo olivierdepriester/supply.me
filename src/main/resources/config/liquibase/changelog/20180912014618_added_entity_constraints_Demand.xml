@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity Demand.
+    -->
+    <changeSet id="20180912014618-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="material_id"
+                                 baseTableName="demand"
+                                 constraintName="fk_demand_material_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="material"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_id"
+                                 baseTableName="demand"
+                                 constraintName="fk_demand_project_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project"/>
+
+        <addForeignKeyConstraint baseColumnNames="creation_user_id"
+                                 baseTableName="demand"
+                                 constraintName="fk_demand_creation_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+    </changeSet>
+</databaseChangeLog>

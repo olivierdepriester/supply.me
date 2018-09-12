@@ -1,0 +1,95 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="supplyMeApp.invoiceLine.home.title">Invoice Lines</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-invoice-line" [routerLink]="['/invoice-line/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span class="hidden-sm-down"  jhiTranslate="supplyMeApp.invoiceLine.home.createLabel">
+            Create new Invoice Line
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'supplyMeApp.invoiceLine.home.search' | translate }}">
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <fa-icon [icon]="'search'"></fa-icon>
+                    </button>
+                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="invoiceLines">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="lineNumber"><span jhiTranslate="supplyMeApp.invoiceLine.lineNumber">Line Number</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="quantity"><span jhiTranslate="supplyMeApp.invoiceLine.quantity">Quantity</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="amountNet"><span jhiTranslate="supplyMeApp.invoiceLine.amountNet">Amount Net</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="amountWithTax"><span jhiTranslate="supplyMeApp.invoiceLine.amountWithTax">Amount With Tax</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="purchaseOrder.id"><span jhiTranslate="supplyMeApp.invoiceLine.purchaseOrder">Purchase Order</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="material.id"><span jhiTranslate="supplyMeApp.invoiceLine.material">Material</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let invoiceLine of invoiceLines ;trackBy: trackId">
+                <td><a [routerLink]="['/invoice-line', invoiceLine.id, 'view' ]">{{invoiceLine.id}}</a></td>
+                <td>{{invoiceLine.lineNumber}}</td>
+                <td>{{invoiceLine.quantity}}</td>
+                <td>{{invoiceLine.amountNet}}</td>
+                <td>{{invoiceLine.amountWithTax}}</td>
+                <td>
+                    <div *ngIf="invoiceLine.purchaseOrder">
+                        <a [routerLink]="['../purchase-order', invoiceLine.purchaseOrder?.id, 'view' ]" >{{invoiceLine.purchaseOrder?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="invoiceLine.material">
+                        <a [routerLink]="['../material', invoiceLine.material?.id, 'view' ]" >{{invoiceLine.material?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/invoice-line', invoiceLine.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/invoice-line', invoiceLine.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'invoice-line/'+ invoiceLine.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="invoiceLines && invoiceLines.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</div>

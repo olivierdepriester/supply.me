@@ -1,0 +1,25 @@
+
+{
+    "supplyMeApp": {
+        "mutableProperties" : {
+            "home": {
+                "title": "Mutable Properties",
+                "createLabel": "Create a new Mutable Properties",
+                "createOrEditLabel": "Create or edit a Mutable Properties",
+                "search": "Search for Mutable Properties"
+            },
+            "created": "A new Mutable Properties is created with identifier {{ param }}",
+            "updated": "A Mutable Properties is updated with identifier {{ param }}",
+            "deleted": "A Mutable Properties is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Mutable Properties {{ id }}?"
+            },
+            "detail": {
+                "title": "Mutable Properties"
+            },
+            "key": "Key",
+            "value": "Value",
+            "valueType": "Value Type"
+        }
+    }
+}

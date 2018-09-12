@@ -1,0 +1,11 @@
+{
+    "supplyMeApp": {
+        "DemandStatus" : {
+            "null": "",
+            "NEW": "NEW",
+            "ORDERED": "ORDERED",
+            "PARTIALLY_DELIVERED": "PARTIALLY_DELIVERED",
+            "FULLY_DELIVERED": "FULLY_DELIVERED"
+        }
+    }
+}

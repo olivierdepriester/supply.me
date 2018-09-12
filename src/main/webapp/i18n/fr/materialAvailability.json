@@ -1,0 +1,27 @@
+
+{
+    "supplyMeApp": {
+        "materialAvailability" : {
+            "home": {
+                "title": "MaterialAvailabilities",
+                "createLabel": "Créer un nouveau Material Availability",
+                "createOrEditLabel": "Créer ou éditer un Material Availability",
+                "search": "Recherche pour Material Availability"
+            },
+            "created": "Un nouveau Material Availability a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Material Availability avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Material Availability avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Material Availability {{ id }} ?"
+            },
+            "detail": {
+                "title": "Material Availability"
+            },
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "purchasePrice": "Purchase Price",
+            "material": "Material",
+            "supplier": "Supplier"
+        }
+    }
+}

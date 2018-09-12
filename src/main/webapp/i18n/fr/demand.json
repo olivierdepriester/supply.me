@@ -1,0 +1,29 @@
+
+{
+    "supplyMeApp": {
+        "demand" : {
+            "home": {
+                "title": "Demands",
+                "createLabel": "Créer un nouveau Demand",
+                "createOrEditLabel": "Créer ou éditer un Demand",
+                "search": "Recherche pour Demand"
+            },
+            "created": "Un nouveau Demand a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Demand avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Demand avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Demand {{ id }} ?"
+            },
+            "detail": {
+                "title": "Demand"
+            },
+            "quantity": "Quantity",
+            "status": "Status",
+            "expectedDate": "Expected Date",
+            "creationDate": "Creation Date",
+            "material": "Material",
+            "project": "Project",
+            "creationUser": "Creation User"
+        }
+    }
+}

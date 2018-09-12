@@ -1,0 +1,47 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="materialAvailability">
+            <h2><span jhiTranslate="supplyMeApp.materialAvailability.detail.title">Material Availability</span> {{materialAvailability.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.materialAvailability.startDate">Start Date</span></dt>
+                <dd>
+                    <span>{{materialAvailability.startDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.materialAvailability.endDate">End Date</span></dt>
+                <dd>
+                    <span>{{materialAvailability.endDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.materialAvailability.purchasePrice">Purchase Price</span></dt>
+                <dd>
+                    <span>{{materialAvailability.purchasePrice}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.materialAvailability.material">Material</span></dt>
+                <dd>
+                    <div *ngIf="materialAvailability.material">
+                        <a [routerLink]="['/material', materialAvailability.material?.id, 'view']">{{materialAvailability.material?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.materialAvailability.supplier">Supplier</span></dt>
+                <dd>
+                    <div *ngIf="materialAvailability.supplier">
+                        <a [routerLink]="['/supplier', materialAvailability.supplier?.id, 'view']">{{materialAvailability.supplier?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/material-availability', materialAvailability.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

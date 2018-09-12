@@ -1,0 +1,28 @@
+
+{
+    "supplyMeApp": {
+        "invoiceLine" : {
+            "home": {
+                "title": "InvoiceLines",
+                "createLabel": "Créer un nouveau Invoice Line",
+                "createOrEditLabel": "Créer ou éditer un Invoice Line",
+                "search": "Recherche pour Invoice Line"
+            },
+            "created": "Un nouveau Invoice Line a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Invoice Line avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Invoice Line avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Invoice Line {{ id }} ?"
+            },
+            "detail": {
+                "title": "Invoice Line"
+            },
+            "lineNumber": "Line Number",
+            "quantity": "Quantity",
+            "amountNet": "Amount Net",
+            "amountWithTax": "Amount With Tax",
+            "purchaseOrder": "Purchase Order",
+            "material": "Material"
+        }
+    }
+}

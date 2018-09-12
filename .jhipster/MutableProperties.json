@@ -1,0 +1,37 @@
+{
+    "name": "MutableProperties",
+    "fields": [
+        {
+            "fieldName": "key",
+            "fieldType": "PropertiesKey",
+            "fieldValues": "THRESHOLD_SECOND_LEVEL_APPROVAL",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "value",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "valueType",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [],
+    "changelogDate": "20180912014625",
+    "entityTableName": "mutable_properties",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity DeliveryNoteLine.
+    -->
+    <changeSet id="20180912014622-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="delivery_note_id"
+                                 baseTableName="delivery_note_line"
+                                 constraintName="fk_delivery_note_line_delivery_note_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="delivery_note"/>
+
+        <addForeignKeyConstraint baseColumnNames="purchase_order_line_id"
+                                 baseTableName="delivery_note_line"
+                                 constraintName="fk_delivery_note_line_purchase_order_line_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="purchase_order_line"/>
+
+        <addForeignKeyConstraint baseColumnNames="material_id"
+                                 baseTableName="delivery_note_line"
+                                 constraintName="fk_delivery_note_line_material_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="material"/>
+
+    </changeSet>
+</databaseChangeLog>

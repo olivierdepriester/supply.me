@@ -1,0 +1,54 @@
+{
+    "name": "Material",
+    "fields": [
+        {
+            "fieldName": "partNumber",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 10
+        },
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 255
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "creationDate",
+            "fieldType": "Instant"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "code",
+            "otherEntityName": "materialAvailability",
+            "otherEntityRelationshipName": "material"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "demand",
+            "otherEntityName": "demand",
+            "otherEntityRelationshipName": "material"
+        }
+    ],
+    "changelogDate": "20180912014615",
+    "entityTableName": "material",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

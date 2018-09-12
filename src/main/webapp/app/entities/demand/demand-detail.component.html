@@ -1,0 +1,55 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="demand">
+            <h2><span jhiTranslate="supplyMeApp.demand.detail.title">Demand</span> {{demand.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></dt>
+                <dd>
+                    <span>{{demand.quantity}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.status">Status</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></dt>
+                <dd>
+                    <span>{{demand.expectedDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span></dt>
+                <dd>
+                    <span>{{demand.creationDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.material">Material</span></dt>
+                <dd>
+                    <div *ngIf="demand.material">
+                        <a [routerLink]="['/material', demand.material?.id, 'view']">{{demand.material?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.project">Project</span></dt>
+                <dd>
+                    <div *ngIf="demand.project">
+                        <a [routerLink]="['/project', demand.project?.id, 'view']">{{demand.project?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.creationUser">Creation User</span></dt>
+                <dd>
+                    {{demand.creationUser?.id}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/demand', demand.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

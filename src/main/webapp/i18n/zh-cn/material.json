@@ -1,0 +1,28 @@
+
+{
+    "supplyMeApp": {
+        "material" : {
+            "home": {
+                "title": "Materials",
+                "createLabel": "创建新 Material",
+                "createOrEditLabel": "创建或编辑 Material",
+                "search": "查找 Material"
+            },
+            "created": "Material {{ param }} 创建成功",
+            "updated": "Material {{ param }} 更新成功",
+            "deleted": "Material {{ param }} 删除成功",
+            "delete": {
+                "question": "你确定要删除 Material {{ id }} 吗？"
+            },
+            "detail": {
+                "title": "Material"
+            },
+            "partNumber": "Part Number",
+            "name": "Name",
+            "description": "Description",
+            "creationDate": "Creation Date",
+            "code": "Code",
+            "demand": "Demand"
+        }
+    }
+}

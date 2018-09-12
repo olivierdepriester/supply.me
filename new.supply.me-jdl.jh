@@ -1,0 +1,159 @@
+entity Project {
+	code String required maxlength(10),
+    description String required,
+    creationDate Instant
+}
+
+entity Material {
+	partNumber String required maxlength(10),
+    name String required maxlength(255),
+    description String,
+    creationDate Instant
+}
+
+/**
+* Supplier
+*/
+entity Supplier {
+	referenceNumber String required maxlength(10),
+    name String required maxlength(255)
+}
+
+/**
+* Define if a material is a available for a supplier
+*/
+entity MaterialAvailability {
+	startDate			Instant required,
+    endDate				Instant,
+    purchasePrice		Double min(0)
+}
+
+relationship ManyToOne {
+	MaterialAvailability{material} to Material{code},
+    MaterialAvailability{supplier} to Supplier{name}
+}
+
+enum DemandStatus {
+	NEW,
+    ORDERED,
+    PARTIALLY_DELIVERED,
+    FULLY_DELIVERED
+}
+
+entity Demand {
+	quantity		Double required,
+    status			DemandStatus required,
+    expectedDate	Instant,
+    creationDate	Instant required
+}
+
+relationship ManyToOne {
+    Demand{material} to Material{demand},
+    Demand{project} to Project{demand},
+    Demand{creationUser} to User{demand}
+}
+
+enum PurchaseOrderStatus {
+	NEW,
+    PARTIALLY_DELIVERED,
+    BILLED
+}
+
+entity PurchaseOrder {
+	code			String required minlength(10) maxlength(10),
+    expectedDate	Instant,
+    status			PurchaseOrderStatus required,
+    creationDate	Instant required
+}
+
+relationship ManyToOne {
+	PurchaseOrder{supplier} to Supplier,
+    PurchaseOrder{creationUser} to User
+}
+
+entity PurchaseOrderLine {
+    lineNumber      Integer required,
+	quantity		Double required min(0),
+    orderPrice		Double required min(0)	
+}
+
+relationship ManyToOne {
+	PurchaseOrderLine{purchaseOrder} to PurchaseOrder,
+	PurchaseOrderLine{demand} to Demand
+}
+
+enum DeliveryNoteStatus {
+	NEW
+}
+
+entity DeliveryNote {
+	code			String required,
+    deliveryDate	Instant required,
+    status			DeliveryNoteStatus,
+	creationDate	Instant required
+}
+
+relationship ManyToOne {
+	DeliveryNote{supplier} to Supplier,
+    DeliveryNote{creationUser} to User
+}
+
+entity DeliveryNoteLine {
+	lineNumber  Integer required min(0)
+	quantity	Double required min(0)
+}
+
+relationship ManyToOne {
+    DeliveryNoteLine{deliveryNote} to DeliveryNote,
+    DeliveryNoteLine{purchaseOrderLine} to PurchaseOrderLine,
+    DeliveryNoteLine{material} to Material
+}
+
+enum InvoiceStatus {
+	NEW,
+    PAID
+}
+entity Invoice {
+	code		String required,
+    status		InvoiceStatus required
+    sendingDate	Instant required,
+    dueDate		Instant required,
+}
+
+entity InvoiceLine {
+	lineNumber 	Integer required,
+    quantity	Double required min(0),
+    amountNet	Double required min(0),
+    amountWithTax Double required min(0)
+}
+
+relationship ManyToOne {
+	Invoice{supplier} to Supplier,
+    Invoice{creationUser} to User,
+    InvoiceLine{purchaseOrder} to PurchaseOrder,
+    InvoiceLine{material} to Material
+}
+
+enum PropertiesKey {
+	THRESHOLD_SECOND_LEVEL_APPROVAL
+}
+
+entity MutableProperties {
+	key		PropertiesKey required,
+    value	String required,
+  	valueType String required
+}
+
+enum Language {
+    CHINESE, ENGLISH, FRENCH
+}
+
+
+
+// Set pagination options
+paginate Material, Supplier, DeliveryNote, PurchaseOrder, Invoice with infinite-scroll
+paginate MaterialAvailability, DeliveryNoteLine, PurchaseOrderLine, InvoiceLine with pagination
+
+// Set service options to all except few
+service all with serviceImpl 
+

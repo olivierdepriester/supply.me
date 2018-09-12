@@ -1,0 +1,49 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="purchaseOrder">
+            <h2><span jhiTranslate="supplyMeApp.purchaseOrder.detail.title">Purchase Order</span> {{purchaseOrder.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span></dt>
+                <dd>
+                    <span>{{purchaseOrder.code}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">Expected Date</span></dt>
+                <dd>
+                    <span>{{purchaseOrder.expectedDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.creationDate">Creation Date</span></dt>
+                <dd>
+                    <span>{{purchaseOrder.creationDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span></dt>
+                <dd>
+                    <div *ngIf="purchaseOrder.supplier">
+                        <a [routerLink]="['/supplier', purchaseOrder.supplier?.id, 'view']">{{purchaseOrder.supplier?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.creationUser">Creation User</span></dt>
+                <dd>
+                    {{purchaseOrder.creationUser?.id}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/purchase-order', purchaseOrder.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

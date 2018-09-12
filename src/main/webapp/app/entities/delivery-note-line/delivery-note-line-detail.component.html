@@ -1,0 +1,49 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="deliveryNoteLine">
+            <h2><span jhiTranslate="supplyMeApp.deliveryNoteLine.detail.title">Delivery Note Line</span> {{deliveryNoteLine.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.deliveryNoteLine.lineNumber">Line Number</span></dt>
+                <dd>
+                    <span>{{deliveryNoteLine.lineNumber}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.deliveryNoteLine.quantity">Quantity</span></dt>
+                <dd>
+                    <span>{{deliveryNoteLine.quantity}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.deliveryNoteLine.deliveryNote">Delivery Note</span></dt>
+                <dd>
+                    <div *ngIf="deliveryNoteLine.deliveryNote">
+                        <a [routerLink]="['/delivery-note', deliveryNoteLine.deliveryNote?.id, 'view']">{{deliveryNoteLine.deliveryNote?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.deliveryNoteLine.purchaseOrderLine">Purchase Order Line</span></dt>
+                <dd>
+                    <div *ngIf="deliveryNoteLine.purchaseOrderLine">
+                        <a [routerLink]="['/purchase-order-line', deliveryNoteLine.purchaseOrderLine?.id, 'view']">{{deliveryNoteLine.purchaseOrderLine?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.deliveryNoteLine.material">Material</span></dt>
+                <dd>
+                    <div *ngIf="deliveryNoteLine.material">
+                        <a [routerLink]="['/material', deliveryNoteLine.material?.id, 'view']">{{deliveryNoteLine.material?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/delivery-note-line', deliveryNoteLine.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

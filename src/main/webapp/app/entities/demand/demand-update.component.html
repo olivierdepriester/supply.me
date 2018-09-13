@@ -10,6 +10,13 @@
                         [(ngModel)]="demand.id" readonly />
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
+                    <select class="form-control" id="field_material" name="material" required [(ngModel)]="demand.material" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="materialOption.id === demand.material?.id ? demand.material : materialOption" *ngFor="let materialOption of materials; trackBy: trackMaterialById">{{materialOption.partNumber + ' - ' + materialOption.description }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.quantity" for="field_quantity">Quantity</label>
                     <input type="number" class="form-control" name="quantity" id="field_quantity"
                         [(ngModel)]="demand.quantity" required/>
@@ -25,21 +32,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>
-                    <select class="form-control" name="status" [(ngModel)]="demand.status" id="field_status"  required>
-                        <option value="NEW">{{'supplyMeApp.DemandStatus.NEW' | translate}}</option>
-                        <option value="ORDERED">{{'supplyMeApp.DemandStatus.ORDERED' | translate}}</option>
-                        <option value="PARTIALLY_DELIVERED">{{'supplyMeApp.DemandStatus.PARTIALLY_DELIVERED' | translate}}</option>
-                        <option value="FULLY_DELIVERED">{{'supplyMeApp.DemandStatus.FULLY_DELIVERED' | translate}}</option>
-                    </select>
-                    <div [hidden]="!(editForm.controls.status?.dirty && editForm.controls.status?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.status?.errors?.required" jhiTranslate="entity.validation.required">
-                        This field is required.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.expectedDate" for="field_expectedDate">Expected Date</label>
                     <div class="d-flex">
                         <input id="field_expectedDate" type="datetime-local" class="form-control" name="expectedDate" [(ngModel)]="expectedDate"
@@ -47,42 +39,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.creationDate" for="field_creationDate">Creation Date</label>
-                    <div class="d-flex">
-                        <input id="field_creationDate" type="datetime-local" class="form-control" name="creationDate" [(ngModel)]="creationDate"
-                        required/>
-                    </div>
-                    <div [hidden]="!(editForm.controls.creationDate?.dirty && editForm.controls.creationDate?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.creationDate?.errors?.required" jhiTranslate="entity.validation.required">
-                        This field is required.
-                        </small>
-                        <small class="form-text text-danger"
-                            [hidden]="!editForm.controls.creationDate?.errors?.ZonedDateTimelocal" jhiTranslate="entity.validation.ZonedDateTimelocal">
-                            This field should be a date and time.
-                        </small>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
-                    <select class="form-control" id="field_material" name="material" [(ngModel)]="demand.material" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="materialOption.id === demand.material?.id ? demand.material : materialOption" *ngFor="let materialOption of materials; trackBy: trackMaterialById">{{materialOption.id}}</option>
-                    </select>
-                </div>
-                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
-                    <select class="form-control" id="field_project" name="project" [(ngModel)]="demand.project" >
+                    <select required class="form-control" id="field_project" name="project" [(ngModel)]="demand.project" >
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="projectOption.id === demand.project?.id ? demand.project : projectOption" *ngFor="let projectOption of projects; trackBy: trackProjectById">{{projectOption.id}}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.creationUser" for="field_creationUser">Creation User</label>
-                    <select class="form-control" id="field_creationUser" name="creationUser" [(ngModel)]="demand.creationUser" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="userOption.id === demand.creationUser?.id ? demand.creationUser : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
+                        <option [ngValue]="projectOption.id === demand.project?.id ? demand.project : projectOption" *ngFor="let projectOption of projects; trackBy: trackProjectById">{{projectOption.code + ' - ' + projectOption.description}}</option>
                     </select>
                 </div>
             </div>

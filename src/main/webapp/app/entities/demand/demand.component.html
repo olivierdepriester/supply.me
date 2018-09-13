@@ -12,12 +12,21 @@
     <div class="row">
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
+            	<div class="input-group w-100 mt-3">
+					<label class="form-control-label" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>
+            		<select class="form-control" name="status" [(ngModel)]="searchCriteria.status" id="field_status" >
+                        <option value="NEW">{{'supplyMeApp.DemandStatus.NEW' | translate}}</option>
+                        <option value="ORDERED">{{'supplyMeApp.DemandStatus.ORDERED' | translate}}</option>
+                        <option value="PARTIALLY_DELIVERED">{{'supplyMeApp.DemandStatus.PARTIALLY_DELIVERED' | translate}}</option>
+                        <option value="FULLY_DELIVERED">{{'supplyMeApp.DemandStatus.FULLY_DELIVERED' | translate}}</option>
+                    </select>
+            	</div>
                 <div class="input-group w-100 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'supplyMeApp.demand.home.search' | translate }}">
-                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                    <input type="text" class="form-control" [(ngModel)]="searchCriteria.fullText" id="currentSearch" name="currentSearch" placeholder="{{ 'supplyMeApp.demand.home.search' | translate }}">
+                    <button class="input-group-append btn btn-info" (click)="search(searchCriteria)">
                         <fa-icon [icon]="'search'"></fa-icon>
                     </button>
-                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="searchCriteria.fullText">
                         <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
@@ -30,36 +39,32 @@
             <thead>
             <tr>
             <th><span jhiTranslate="global.field.id">ID</span></th>
+            <th><span jhiTranslate="supplyMeApp.demand.material">Material</span></th>
             <th><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></th>
+            <th><span jhiTranslate="supplyMeApp.demand.project">Project</span></th>
             <th><span jhiTranslate="supplyMeApp.demand.status">Status</span></th>
             <th><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></th>
             <th><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span></th>
-            <th><span jhiTranslate="supplyMeApp.demand.material">Material</span></th>
-            <th><span jhiTranslate="supplyMeApp.demand.project">Project</span></th>
-            <th><span jhiTranslate="supplyMeApp.demand.creationUser">Creation User</span></th>
-            <th></th>
+            <th colspan="2"></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let demand of demands ;trackBy: trackId">
                 <td><a [routerLink]="['/demand', demand.id, 'view' ]">{{demand.id}}</a></td>
-                <td>{{demand.quantity}}</td>
-                <td jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</td>
-                <td>{{demand.expectedDate | date:'medium'}}</td>
-                <td>{{demand.creationDate | date:'medium'}}</td>
                 <td>
                     <div *ngIf="demand.material">
-                        <a [routerLink]="['../material', demand.material?.id, 'view' ]" >{{demand.material?.id}}</a>
+                        <a [routerLink]="['../material', demand.material?.id, 'view' ]" >{{demand.material?.partNumber}}</a>
                     </div>
                 </td>
+                <td>{{demand.quantity}}</td>
                 <td>
                     <div *ngIf="demand.project">
-                        <a [routerLink]="['../project', demand.project?.id, 'view' ]" >{{demand.project?.id}}</a>
+                        <a [routerLink]="['../project', demand.project?.id, 'view' ]" >{{demand.project?.code}}</a>
                     </div>
                 </td>
-                <td>
-                    {{demand.creationUser?.id}}
-                </td>
+                <td jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</td>
+                <td>{{demand.expectedDate | dateFormat }}</td>
+                <td>{{demand.creationDate | dateFormat }}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
@@ -68,20 +73,24 @@
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
-                        <button type="submit"
-                                [routerLink]="['/demand', demand.id, 'edit']"
-                                class="btn btn-primary btn-sm">
-                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                        </button>
+                        </div>
+                </td>
+                <td>
+                    <div *ngIf="demand.status == 'NEW'"  class="btn-group flex-btn-group-container">
+                     <button type="submit"
+                             [routerLink]="['/demand', demand.id, 'edit']"
+                             class="btn btn-primary btn-sm">
+                         <fa-icon [icon]="'pencil-alt'"></fa-icon>
+<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
+                     </button>
+                     <button *ngIf="demand.status == 'NEW'" type="submit"
+                             [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/delete'} }]"
+                             replaceUrl="true"
+                             queryParamsHandling="merge"
+                             class="btn btn-danger btn-sm">
+                         <fa-icon [icon]="'times'"></fa-icon>
+<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
+                     </button>
                     </div>
                 </td>
             </tr>

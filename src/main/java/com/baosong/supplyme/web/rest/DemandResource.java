@@ -52,6 +52,7 @@ public class DemandResource {
         if (demand.getId() != null) {
             throw new BadRequestAlertException("A new demand cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        
         Demand result = demandService.save(demand);
         return ResponseEntity.created(new URI("/api/demands/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))

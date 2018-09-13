@@ -1,3 +1,5 @@
+import { AccountService } from '../../core/auth/account.service';
+import { Principal } from '../../core/auth/principal.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -7,7 +9,7 @@ import { map } from 'rxjs/operators';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
-import { IDemand } from 'app/shared/model/demand.model';
+import { IDemand, DemandStatus } from 'app/shared/model/demand.model';
 
 type EntityResponseType = HttpResponse<IDemand>;
 type EntityArrayResponseType = HttpResponse<IDemand[]>;
@@ -17,9 +19,12 @@ export class DemandService {
     private resourceUrl = SERVER_API_URL + 'api/demands';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/demands';
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private principal: Principal) {}
 
     create(demand: IDemand): Observable<EntityResponseType> {
+        demand.creationDate = moment();
+        demand.status = DemandStatus.NEW;
+        console.log(this.principal.identity()) ;
         const copy = this.convertDateFromClient(demand);
         return this.http
             .post<IDemand>(this.resourceUrl, copy, { observe: 'response' })

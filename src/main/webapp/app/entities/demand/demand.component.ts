@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { IDemand } from 'app/shared/model/demand.model';
+import { IDemand, DemandSearchCriteria, DemandStatus } from 'app/shared/model/demand.model';
 import { Principal } from 'app/core';
 import { DemandService } from './demand.service';
 
@@ -16,7 +16,7 @@ export class DemandComponent implements OnInit, OnDestroy {
     demands: IDemand[];
     currentAccount: any;
     eventSubscriber: Subscription;
-    currentSearch: string;
+    searchCriteria: DemandSearchCriteria = {};
 
     constructor(
         private demandService: DemandService,
@@ -25,17 +25,17 @@ export class DemandComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private principal: Principal
     ) {
-        this.currentSearch =
+        this.searchCriteria.fullText =
             this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
                 ? this.activatedRoute.snapshot.params['search']
                 : '';
     }
 
     loadAll() {
-        if (this.currentSearch) {
+        if (this.searchCriteria.fullText) {
             this.demandService
                 .search({
-                    query: this.currentSearch
+                    query: this.searchCriteria.fullText
                 })
                 .subscribe(
                     (res: HttpResponse<IDemand[]>) => (this.demands = res.body),
@@ -46,7 +46,7 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.demandService.query().subscribe(
             (res: HttpResponse<IDemand[]>) => {
                 this.demands = res.body;
-                this.currentSearch = '';
+                this.searchCriteria.fullText = '';
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -56,12 +56,14 @@ export class DemandComponent implements OnInit, OnDestroy {
         if (!query) {
             return this.clear();
         }
-        this.currentSearch = query;
+        this.searchCriteria.fullText = query.fullText;
         this.loadAll();
     }
 
     clear() {
-        this.currentSearch = '';
+        this.searchCriteria.fullText = '';
+        this.searchCriteria.status = DemandStatus.NEW;
+        this.searchCriteria.material = null;
         this.loadAll();
     }
 

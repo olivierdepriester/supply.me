@@ -33,3 +33,11 @@ export class Demand implements IDemand {
         public creationUser?: IUser
     ) {}
 }
+
+export class DemandSearchCriteria {
+  constructor(
+      public fullText?: string,
+      public status?: DemandStatus,
+      public material?: IMaterial
+  ) {}
+}

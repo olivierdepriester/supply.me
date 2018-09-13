@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
-import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { JhiAlertService } from 'ng-jhipster';
 
 import { IDemand } from 'app/shared/model/demand.model';
@@ -70,8 +70,7 @@ export class DemandUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.demand.expectedDate = moment(this.expectedDate, DATE_TIME_FORMAT);
-        this.demand.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.demand.expectedDate = moment(this.expectedDate, DATE_FORMAT);
         if (this.demand.id !== undefined) {
             this.subscribeToSaveResponse(this.demandService.update(this.demand));
         } else {
@@ -113,7 +112,7 @@ export class DemandUpdateComponent implements OnInit {
 
     set demand(demand: IDemand) {
         this._demand = demand;
-        this.expectedDate = moment(demand.expectedDate).format(DATE_TIME_FORMAT);
-        this.creationDate = moment(demand.creationDate).format(DATE_TIME_FORMAT);
+        this.expectedDate = moment(demand.expectedDate).format(DATE_FORMAT);
+        this.creationDate = moment(demand.creationDate).format(DATE_FORMAT);
     }
 }

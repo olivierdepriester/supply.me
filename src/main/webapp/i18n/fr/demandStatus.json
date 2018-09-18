@@ -2,10 +2,13 @@
     "supplyMeApp": {
         "DemandStatus" : {
             "null": "",
-            "NEW": "NEW",
-            "ORDERED": "ORDERED",
-            "PARTIALLY_DELIVERED": "PARTIALLY_DELIVERED",
-            "FULLY_DELIVERED": "FULLY_DELIVERED"
+            "NEW": "Nouveau",
+            "WAITING_FOR_APPROVAL": "En attente de validation",
+            "APPROVED": "Valide",
+            "REJECTED": "Rejete",
+            "ORDERED": "Commande",
+            "PARTIALLY_DELIVERED": "Partiellement livre",
+            "FULLY_DELIVERED": "Livre"
         }
     }
 }

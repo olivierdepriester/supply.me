@@ -13,12 +13,27 @@
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
             	<div class="input-group w-100 mt-3">
-					<label class="form-control-label" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>
+					<label class="criteria-label" jhiTranslate="supplyMeApp.demand.project" for="field_status">Project</label>
+					<select class="form-control" id="field_project" name="project" [(ngModel)]="searchCriteria.projectId" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="projectOption.id" *ngFor="let projectOption of projects">{{projectOption.code + ' - ' + projectOption.description }}</option>
+                    </select>
+                    <label class="criteria-label" jhiTranslate="supplyMeApp.demand.material" for="field_status">Material</label>
+					<select class="form-control" id="field_material" name="material" [(ngModel)]="searchCriteria.materialId" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="materialOption.id" *ngFor="let materialOption of materials; trackBy: trackMaterialById">{{materialOption.partNumber + ' - ' + materialOption.description }}</option>
+                    </select>
+            	</div>
+            	<div class="input-group mt-3">
+					<label class="criteria-label" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>
             		<select class="form-control" name="status" [(ngModel)]="searchCriteria.status" id="field_status" >
                         <option value="NEW">{{'supplyMeApp.DemandStatus.NEW' | translate}}</option>
+                        <option value="WAITING_FOR_APPROVAL">{{'supplyMeApp.DemandStatus.WAITING_FOR_APPROVAL' | translate}}</option>
+                        <option value="APPROVED">{{'supplyMeApp.DemandStatus.APPROVED' | translate}}</option>
                         <option value="ORDERED">{{'supplyMeApp.DemandStatus.ORDERED' | translate}}</option>
                         <option value="PARTIALLY_DELIVERED">{{'supplyMeApp.DemandStatus.PARTIALLY_DELIVERED' | translate}}</option>
                         <option value="FULLY_DELIVERED">{{'supplyMeApp.DemandStatus.FULLY_DELIVERED' | translate}}</option>
+                        <option value="REJECTED">{{'supplyMeApp.DemandStatus.REJECTED' | translate}}</option>
                     </select>
             	</div>
                 <div class="input-group w-100 mt-3">
@@ -35,9 +50,11 @@
     </div>
     <br/>
     <div class="table-responsive" *ngIf="demands">
+    	<form name="listForm" class="form-inline">
         <table class="table table-striped">
             <thead>
             <tr>
+            <th></th>
             <th><span jhiTranslate="global.field.id">ID</span></th>
             <th><span jhiTranslate="supplyMeApp.demand.material">Material</span></th>
             <th><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></th>
@@ -45,11 +62,12 @@
             <th><span jhiTranslate="supplyMeApp.demand.status">Status</span></th>
             <th><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></th>
             <th><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span></th>
-            <th colspan="2"></th>
+            <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let demand of demands ;trackBy: trackId">
+            	<td><input type="checkbox" attr.data-rowid="{{demand.id}}"/></td>
                 <td><a [routerLink]="['/demand', demand.id, 'view' ]">{{demand.id}}</a></td>
                 <td>
                     <div *ngIf="demand.material">
@@ -65,36 +83,69 @@
                 <td jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</td>
                 <td>{{demand.expectedDate | dateFormat }}</td>
                 <td>{{demand.creationDate | dateFormat }}</td>
-                <td class="text-right">
+                <td class="text-left">
                     <div class="btn-group flex-btn-group-container">
-                        <button type="submit"
+                    	<button type="submit"
                                 [routerLink]="['/demand', demand.id, 'view' ]"
                                 class="btn btn-info btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
-                        </div>
-                </td>
-                <td>
-                    <div *ngIf="demand.status == 'NEW'"  class="btn-group flex-btn-group-container">
-                     <button type="submit"
-                             [routerLink]="['/demand', demand.id, 'edit']"
-                             class="btn btn-primary btn-sm">
-                         <fa-icon [icon]="'pencil-alt'"></fa-icon>
-<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
-                     </button>
-                     <button *ngIf="demand.status == 'NEW'" type="submit"
-                             [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/delete'} }]"
-                             replaceUrl="true"
-                             queryParamsHandling="merge"
-                             class="btn btn-danger btn-sm">
-                         <fa-icon [icon]="'times'"></fa-icon>
-<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
-                     </button>
+	                    <div *ngIf="demand.status == 'NEW' || demand.status == 'REJECTED'; then editableDemandBlock" ></div>
+	                    <div *ngIf="demand.status == 'WAITING_FOR_APPROVAL'; then approvalDemandBlock" ></div>
+	                    <div *ngIf="demand.status == 'APPROVED'; then orderDemandBlock" ></div>
+                        <ng-template #editableDemandBlock>
+		                     <button type="submit"
+		                             [routerLink]="['/demand', demand.id, 'edit']"
+		                             class="btn btn-primary btn-sm">
+		                         <fa-icon [icon]="'pencil-alt'"></fa-icon>
+		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
+		                     </button>
+		                     <button type="submit"
+		                             [routerLink]="['/demand']"
+		                             class="btn btn-primary btn-sm"
+		                             (click)="sendToApproval(demand)" >
+		                         <fa-icon [icon]="faShareSquare"></fa-icon>
+		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
+		                     </button>
+		                     <button type="submit"
+		                             [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/delete'} }]"
+		                             replaceUrl="true"
+		                             queryParamsHandling="merge"
+		                             class="btn btn-danger btn-sm">
+		                         <fa-icon [icon]="'times'"></fa-icon>
+		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
+		                     </button>
+	                    </ng-template>
+	                    <ng-template #approvalDemandBlock>
+	                         <button type="submit"
+		                             [routerLink]="['/demand']"
+		                             class="btn btn-primary btn-sm"
+		                             (click)="approve(demand)" >
+		                         <fa-icon [icon]="faThumbsUp"></fa-icon>
+		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
+	                     	</button>
+		                     <button type="submit"
+		                             [routerLink]="['/demand']"
+		                             class="btn btn-primary btn-sm"
+		                             (click)="reject(demand)" >
+		                         <fa-icon [icon]="faThumbsDown"></fa-icon>
+		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
+		                     </button>
+	                    </ng-template>
+						<ng-template #orderDemandBlock>
+	                         <button type="submit"
+		                             [routerLink]="['/purchase-order/new']"
+		                             class="btn btn-primary btn-sm">
+		                         <fa-icon [icon]="faShoppingCart"></fa-icon>
+		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
+	                     	</button>
+	                    </ng-template>
                     </div>
-                </td>
+                </td>                
             </tr>
             </tbody>
         </table>
+    	</form>
     </div>
 </div>

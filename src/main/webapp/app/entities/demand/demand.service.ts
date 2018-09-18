@@ -1,5 +1,6 @@
 import { AccountService } from '../../core/auth/account.service';
 import { Principal } from '../../core/auth/principal.service';
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -10,6 +11,7 @@ import { map } from 'rxjs/operators';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IDemand, DemandStatus } from 'app/shared/model/demand.model';
+import { stringify } from 'querystring';
 
 type EntityResponseType = HttpResponse<IDemand>;
 type EntityArrayResponseType = HttpResponse<IDemand[]>;
@@ -24,7 +26,6 @@ export class DemandService {
     create(demand: IDemand): Observable<EntityResponseType> {
         demand.creationDate = moment();
         demand.status = DemandStatus.NEW;
-        console.log(this.principal.identity()) ;
         const copy = this.convertDateFromClient(demand);
         return this.http
             .post<IDemand>(this.resourceUrl, copy, { observe: 'response' })
@@ -35,6 +36,14 @@ export class DemandService {
         const copy = this.convertDateFromClient(demand);
         return this.http
             .put<IDemand>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+    }
+
+    changeStatus(id: number, status: DemandStatus) {
+        const options = { id: `${id}`, status: `${status}` };
+        console.log(options);
+        return this.http
+            .put<IDemand>(`${this.resourceUrl}/changeStatus`, options, { observe: 'response' })
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 

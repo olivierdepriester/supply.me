@@ -5,6 +5,9 @@ import { IUser } from 'app/core/user/user.model';
 
 export const enum DemandStatus {
     NEW = 'NEW',
+    WAITING_FOR_APPROVAL = 'WAITING_FOR_APPROVAL',
+    APPROVED = 'APPROVED',
+    REJECTED = 'REJECTED',
     ORDERED = 'ORDERED',
     PARTIALLY_DELIVERED = 'PARTIALLY_DELIVERED',
     FULLY_DELIVERED = 'FULLY_DELIVERED'
@@ -35,9 +38,5 @@ export class Demand implements IDemand {
 }
 
 export class DemandSearchCriteria {
-  constructor(
-      public fullText?: string,
-      public status?: DemandStatus,
-      public material?: IMaterial
-  ) {}
+    constructor(public fullText?: string, public status?: DemandStatus, public materialId?: number, public projectId?: number) {}
 }

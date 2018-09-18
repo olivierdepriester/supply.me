@@ -70,6 +70,24 @@ export const demandRoute: Routes = [
             pageTitle: 'supplyMeApp.demand.home.title'
         },
         canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'demand/:id/sendToApproval',
+        component: DemandComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'supplyMeApp.demand.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'demand/:id/reject',
+        component: DemandComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'supplyMeApp.demand.home.title'
+        },
+        canActivate: [UserRouteAccessService]
     }
 ];
 

@@ -11,6 +11,8 @@ import { PurchaseOrderService } from './purchase-order.service';
 import { ISupplier } from 'app/shared/model/supplier.model';
 import { SupplierService } from 'app/entities/supplier';
 import { IUser, UserService } from 'app/core';
+import { IDemand } from 'app/shared/model/demand.model';
+import { IPurchaseOrderLine, PurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 
 @Component({
     selector: 'jhi-purchase-order-update',
@@ -18,6 +20,8 @@ import { IUser, UserService } from 'app/core';
 })
 export class PurchaseOrderUpdateComponent implements OnInit {
     private _purchaseOrder: IPurchaseOrder;
+    private _demand: IDemand;
+    lines: IPurchaseOrderLine[];
     isSaving: boolean;
 
     suppliers: ISupplier[];
@@ -36,9 +40,20 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ purchaseOrder }) => {
+        this.activatedRoute.data.subscribe(({ purchaseOrder, demand }) => {
             this.purchaseOrder = purchaseOrder;
+            this.demand = demand;
         });
+        if (this.demand != null && !this.purchaseOrder.id) {
+            this.lines = new Array();
+            const line = new PurchaseOrderLine();
+            line.lineNumber = 1;
+            line.purchaseOrder = this.purchaseOrder;
+            line.demand = this.demand;
+            line.quantity = this.demand.quantity;
+            this.lines[0] = line;
+        }
+
         this.supplierService.query().subscribe(
             (res: HttpResponse<ISupplier[]>) => {
                 this.suppliers = res.body;
@@ -60,7 +75,7 @@ export class PurchaseOrderUpdateComponent implements OnInit {
     save() {
         this.isSaving = true;
         this.purchaseOrder.expectedDate = moment(this.expectedDate, DATE_TIME_FORMAT);
-        this.purchaseOrder.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.purchaseOrder.creationDate = moment();
         if (this.purchaseOrder.id !== undefined) {
             this.subscribeToSaveResponse(this.purchaseOrderService.update(this.purchaseOrder));
         } else {
@@ -89,6 +104,10 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         return item.id;
     }
 
+    trackLineById(index: number, item: IPurchaseOrderLine) {
+        return item.id;
+    }
+
     trackUserById(index: number, item: IUser) {
         return item.id;
     }
@@ -100,5 +119,13 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         this._purchaseOrder = purchaseOrder;
         this.expectedDate = moment(purchaseOrder.expectedDate).format(DATE_TIME_FORMAT);
         this.creationDate = moment(purchaseOrder.creationDate).format(DATE_TIME_FORMAT);
+    }
+
+    get demand() {
+        return this._demand;
+    }
+
+    set demand(demand: IDemand) {
+        this._demand = demand;
     }
 }

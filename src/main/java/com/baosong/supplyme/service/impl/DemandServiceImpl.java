@@ -19,11 +19,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baosong.supplyme.domain.Demand;
+import com.baosong.supplyme.domain.User;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.DemandRepository;
 import com.baosong.supplyme.repository.search.DemandSearchRepository;
+import com.baosong.supplyme.security.AuthoritiesConstants;
+import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.DemandService;
+import com.baosong.supplyme.service.MailService;
 import com.baosong.supplyme.service.UserService;
 import com.google.common.collect.Sets;
 
@@ -39,23 +43,27 @@ public class DemandServiceImpl implements DemandService {
     private final DemandRepository demandRepository;
 
     private final DemandSearchRepository demandSearchRepository;
-    
+
     private final static Map<DemandStatus, Set<DemandStatus>> demandWorkflowRules;
-    
+
     @Autowired
     private ElasticsearchTemplate template;
-    
-    static {
-    	 demandWorkflowRules = new HashMap<>();
-    	 demandWorkflowRules.put(DemandStatus.WAITING_FOR_APPROVAL, Sets.newHashSet(DemandStatus.NEW, DemandStatus.REJECTED));
-    	 demandWorkflowRules.put(DemandStatus.APPROVED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
-    	 demandWorkflowRules.put(DemandStatus.REJECTED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
-    	 demandWorkflowRules.put(DemandStatus.ORDERED, Sets.newHashSet(DemandStatus.APPROVED));
-    	 demandWorkflowRules.put(DemandStatus.PARTIALLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED));
-    	 demandWorkflowRules.put(DemandStatus.FULLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
-    }
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MailService mailService;
+
+    static {
+   	 demandWorkflowRules = new HashMap<>();
+   	 demandWorkflowRules.put(DemandStatus.WAITING_FOR_APPROVAL, Sets.newHashSet(DemandStatus.NEW, DemandStatus.REJECTED));
+   	 demandWorkflowRules.put(DemandStatus.APPROVED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
+   	 demandWorkflowRules.put(DemandStatus.REJECTED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
+   	 demandWorkflowRules.put(DemandStatus.ORDERED, Sets.newHashSet(DemandStatus.APPROVED));
+   	 demandWorkflowRules.put(DemandStatus.PARTIALLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED));
+   	 demandWorkflowRules.put(DemandStatus.FULLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
+   }
 
     public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository) {
         this.demandRepository = demandRepository;
@@ -67,7 +75,7 @@ public class DemandServiceImpl implements DemandService {
      *
      * @param demand the entity to save
      * @return the persisted entity
-     * @throws ServiceException 
+     * @throws ServiceException
      */
     @Override
     public Demand save(Demand demand) throws ServiceException {
@@ -142,13 +150,24 @@ public class DemandServiceImpl implements DemandService {
     			.stream(demandSearchRepository.findByMaterialIdAndProjectIdAndStatus(materialId, projectId, demandStatus).spliterator(), false)
     			.collect(Collectors.toList());
 //        return demandRepository.findAllById(
-//        			
+//
 //            .map(Demand::getId).collect(Collectors.toList()));
 	}
 
+    /**
+     * Set a demand to the given status.
+     * The wanted <b>status</b> may be modified depending on the workflow rules
+     *
+     * @param id : Demand id
+     * @param status : Status to set.
+     *
+     * @return : Updated demand
+     * @exception : ServiceException in case of issue
+     */
 	@Override
 	public Demand changeStatus(Long id, DemandStatus status) throws ServiceException {
 		Demand demand = findOne(id).orElse(null);
+		DemandStatus targetStatus = status;
 		if (demand == null) {
 			throw new ServiceException(String.format("No demand found for id %d", id));
 		}
@@ -157,24 +176,34 @@ public class DemandServiceImpl implements DemandService {
 		} else if (!demandWorkflowRules.get(status).contains(demand.getStatus()) ) {
 			throw new ServiceException(String.format("The status %s can not be set on demand %d (current is %s)", status, id, demand.getStatus()));
 		}
-		
+		demand.setStatus(targetStatus);
 		switch (status) {
-		case WAITING_FOR_APPROVAL:
+        case WAITING_FOR_APPROVAL:
+            // TODO Rules about demand estimated amount and recurrency
+			if(canBeSetToApproved(demand)) {
+				this.changeStatus(demand.getId(), DemandStatus.APPROVED);
+				return demand;
+			}
 			break;
 		case APPROVED:
-			// TODO Send eMail to purchaser
+			List<User> recipients = userService.getUsersFromAuthority(AuthoritiesConstants.PURCHASER);
+			String to = recipients.stream().map(u -> u.getEmail()).collect(Collectors.joining(","));
+			mailService.sendApprovedDemandToPurchaserEmail(demand, to);
 			break;
 		case REJECTED:
-			// TODO Send eMail to demander
+            mailService.sendRejectedDemandEmail(demand, userService.getCurrentUser().get());
 			break;
 		default:
 			break;
 		}
-		demand.setStatus(status);
 		this.save(demand);
 		return demand;
-	}
-	
+    }
+
+    private boolean canBeSetToApproved(Demand demand) {
+        return SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL2);
+    }
+
 	@Override
 	public void rebuildIndex() {
 		template.deleteIndex(Demand.class);

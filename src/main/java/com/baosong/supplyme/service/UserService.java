@@ -284,4 +284,8 @@ public class UserService {
 		Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
 		Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
 	}
+	
+	public List<User> getUsersFromAuthority(String authority) {
+		return userRepository.findAllByActivatedIsTrueAndAuthorities_Name(authority);
+	}
 }

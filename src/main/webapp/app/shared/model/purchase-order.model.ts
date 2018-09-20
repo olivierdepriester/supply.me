@@ -1,6 +1,7 @@
 import { Moment } from 'moment';
 import { ISupplier } from 'app/shared/model//supplier.model';
 import { IUser } from 'app/core/user/user.model';
+import { IPurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 
 export const enum PurchaseOrderStatus {
     NEW = 'NEW',
@@ -16,6 +17,7 @@ export interface IPurchaseOrder {
     creationDate?: Moment;
     supplier?: ISupplier;
     creationUser?: IUser;
+    purchaseOrderLines?: IPurchaseOrderLine[];
 }
 
 export class PurchaseOrder implements IPurchaseOrder {
@@ -26,6 +28,7 @@ export class PurchaseOrder implements IPurchaseOrder {
         public status?: PurchaseOrderStatus,
         public creationDate?: Moment,
         public supplier?: ISupplier,
-        public creationUser?: IUser
+        public creationUser?: IUser,
+        public purchaseOrderLines?: IPurchaseOrderLine[]
     ) {}
 }

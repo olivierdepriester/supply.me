@@ -10,6 +10,7 @@ import javax.validation.constraints.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 import com.baosong.supplyme.domain.enumeration.PurchaseOrderStatus;
@@ -54,6 +55,9 @@ public class PurchaseOrder implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("")
     private User creationUser;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "purchaseOrder")
+    List<PurchaseOrderLine> purchaseOrderLines;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

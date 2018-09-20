@@ -21,7 +21,7 @@
                     <label class="criteria-label" jhiTranslate="supplyMeApp.demand.material" for="field_status">Material</label>
 					<select class="form-control" id="field_material" name="material" [(ngModel)]="searchCriteria.materialId" >
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="materialOption.id" *ngFor="let materialOption of materials; trackBy: trackMaterialById">{{materialOption.partNumber + ' - ' + materialOption.description }}</option>
+                        <option [ngValue]="materialOption.id" *ngFor="let materialOption of materials">{{materialOption.partNumber + ' - ' + materialOption.description }}</option>
                     </select>
             	</div>
             	<div class="input-group mt-3">
@@ -93,7 +93,7 @@
                         </button>
 	                    <div *ngIf="demand.status == 'NEW' || demand.status == 'REJECTED'; then editableDemandBlock" ></div>
 	                    <div *ngIf="demand.status == 'WAITING_FOR_APPROVAL'; then approvalDemandBlock" ></div>
-	                    <div *ngIf="demand.status == 'APPROVED'; then orderDemandBlock" ></div>
+	                    <div *ngIf="demand.status == 'APPROVED' && authorities['ROLE_PURCHASER']; then orderDemandBlock" ></div>
                         <ng-template #editableDemandBlock>
 		                     <button type="submit"
 		                             [routerLink]="['/demand', demand.id, 'edit']"
@@ -135,14 +135,15 @@
 	                    </ng-template>
 						<ng-template #orderDemandBlock>
 	                         <button type="submit"
-		                             [routerLink]="['/purchase-order/new']"
+                                     [routerLink]="['/purchase-order/new']"
+                                     [queryParams]="{demandId : demand.id}"
 		                             class="btn btn-primary btn-sm">
 		                         <fa-icon [icon]="faShoppingCart"></fa-icon>
 		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
 	                     	</button>
 	                    </ng-template>
                     </div>
-                </td>                
+                </td>
             </tr>
             </tbody>
         </table>

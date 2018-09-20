@@ -11,6 +11,8 @@ import { PurchaseOrderDetailComponent } from './purchase-order-detail.component'
 import { PurchaseOrderUpdateComponent } from './purchase-order-update.component';
 import { PurchaseOrderDeletePopupComponent } from './purchase-order-delete-dialog.component';
 import { IPurchaseOrder } from 'app/shared/model/purchase-order.model';
+import { IDemand, Demand } from 'app/shared/model/demand.model';
+import { DemandService } from 'app/entities/demand';
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseOrderResolve implements Resolve<IPurchaseOrder> {
@@ -22,6 +24,20 @@ export class PurchaseOrderResolve implements Resolve<IPurchaseOrder> {
             return this.service.find(id).pipe(map((purchaseOrder: HttpResponse<PurchaseOrder>) => purchaseOrder.body));
         }
         return of(new PurchaseOrder());
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class PurchaseOrderDemandResolve implements Resolve<IDemand> {
+    constructor(private service: DemandService) {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        const id = route.queryParams['demandId'] ? route.queryParams['demandId'] : null;
+        console.log(`DemandId : ${id}`);
+        if (id) {
+            return this.service.find(id).pipe(map((demand: HttpResponse<Demand>) => demand.body));
+        }
+        return of(null);
     }
 }
 
@@ -51,10 +67,11 @@ export const purchaseOrderRoute: Routes = [
         path: 'purchase-order/new',
         component: PurchaseOrderUpdateComponent,
         resolve: {
-            purchaseOrder: PurchaseOrderResolve
+            purchaseOrder: PurchaseOrderResolve,
+            demand: PurchaseOrderDemandResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_PURCHASER'],
             pageTitle: 'supplyMeApp.purchaseOrder.home.title'
         },
         canActivate: [UserRouteAccessService]
@@ -66,7 +83,7 @@ export const purchaseOrderRoute: Routes = [
             purchaseOrder: PurchaseOrderResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_PURCHASER'],
             pageTitle: 'supplyMeApp.purchaseOrder.home.title'
         },
         canActivate: [UserRouteAccessService]

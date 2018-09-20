@@ -29,6 +29,7 @@ export class DemandComponent implements OnInit, OnDestroy {
     faThumbsUp = faThumbsUp;
     faThumbsDown = faThumbsDown;
     faShoppingCart = faShoppingCart;
+    authorities: boolean[] = new Array();
 
     constructor(
         private demandService: DemandService,
@@ -118,6 +119,10 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.principal.identity().then(account => {
             this.currentAccount = account;
         });
+        this.principal.hasAuthority('ROLE_PURCHASER').then(value => (this.authorities['ROLE_PURCHASER'] = value));
+        this.principal.hasAuthority('ROLE_APPROVAL_LVL1').then(value => (this.authorities['ROLE_APPROVAL_LVL1'] = value));
+        this.principal.hasAuthority('ROLE_APPROVAL_LVL2').then(value => (this.authorities['ROLE_APPROVAL_LVL2'] = value));
+
         this.loadAll();
         this.registerChangeInDemands();
     }

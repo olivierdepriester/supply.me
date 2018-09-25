@@ -11,7 +11,7 @@ import { PurchaseOrderService } from './purchase-order.service';
 import { ISupplier } from 'app/shared/model/supplier.model';
 import { SupplierService } from 'app/entities/supplier';
 import { IUser, UserService } from 'app/core';
-import { IDemand } from 'app/shared/model/demand.model';
+import { IDemand, Demand } from 'app/shared/model/demand.model';
 import { IPurchaseOrderLine, PurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 
 @Component({
@@ -21,12 +21,11 @@ import { IPurchaseOrderLine, PurchaseOrderLine } from 'app/shared/model/purchase
 export class PurchaseOrderUpdateComponent implements OnInit {
     private _purchaseOrder: IPurchaseOrder;
     private _demand: IDemand;
-    lines: IPurchaseOrderLine[];
     isSaving: boolean;
+    editField: string;
 
     suppliers: ISupplier[];
 
-    users: IUser[];
     expectedDate: string;
     creationDate: string;
 
@@ -34,7 +33,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         private jhiAlertService: JhiAlertService,
         private purchaseOrderService: PurchaseOrderService,
         private supplierService: SupplierService,
-        private userService: UserService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -45,24 +43,18 @@ export class PurchaseOrderUpdateComponent implements OnInit {
             this.demand = demand;
         });
         if (this.demand != null && !this.purchaseOrder.id) {
-            this.lines = new Array();
+            this.purchaseOrder.purchaseOrderLines = new Array();
             const line = new PurchaseOrderLine();
             line.lineNumber = 1;
-            line.purchaseOrder = this.purchaseOrder;
+            line.orderPrice = 0;
+            line.quantity = this.demand.quantity - this.demand.quantityOrdered;
             line.demand = this.demand;
-            line.quantity = this.demand.quantity;
-            this.lines[0] = line;
+            this.purchaseOrder.purchaseOrderLines[0] = line;
         }
 
         this.supplierService.query().subscribe(
             (res: HttpResponse<ISupplier[]>) => {
                 this.suppliers = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -98,6 +90,12 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
+    }
+
+    changeValue(id: number, property: string, event: any) {
+        this.editField = event.target.textContent;
+        console.log(this.editField);
+        this.purchaseOrder.purchaseOrderLines[id][property] = this.editField;
     }
 
     trackSupplierById(index: number, item: ISupplier) {

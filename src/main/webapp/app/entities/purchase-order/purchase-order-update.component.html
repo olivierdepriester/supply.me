@@ -11,7 +11,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.supplier" for="field_supplier">Supplier</label>
-                    <select class="form-control" id="field_supplier" name="supplier" [(ngModel)]="purchaseOrder.supplier" >
+                    <select class="form-control" id="field_supplier" name="supplier" [(ngModel)]="purchaseOrder.supplier" required >
                         <option [ngValue]="null"></option>
                         <option [ngValue]="supplierOption.id === purchaseOrder.supplier?.id ? purchaseOrder.supplier : supplierOption"
                         *ngFor="let supplierOption of suppliers; trackBy: trackSupplierById">
@@ -40,14 +40,26 @@
                     </div>
                 </div>
             </div>
-            <div class="table-responsive" *ngIf="lines">
+            <div class="table-responsive" *ngIf="purchaseOrder.purchaseOrderLines">
                     <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>#</td>
+                                <td>Part number</td>
+                                <td>Material name</td>
+                                <td>Quantity</td>
+                                <td>Price</td>
+                            </tr>
+                        </thead>
                         <tbody>
-                        <tr *ngFor="let line of lines;trackBy: trackLineById">
-                            <td>{{ line.demand.material.partNumber }}</td>
-                            <td>{{ line.demand.material.name }}</td>
-                            <td>{{ line.quantity }}</td>
-                        </tr>
+                            <tr *ngFor="let purchaseOrderLine of purchaseOrder.purchaseOrderLines;trackBy: trackLineById;let id=index" >
+                                <td>{{ purchaseOrderLine.lineNumber }}</td>
+                                <td>{{ purchaseOrderLine.demand.material.partNumber }}</td>
+                                <td>{{ purchaseOrderLine.demand.material.name }}</td>
+                                <td contenteditable='true' (input)="changeValue(id, 'quantity', $event)">{{ purchaseOrderLine.quantity }}</td>
+                                <td contenteditable='true' (input)="changeValue(id, 'orderPrice', $event)">{{ purchaseOrderLine.orderPrice }}</td>
+                                <td><button></button></td>
+                            </tr>
                         </tbody>
                 </table>
             </div>

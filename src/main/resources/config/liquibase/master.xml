@@ -28,5 +28,5 @@
     <include file="config/liquibase/changelog/20180912014624_added_entity_constraints_InvoiceLine.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <include file="config/liquibase/changelog/20180918110800_add_customauthorities.xml" relativeToChangelogFile="false"/>
-    
+    <include file="config/liquibase/changelog/20180925133500_update_demand.xml" relativeToChangelogFile="false" />
 </databaseChangeLog>

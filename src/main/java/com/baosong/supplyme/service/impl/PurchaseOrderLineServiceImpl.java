@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.util.List;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -99,4 +99,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     public Page<PurchaseOrderLine> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of PurchaseOrderLines for query {}", query);
         return purchaseOrderLineSearchRepository.search(queryStringQuery(query), pageable);    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PurchaseOrderLine> getByDemandId(Long demandId) {
+        return purchaseOrderLineRepository.findByDemandId(demandId);
+    }
 }

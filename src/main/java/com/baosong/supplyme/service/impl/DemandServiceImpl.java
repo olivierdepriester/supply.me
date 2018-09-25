@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -166,17 +167,28 @@ public class DemandServiceImpl implements DemandService {
      */
 	@Override
 	public Demand changeStatus(Long id, DemandStatus status) throws ServiceException {
-		Demand demand = findOne(id).orElse(null);
-		DemandStatus targetStatus = status;
-		if (demand == null) {
-			throw new ServiceException(String.format("No demand found for id %d", id));
-		}
+        Demand demand = null;
+        try {
+            demand = findOne(id).get();
+        } catch (NoSuchElementException e) {
+            // Demand not found
+            throw new ServiceException(String.format("No demand found for id %d", id));
+        }
+        if (status.equals(demand.getStatus())) {
+            // If the current status is the same as the new status, nothing to be done
+            return demand;
+        }
+
 		if (!demandWorkflowRules.containsKey(status)) {
+            // The wanted status can never be set
 			throw new ServiceException(String.format("The status %s can never be directly set", status));
 		} else if (!demandWorkflowRules.get(status).contains(demand.getStatus()) ) {
+            // The current status prevent the new status of being set
 			throw new ServiceException(String.format("The status %s can not be set on demand %d (current is %s)", status, id, demand.getStatus()));
-		}
-		demand.setStatus(targetStatus);
+        }
+        DemandStatus targetStatus = status;
+        demand.setStatus(targetStatus);
+
 		switch (status) {
         case WAITING_FOR_APPROVAL:
             // TODO Rules about demand estimated amount and recurrency

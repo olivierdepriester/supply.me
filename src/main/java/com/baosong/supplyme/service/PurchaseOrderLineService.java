@@ -1,11 +1,12 @@
 package com.baosong.supplyme.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.baosong.supplyme.domain.PurchaseOrderLine;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
 
 /**
  * Service Interface for managing PurchaseOrderLine.
@@ -48,9 +49,16 @@ public interface PurchaseOrderLineService {
      * Search for the purchaseOrderLine corresponding to the query.
      *
      * @param query the query of the search
-     * 
+     *
      * @param pageable the pagination information
      * @return the list of entities
      */
     Page<PurchaseOrderLine> search(String query, Pageable pageable);
+
+    /**
+     * Get the purchase order lines linked to a demand
+     * @param demandId the demand identifier
+     * @return
+     */
+    List<PurchaseOrderLine> getByDemandId(Long demandId);
 }

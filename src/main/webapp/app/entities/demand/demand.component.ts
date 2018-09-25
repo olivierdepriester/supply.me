@@ -127,6 +127,18 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.registerChangeInDemands();
     }
 
+    isPurchaseOrderAllowed(demand: IDemand) {
+        console.log(
+            `Id ${demand.id}. Value: ${demand.quantityOrdered == null || demand.quantity.valueOf() > demand.quantityOrdered.valueOf()}`
+        );
+        return (
+            ((demand.status === DemandStatus.ORDERED &&
+                (demand.quantityOrdered == null || demand.quantity.valueOf() > demand.quantityOrdered.valueOf())) ||
+                demand.status === DemandStatus.APPROVED) &&
+            this.authorities['ROLE_PURCHASER']
+        );
+    }
+
     ngOnDestroy() {
         this.eventManager.destroy(this.eventSubscriber);
     }

@@ -1,6 +1,7 @@
 package com.baosong.supplyme.service;
 
 import com.baosong.supplyme.domain.PurchaseOrder;
+import com.baosong.supplyme.domain.errors.ServiceException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +18,9 @@ public interface PurchaseOrderService {
      *
      * @param purchaseOrder the entity to save
      * @return the persisted entity
+     * @exception ServiceException
      */
-    PurchaseOrder save(PurchaseOrder purchaseOrder);
+    PurchaseOrder save(PurchaseOrder purchaseOrder) throws ServiceException;
 
     /**
      * Get all the purchaseOrders.
@@ -48,7 +50,7 @@ public interface PurchaseOrderService {
      * Search for the purchaseOrder corresponding to the query.
      *
      * @param query the query of the search
-     * 
+     *
      * @param pageable the pagination information
      * @return the list of entities
      */

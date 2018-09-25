@@ -2,8 +2,10 @@ package com.baosong.supplyme.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.baosong.supplyme.domain.PurchaseOrder;
+import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.service.PurchaseOrderService;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
+import com.baosong.supplyme.web.rest.errors.InternalServerErrorException;
 import com.baosong.supplyme.web.rest.util.HeaderUtil;
 import com.baosong.supplyme.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -57,10 +59,15 @@ public class PurchaseOrderResource {
         if (purchaseOrder.getId() != null) {
             throw new BadRequestAlertException("A new purchaseOrder cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        PurchaseOrder result = purchaseOrderService.save(purchaseOrder);
+        PurchaseOrder result;
+        try {
+            result = purchaseOrderService.save(purchaseOrder);
         return ResponseEntity.created(new URI("/api/purchase-orders/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
+        } catch (ServiceException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     /**
@@ -79,10 +86,14 @@ public class PurchaseOrderResource {
         if (purchaseOrder.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        PurchaseOrder result = purchaseOrderService.save(purchaseOrder);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, purchaseOrder.getId().toString()))
-            .body(result);
+        try {
+            PurchaseOrder result = purchaseOrderService.save(purchaseOrder);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, purchaseOrder.getId().toString()))
+                .body(result);
+        } catch (ServiceException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     /**

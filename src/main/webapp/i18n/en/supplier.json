@@ -17,7 +17,8 @@
             "detail": {
                 "title": "Supplier"
             },
-            "referenceNumber": "Reference Number"
+            "referenceNumber": "Reference Number",
+            "name": "Name"
         }
     }
 }

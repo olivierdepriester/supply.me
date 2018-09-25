@@ -22,6 +22,8 @@ export interface IDemand {
     material?: IMaterial;
     project?: IProject;
     creationUser?: IUser;
+    quantityOrdered?: number;
+    quantityDelivered?: number;
 }
 
 export class Demand implements IDemand {
@@ -33,7 +35,9 @@ export class Demand implements IDemand {
         public creationDate?: Moment,
         public material?: IMaterial,
         public project?: IProject,
-        public creationUser?: IUser
+        public creationUser?: IUser,
+        public quantityOrdered?: number,
+        public quantityDelivered?: number
     ) {}
 }
 

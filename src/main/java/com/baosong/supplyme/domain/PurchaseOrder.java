@@ -56,7 +56,7 @@ public class PurchaseOrder implements Serializable {
     @JsonIgnoreProperties("")
     private User creationUser;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "purchaseOrder")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
     List<PurchaseOrderLine> purchaseOrderLines;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -144,6 +144,25 @@ public class PurchaseOrder implements Serializable {
 
     public void setCreationUser(User user) {
         this.creationUser = user;
+    }
+
+    public List<PurchaseOrderLine> getPurchaseOrderLines() {
+        return this.purchaseOrderLines;
+    }
+
+    /**
+     * @param purchaseOrderLines the purchaseOrderLines to set
+     */
+    public void setPurchaseOrderLines(List<PurchaseOrderLine> purchaseOrderLines) {
+        this.purchaseOrderLines = purchaseOrderLines;
+    }
+
+    /**
+     * @param purchaseOrderLines the purchaseOrderLines to set
+     */
+    public PurchaseOrder purchaseOrderLines(List<PurchaseOrderLine> purchaseOrderLines) {
+        this.purchaseOrderLines = purchaseOrderLines;
+        return this;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

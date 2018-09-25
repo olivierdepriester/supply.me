@@ -34,6 +34,12 @@ public class Demand implements Serializable {
     @Column(name = "quantity", nullable = false)
     private Double quantity;
 
+    @Column(name = "quantityordered")
+    private Double quantityOrdered;
+
+    @Column(name = "quantitydelivered")
+    private Double quantityDelivered;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -157,6 +163,35 @@ public class Demand implements Serializable {
     public void setCreationUser(User user) {
         this.creationUser = user;
     }
+
+    /**
+     * @return the quantityDelivered
+     */
+    public Double getQuantityDelivered() {
+        return quantityDelivered;
+    }
+
+    /**
+     * @return the quantityOrdered
+     */
+    public Double getQuantityOrdered() {
+        return quantityOrdered;
+    }
+
+    /**
+     * @param quantityOrdered the quantityOrdered to set
+     */
+    public void setQuantityOrdered(Double quantityOrdered) {
+        this.quantityOrdered = quantityOrdered;
+    }
+
+    /**
+     * @param quantityDelivered the quantityDelivered to set
+     */
+    public void setQuantityDelivered(Double quantityDelivered) {
+        this.quantityDelivered = quantityDelivered;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

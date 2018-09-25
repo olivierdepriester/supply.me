@@ -1,18 +1,26 @@
 package com.baosong.supplyme.service.impl;
 
+import com.baosong.supplyme.service.DemandService;
+import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.PurchaseOrderService;
+import com.baosong.supplyme.service.UserService;
+import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.PurchaseOrder;
+import com.baosong.supplyme.domain.PurchaseOrderLine;
+import com.baosong.supplyme.domain.enumeration.DemandStatus;
+import com.baosong.supplyme.domain.enumeration.PurchaseOrderStatus;
+import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.PurchaseOrderRepository;
 import com.baosong.supplyme.repository.search.PurchaseOrderSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -30,6 +38,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     private final PurchaseOrderSearchRepository purchaseOrderSearchRepository;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private DemandService demandService;
+
+    @Autowired
+    private PurchaseOrderLineService purchaseOrderLineService;
+
     public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderSearchRepository purchaseOrderSearchRepository) {
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.purchaseOrderSearchRepository = purchaseOrderSearchRepository;
@@ -42,8 +59,27 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      * @return the persisted entity
      */
     @Override
-    public PurchaseOrder save(PurchaseOrder purchaseOrder) {
-        log.debug("Request to save PurchaseOrder : {}", purchaseOrder);        PurchaseOrder result = purchaseOrderRepository.save(purchaseOrder);
+    public PurchaseOrder save(PurchaseOrder purchaseOrder) throws ServiceException {
+        if (purchaseOrder.getId() == null) {
+            purchaseOrder.status(PurchaseOrderStatus.NEW)
+        	            .creationDate(Instant.now())
+        	            .creationUser(userService.getCurrentUser().orElse(null));
+        }
+        log.debug("Request to save PurchaseOrder : {}", purchaseOrder);
+        for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLines()) {
+            line.purchaseOrder(purchaseOrder);
+            if (line.getDemand() != null) {
+                // Set demand status to ORDERED
+                demandService.changeStatus(line.getDemand().getId(), DemandStatus.ORDERED);
+                double quantityOrdered = purchaseOrderLineService.getByDemandId(line.getDemand().getId())
+                .stream()
+                .filter(p -> p.getId() != line.getId())
+                .mapToDouble(PurchaseOrderLine::getQuantity).sum();
+                line.getDemand().setQuantityOrdered(quantityOrdered + line.getQuantity());
+                demandService.save(line.getDemand());
+            }
+        }
+        PurchaseOrder result = purchaseOrderRepository.save(purchaseOrder);
         purchaseOrderSearchRepository.save(result);
         return result;
     }

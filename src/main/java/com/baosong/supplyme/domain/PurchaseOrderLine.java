@@ -42,7 +42,7 @@ public class PurchaseOrderLine implements Serializable {
     private Double orderPrice;
 
     @ManyToOne
-    @JsonIgnoreProperties("")
+    @JsonIgnoreProperties("purchaseOrderLines")
     private PurchaseOrder purchaseOrder;
 
     @ManyToOne

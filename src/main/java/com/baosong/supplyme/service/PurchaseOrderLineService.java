@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.baosong.supplyme.domain.PurchaseOrderLine;
+import com.baosong.supplyme.domain.errors.ServiceException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ public interface PurchaseOrderLineService {
      *
      * @param id the id of the entity
      */
-    void delete(Long id);
+    void delete(Long id) throws ServiceException;
 
     /**
      * Search for the purchaseOrderLine corresponding to the query.

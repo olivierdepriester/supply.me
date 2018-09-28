@@ -3,6 +3,8 @@ import { RouterModule } from '@angular/router';
 
 import { SupplyMeSharedModule } from 'app/shared';
 import { SupplyMeAdminModule } from 'app/admin/admin.module';
+import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
+import { DemandSelectorModule } from 'app/entities/component/demand-selector';
 import {
     PurchaseOrderComponent,
     PurchaseOrderDetailComponent,
@@ -16,7 +18,7 @@ import {
 const ENTITY_STATES = [...purchaseOrderRoute, ...purchaseOrderPopupRoute];
 
 @NgModule({
-    imports: [SupplyMeSharedModule, SupplyMeAdminModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [SupplyMeSharedModule, SupplyMeAdminModule, AutoCompleteModule, DemandSelectorModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         PurchaseOrderComponent,
         PurchaseOrderDetailComponent,

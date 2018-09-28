@@ -1,9 +1,13 @@
 package com.baosong.supplyme.service.impl;
 
-import com.baosong.supplyme.service.DemandService;
-import com.baosong.supplyme.service.PurchaseOrderLineService;
-import com.baosong.supplyme.service.PurchaseOrderService;
-import com.baosong.supplyme.service.UserService;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.PurchaseOrder;
 import com.baosong.supplyme.domain.PurchaseOrderLine;
@@ -12,6 +16,12 @@ import com.baosong.supplyme.domain.enumeration.PurchaseOrderStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.PurchaseOrderRepository;
 import com.baosong.supplyme.repository.search.PurchaseOrderSearchRepository;
+import com.baosong.supplyme.service.DemandService;
+import com.baosong.supplyme.service.MutablePropertiesService;
+import com.baosong.supplyme.service.PurchaseOrderLineService;
+import com.baosong.supplyme.service.PurchaseOrderService;
+import com.baosong.supplyme.service.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +29,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing PurchaseOrder.
@@ -47,7 +52,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Autowired
     private PurchaseOrderLineService purchaseOrderLineService;
 
-    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderSearchRepository purchaseOrderSearchRepository) {
+    @Autowired
+    private MutablePropertiesService mutablePropertiesService;
+
+    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository,
+            PurchaseOrderSearchRepository purchaseOrderSearchRepository) {
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.purchaseOrderSearchRepository = purchaseOrderSearchRepository;
     }
@@ -60,26 +69,55 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      */
     @Override
     public PurchaseOrder save(PurchaseOrder purchaseOrder) throws ServiceException {
-        if (purchaseOrder.getId() == null) {
-            purchaseOrder.status(PurchaseOrderStatus.NEW)
-        	            .creationDate(Instant.now())
-        	            .creationUser(userService.getCurrentUser().orElse(null));
-        }
         log.debug("Request to save PurchaseOrder : {}", purchaseOrder);
-        for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLines()) {
+        PurchaseOrder persistedPurchaseOrder = null;
+        if (purchaseOrder.getId() == null) {
+            // New purchase order --> Generate a new code
+            purchaseOrder.status(PurchaseOrderStatus.NEW).code(mutablePropertiesService.getNewPurchaseCode())
+                    .creationDate(Instant.now()).creationUser(userService.getCurrentUser().get());
+            persistedPurchaseOrder = purchaseOrder;
+        } else {
+            // Update -> Retrieve entity from database
+            persistedPurchaseOrder = findOne(purchaseOrder.getId()).get()
+                .expectedDate(purchaseOrder.getExpectedDate())
+                .supplier(purchaseOrder.getSupplier());
+            // Gets the POLs ids remaining in the PO to save
+            final Set<Long> purchaseOrderLineIdsPresent = purchaseOrder.getPurchaseOrderLines().stream()
+                    .filter(pol -> pol.getId() != null).map(PurchaseOrderLine::getId).collect(Collectors.toSet());
+            // Identify the lines to remove from the PO
+            Set<PurchaseOrderLine> linesToDelete = persistedPurchaseOrder.getPurchaseOrderLines().stream()
+                    .filter(pol -> !purchaseOrderLineIdsPresent.contains(pol.getId())).collect(Collectors.toSet());
+            // Remove these lines
+            persistedPurchaseOrder.getPurchaseOrderLines().removeIf(pol -> linesToDelete.contains(pol));
+
+            // Clean the lines and their demand
+            for (PurchaseOrderLine line : linesToDelete) {
+                // Get demand
+                Demand demand = line.getDemand();
+                // Delete line
+                purchaseOrderLineService.delete(line.getId());
+                // Recalculation of the effective ordered quantity
+                double quantityOrdered = demandService.getQuantityOrderedFromPO(line.getDemand().getId());
+                if (quantityOrdered <= 0) {
+                    // If no quantity remaining --> status decrease
+                    demand.setStatus(DemandStatus.APPROVED);
+                }
+                // Update line
+                demandService.save(demand.quantityOrdered(quantityOrdered));
+            }
+        }
+
+        for (PurchaseOrderLine line : persistedPurchaseOrder.getPurchaseOrderLines()) {
             line.purchaseOrder(purchaseOrder);
             if (line.getDemand() != null) {
                 // Set demand status to ORDERED
-                demandService.changeStatus(line.getDemand().getId(), DemandStatus.ORDERED);
-                double quantityOrdered = purchaseOrderLineService.getByDemandId(line.getDemand().getId())
-                .stream()
-                .filter(p -> p.getId() != line.getId())
-                .mapToDouble(PurchaseOrderLine::getQuantity).sum();
+                line.setDemand(demandService.changeStatus(line.getDemand().getId(), DemandStatus.ORDERED));
+                double quantityOrdered = demandService.getQuantityOrderedFromPO(line.getDemand().getId());
                 line.getDemand().setQuantityOrdered(quantityOrdered + line.getQuantity());
                 demandService.save(line.getDemand());
             }
         }
-        PurchaseOrder result = purchaseOrderRepository.save(purchaseOrder);
+        PurchaseOrder result = purchaseOrderRepository.save(persistedPurchaseOrder);
         purchaseOrderSearchRepository.save(result);
         return result;
     }
@@ -96,7 +134,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         log.debug("Request to get all PurchaseOrders");
         return purchaseOrderRepository.findAll(pageable);
     }
-
 
     /**
      * Get one purchaseOrder by id.
@@ -126,7 +163,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     /**
      * Search for the purchaseOrder corresponding to the query.
      *
-     * @param query the query of the search
+     * @param query    the query of the search
      * @param pageable the pagination information
      * @return the list of entities
      */
@@ -134,5 +171,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Transactional(readOnly = true)
     public Page<PurchaseOrder> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of PurchaseOrders for query {}", query);
-        return purchaseOrderSearchRepository.search(queryStringQuery(query), pageable);    }
+        return purchaseOrderSearchRepository.search(queryStringQuery(query), pageable);
+    }
 }

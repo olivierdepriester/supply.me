@@ -41,4 +41,8 @@ export class PurchaseOrderLineService {
         const options = createRequestOption(req);
         return this.http.get<IPurchaseOrderLine[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
+
+    getBydemandId(id: number): Observable<EntityArrayResponseType> {
+        return this.http.get<IPurchaseOrderLine[]>(`${this.resourceUrl}/demand/${id}`, { observe: 'response' });
+    }
 }

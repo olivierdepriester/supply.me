@@ -1,6 +1,7 @@
 package com.baosong.supplyme.service;
 
 import com.baosong.supplyme.domain.MutableProperties;
+import com.baosong.supplyme.domain.errors.ServiceException;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +46,15 @@ public interface MutablePropertiesService {
      * Search for the mutableProperties corresponding to the query.
      *
      * @param query the query of the search
-     * 
+     *
      * @return the list of entities
      */
     List<MutableProperties> search(String query);
+
+    /**
+     * Get a new purchase order code and increments the counter
+     * @return a new formatted purchase order code
+     * @throws ServiceException if the property could not be saved
+     */
+    String getNewPurchaseCode() throws ServiceException;
 }

@@ -47,6 +47,13 @@ export class DemandService {
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
+    searchPurchasable(req?: any) {
+        const options = createRequestOption(req);
+        return this.http
+            .get<IDemand[]>(`${this.resourceSearchUrl}/purchasable`, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
+
     find(id: number): Observable<EntityResponseType> {
         return this.http
             .get<IDemand>(`${this.resourceUrl}/${id}`, { observe: 'response' })

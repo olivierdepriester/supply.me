@@ -34,6 +34,7 @@ import { SupplyMeMutablePropertiesModule } from './mutable-properties/mutable-pr
     declarations: [],
     entryComponents: [],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    exports: []
 })
 export class SupplyMeEntityModule {}

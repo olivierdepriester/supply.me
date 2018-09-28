@@ -5,6 +5,18 @@
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.demand.material">Material</span></dt>
+                <dd>
+                    <div *ngIf="demand.material">
+                        <a [routerLink]="['/material', demand.material?.id, 'view']">{{demand.material?.partNumber + ' ' + demand.material?.name}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.project">Project</span></dt>
+                <dd>
+                    <div *ngIf="demand.project">
+                        <a [routerLink]="['/project', demand.project?.id, 'view']">{{demand.project?.code}}</a>
+                    </div>
+                </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></dt>
                 <dd>
                     <span>{{demand.quantity}}</span>
@@ -15,30 +27,48 @@
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></dt>
                 <dd>
-                    <span>{{demand.expectedDate}}</span>
+                    <span>{{demand.expectedDate | dateFormat}}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span></dt>
                 <dd>
-                    <span>{{demand.creationDate}}</span>
-                </dd>
-                <dt><span jhiTranslate="supplyMeApp.demand.material">Material</span></dt>
-                <dd>
-                    <div *ngIf="demand.material">
-                        <a [routerLink]="['/material', demand.material?.id, 'view']">{{demand.material?.id}}</a>
-                    </div>
-                </dd>
-                <dt><span jhiTranslate="supplyMeApp.demand.project">Project</span></dt>
-                <dd>
-                    <div *ngIf="demand.project">
-                        <a [routerLink]="['/project', demand.project?.id, 'view']">{{demand.project?.id}}</a>
-                    </div>
+                    <span>{{demand.creationDate | datetimeFormat}}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.creationUser">Creation User</span></dt>
                 <dd>
-                    {{demand.creationUser?.id}}
+                    {{demand.creationUser?.lastName + ' ' + demand.creationUser?.firstName}}
                 </dd>
             </dl>
 
+            <div *ngIf="purchaseOrderLines">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span></th>
+                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span></th>
+                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span></th>
+                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">ExpectedDate</span></th>
+                            <th><span jhiTranslate="supplyMeApp.purchaseOrderLine.quantity">Quantity</span></th>
+                            <th><span jhiTranslate="supplyMeApp.purchaseOrderLine.orderPrice">Order price</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let line of purchaseOrderLines">
+                                <td>
+                                    <a [routerLink]="['/purchase-order', line.purchaseOrder?.id, 'view' ]" >{{ line.purchaseOrder.code }}</a>
+                                </td>
+                                <td>
+                                <div *ngIf="line.purchaseOrder.supplier">
+                                    <a [routerLink]="['/supplier', line.purchaseOrder.supplier?.id, 'view' ]" >{{ line.purchaseOrder.supplier?.name }}</a>
+                                </div>
+                            </td>
+                            <td><span jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + line.purchaseOrder.status}}">{{line.purchaseOrder.status}}</span> </td>
+                            <td>{{ line.purchaseOrder.expectedDate | dateFormat }} </td>
+                            <td>{{ line.quantity }} </td>
+                            <td class="numeric">{{ line.orderPrice }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">

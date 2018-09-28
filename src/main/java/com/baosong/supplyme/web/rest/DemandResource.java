@@ -7,8 +7,22 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.baosong.supplyme.domain.Demand;
+import com.baosong.supplyme.domain.enumeration.DemandStatus;
+import com.baosong.supplyme.domain.errors.ServiceException;
+import com.baosong.supplyme.service.DemandService;
+import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
+import com.baosong.supplyme.web.rest.util.HeaderUtil;
+import com.baosong.supplyme.web.rest.util.PaginationUtil;
+import com.baosong.supplyme.web.rest.vm.DemandStatusChangeVM;
+import com.codahale.metrics.annotation.Timed;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,15 +33,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.baosong.supplyme.domain.Demand;
-import com.baosong.supplyme.domain.enumeration.DemandStatus;
-import com.baosong.supplyme.domain.errors.ServiceException;
-import com.baosong.supplyme.service.DemandService;
-import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
-import com.baosong.supplyme.web.rest.util.HeaderUtil;
-import com.baosong.supplyme.web.rest.vm.DemandStatusChangeVM;
-import com.codahale.metrics.annotation.Timed;
 
 import io.github.jhipster.web.util.ResponseUtil;
 
@@ -99,7 +104,7 @@ public class DemandResource {
 			throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "update");
 		}
 	}
-	
+
 	@PutMapping("/demands/changeStatus")
 	@Timed
 	public ResponseEntity<Demand> changeDemandStatus(
@@ -114,7 +119,7 @@ public class DemandResource {
 			throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "changeStatus");
 		}
 	}
-	
+
 
 	/**
 	 * GET /demands : get all the demands.
@@ -168,17 +173,35 @@ public class DemandResource {
 	@GetMapping("/_search/demands")
 	@Timed
 	public List<Demand> searchDemands(
-			@RequestParam Optional<Long> materialId,
+            @RequestParam Optional<String> query,
+            @RequestParam Optional<Long> materialId,
 			@RequestParam Optional<Long> projectId,
 			@RequestParam Optional<DemandStatus> status) {
 		log.debug("REST request to search Demands for query");
-		return demandService.search("", materialId.orElse(null), projectId.orElse(null), status.orElse(null));
+		return demandService.search(query.orElse(null), materialId.orElse(null), projectId.orElse(null), status.orElse(null));
 	}
-	
-	@PostMapping("/_search/rebuild")
+
+	@PostMapping("/_search/demands/rebuild")
 	@Timed
 	public ResponseEntity<Void> rebuildIndex() {
 		demandService.rebuildIndex();
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "0")).build();
-	}
+    }
+
+    /**
+     * SEARCH  /_search/purchase-order-lines?query=:query : search for the purchaseOrderLine corresponding
+     * to the query.
+     *
+     * @param query the query of the purchaseOrderLine search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/_search/demands/purchasable")
+    @Timed
+    public ResponseEntity<List<Demand>> searchPurchaseOrderLines(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of PurchaseOrderLines for query {}", query);
+        Page<Demand> page = demandService.searchDemandsToPurchase(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/demands/purchasable");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
 }

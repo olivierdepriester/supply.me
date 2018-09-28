@@ -16,6 +16,7 @@ import { SupplyMeAppRoutingModule } from './app-routing.module';
 import { SupplyMeHomeModule } from './home/home.module';
 import { SupplyMeAccountModule } from './account/account.module';
 import { SupplyMeEntityModule } from './entities/entity.module';
+import { SupplyMeprimengModule } from './primeng/primeng.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
 
@@ -28,7 +29,8 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
         SupplyMeCoreModule,
         SupplyMeHomeModule,
         SupplyMeAccountModule,
-        SupplyMeEntityModule
+        SupplyMeEntityModule,
+        SupplyMeprimengModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],

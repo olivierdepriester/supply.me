@@ -1,12 +1,21 @@
 package com.baosong.supplyme.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
 import com.baosong.supplyme.domain.PurchaseOrderLine;
+import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
+import com.baosong.supplyme.web.rest.errors.InternalServerErrorException;
 import com.baosong.supplyme.web.rest.util.HeaderUtil;
 import com.baosong.supplyme.web.rest.util.PaginationUtil;
-import io.github.jhipster.web.util.ResponseUtil;
+import com.codahale.metrics.annotation.Timed;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,17 +23,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing PurchaseOrderLine.
@@ -124,8 +133,27 @@ public class PurchaseOrderLineResource {
     @Timed
     public ResponseEntity<Void> deletePurchaseOrderLine(@PathVariable Long id) {
         log.debug("REST request to delete PurchaseOrderLine : {}", id);
-        purchaseOrderLineService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        try {
+            purchaseOrderLineService.delete(id);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+		}
+    }
+
+    /**
+     * SEARCH  /purchase-order-lines/demand/{id} : search for the purchaseOrderLine corresponding
+     * to the query.
+     *
+     * @param query the query of the purchaseOrderLine search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/purchase-order-lines/demand/{id}")
+    @Timed
+    public List<PurchaseOrderLine> getPurchaseOrderLinesByDemandId(@PathVariable Long id) {
+        log.debug("REST request to search for a page of PurchaseOrderLines for query demandId {}", id);
+        return purchaseOrderLineService.getByDemandId(id);
     }
 
     /**
@@ -144,5 +172,4 @@ public class PurchaseOrderLineResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/purchase-order-lines");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
 }

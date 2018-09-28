@@ -42,5 +42,5 @@ export class Demand implements IDemand {
 }
 
 export class DemandSearchCriteria {
-    constructor(public fullText?: string, public status?: DemandStatus, public materialId?: number, public projectId?: number) {}
+    constructor(public query?: string, public status?: DemandStatus, public materialId?: number, public projectId?: number) {}
 }

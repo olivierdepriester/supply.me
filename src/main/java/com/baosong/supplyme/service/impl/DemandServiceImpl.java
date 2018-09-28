@@ -12,14 +12,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baosong.supplyme.domain.Demand;
+import com.baosong.supplyme.domain.Demand_;
+import com.baosong.supplyme.domain.PurchaseOrderLine;
 import com.baosong.supplyme.domain.User;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
@@ -29,8 +24,21 @@ import com.baosong.supplyme.security.AuthoritiesConstants;
 import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.MailService;
+import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.UserService;
 import com.google.common.collect.Sets;
+
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  * Service Implementation for managing Demand.
@@ -56,14 +64,17 @@ public class DemandServiceImpl implements DemandService {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private PurchaseOrderLineService purchaseOrderLineService;
+
     static {
-   	 demandWorkflowRules = new HashMap<>();
-   	 demandWorkflowRules.put(DemandStatus.WAITING_FOR_APPROVAL, Sets.newHashSet(DemandStatus.NEW, DemandStatus.REJECTED));
-   	 demandWorkflowRules.put(DemandStatus.APPROVED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
-   	 demandWorkflowRules.put(DemandStatus.REJECTED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
-   	 demandWorkflowRules.put(DemandStatus.ORDERED, Sets.newHashSet(DemandStatus.APPROVED));
-   	 demandWorkflowRules.put(DemandStatus.PARTIALLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED));
-   	 demandWorkflowRules.put(DemandStatus.FULLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
+        demandWorkflowRules = new HashMap<>();
+        demandWorkflowRules.put(DemandStatus.WAITING_FOR_APPROVAL, Sets.newHashSet(DemandStatus.NEW, DemandStatus.REJECTED));
+        demandWorkflowRules.put(DemandStatus.APPROVED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
+        demandWorkflowRules.put(DemandStatus.REJECTED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
+        demandWorkflowRules.put(DemandStatus.ORDERED, Sets.newHashSet(DemandStatus.APPROVED));
+        demandWorkflowRules.put(DemandStatus.PARTIALLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED));
+        demandWorkflowRules.put(DemandStatus.FULLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
    }
 
     public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository) {
@@ -143,17 +154,43 @@ public class DemandServiceImpl implements DemandService {
     			.collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Demand> searchDemandsToPurchase(String query, Pageable pageable) {
+        // QueryBuilders.matchQuery(Demand_.status.toString(), DemandStatus.APPROVED);
+        BoolQueryBuilder booleanQueryBuilder = QueryBuilders.boolQuery()
+            .must(QueryBuilders.termQuery("canBePurchased", true))
+            .must(QueryBuilders.queryStringQuery(query));
+        return this.demandSearchRepository.search(booleanQueryBuilder, pageable);
+    }
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<Demand> search(String query, Long materialId, Long projectId, DemandStatus demandStatus) {
         log.debug("Request to search Demands for query {}", query);
+        BoolQueryBuilder booleanQueryBuilder = QueryBuilders.boolQuery();
+        if (!StringUtils.isEmpty(query)) {
+            booleanQueryBuilder.must(QueryBuilders.queryStringQuery(query));
+        }
+        if (materialId != null) {
+            booleanQueryBuilder.must(QueryBuilders.termQuery("material.id", materialId));
+        }
+        if (projectId != null) {
+            booleanQueryBuilder.must(QueryBuilders.termQuery("project.id", projectId));
+        }
+        if (demandStatus != null) {
+            booleanQueryBuilder.must(QueryBuilders.termQuery("status", demandStatus));
+        }
         return StreamSupport
-    			.stream(demandSearchRepository.findByMaterialIdAndProjectIdAndStatus(materialId, projectId, demandStatus).spliterator(), false)
-    			.collect(Collectors.toList());
-//        return demandRepository.findAllById(
-//
-//            .map(Demand::getId).collect(Collectors.toList()));
-	}
+    			.stream(demandSearchRepository.search(booleanQueryBuilder).spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public double getQuantityOrderedFromPO(Long id) {
+        return purchaseOrderLineService.getByDemandId(id).stream().mapToDouble(PurchaseOrderLine::getQuantity).sum();
+    }
 
     /**
      * Set a demand to the given status.

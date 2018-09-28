@@ -7,6 +7,9 @@ import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 /**
  * Service Interface for managing Demand.
  */
@@ -17,7 +20,7 @@ public interface DemandService {
      *
      * @param demand the entity to save
      * @return the persisted entity
-     * @throws ServiceException 
+     * @throws ServiceException
      */
     Demand save(Demand demand) throws ServiceException;
 
@@ -48,7 +51,7 @@ public interface DemandService {
      * Search for the demand corresponding to the query.
      *
      * @param query the query of the search
-     * 
+     *
      * @return the list of entities
      */
 	List<Demand> search(String query);
@@ -62,7 +65,7 @@ public interface DemandService {
 	 * @return
 	 */
     List<Demand> search(String query, Long materialId, Long projectId, DemandStatus demandStatus);
-    
+
     /**
      * Change the status of a demand
      * @param id Demand identifier
@@ -72,5 +75,24 @@ public interface DemandService {
      */
     Demand changeStatus(Long id, DemandStatus status) throws ServiceException;
 
-	void rebuildIndex();
+    /**
+     * Rebuild ElasticSearch index for demands
+     */
+    void rebuildIndex();
+
+    /**
+     * Get the ordered quantity for a demand based on the purchase order lines
+     *
+     * @param id the demand id
+     * @return sum of the quantity ordered
+     */
+    double getQuantityOrderedFromPO(Long id) ;
+
+    /**
+     * Get demands that can be purchased
+     * @param query filter
+     * @param pageable
+     * @return
+     */
+    Page<Demand> searchDemandsToPurchase(String query, Pageable pageable);
 }

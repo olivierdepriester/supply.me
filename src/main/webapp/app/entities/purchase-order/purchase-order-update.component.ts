@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
-import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
+import { DATE_TIME_FORMAT, DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { JhiAlertService } from 'ng-jhipster';
 
 import { IPurchaseOrder } from 'app/shared/model/purchase-order.model';
 import { PurchaseOrderService } from './purchase-order.service';
 import { ISupplier } from 'app/shared/model/supplier.model';
 import { SupplierService } from 'app/entities/supplier';
-import { IUser, UserService } from 'app/core';
-import { IDemand, Demand } from 'app/shared/model/demand.model';
+import { IUser } from 'app/core';
+import { IDemand } from 'app/shared/model/demand.model';
 import { IPurchaseOrderLine, PurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
+import { DemandService } from 'app/entities/demand';
+import { DemandSelectorComponent } from 'app/entities/component/demand-selector';
 
 @Component({
     selector: 'jhi-purchase-order-update',
@@ -21,6 +23,11 @@ import { IPurchaseOrderLine, PurchaseOrderLine } from 'app/shared/model/purchase
 export class PurchaseOrderUpdateComponent implements OnInit {
     private _purchaseOrder: IPurchaseOrder;
     private _demand: IDemand;
+
+    @ViewChild(DemandSelectorComponent) private demandSelector: DemandSelectorComponent;
+
+    demandToAdd: IDemand;
+
     isSaving: boolean;
     editField: string;
 
@@ -33,23 +40,39 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         private jhiAlertService: JhiAlertService,
         private purchaseOrderService: PurchaseOrderService,
         private supplierService: SupplierService,
+        private demandService: DemandService,
         private activatedRoute: ActivatedRoute
     ) {}
+
+    get purchaseOrder() {
+        return this._purchaseOrder;
+    }
+
+    set purchaseOrder(purchaseOrder: IPurchaseOrder) {
+        this._purchaseOrder = purchaseOrder;
+        this.expectedDate = moment(purchaseOrder.expectedDate).format(DATE_FORMAT);
+        this.creationDate = moment(purchaseOrder.creationDate).format(DATE_TIME_FORMAT);
+    }
+
+    // get demand() {
+    //     return this._demand;
+    // }
+
+    // set demand(demand: IDemand) {
+    //     this._demand = demand;
+    // }
 
     ngOnInit() {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ purchaseOrder, demand }) => {
             this.purchaseOrder = purchaseOrder;
-            this.demand = demand;
+            this._demand = demand;
         });
-        if (this.demand != null && !this.purchaseOrder.id) {
+        if (this.purchaseOrder.purchaseOrderLines == null) {
             this.purchaseOrder.purchaseOrderLines = new Array();
-            const line = new PurchaseOrderLine();
-            line.lineNumber = 1;
-            line.orderPrice = 0;
-            line.quantity = this.demand.quantity - this.demand.quantityOrdered;
-            line.demand = this.demand;
-            this.purchaseOrder.purchaseOrderLines[0] = line;
+        }
+        if (this._demand != null && !this.purchaseOrder.id) {
+            this.addPurchaseOrderLineFromDemand(this._demand);
         }
 
         this.supplierService.query().subscribe(
@@ -66,8 +89,7 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.purchaseOrder.expectedDate = moment(this.expectedDate, DATE_TIME_FORMAT);
-        this.purchaseOrder.creationDate = moment();
+        this.purchaseOrder.expectedDate = moment(this.expectedDate, DATE_FORMAT);
         if (this.purchaseOrder.id !== undefined) {
             this.subscribeToSaveResponse(this.purchaseOrderService.update(this.purchaseOrder));
         } else {
@@ -106,24 +128,41 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         return item.id;
     }
 
+    deletePurchaseOrderLine(purchaseOrderLine: PurchaseOrderLine) {
+        const index: number = this.purchaseOrder.purchaseOrderLines.indexOf(purchaseOrderLine);
+        if (index !== -1) {
+            this.purchaseOrder.purchaseOrderLines.splice(index, 1);
+        }
+    }
+
     trackUserById(index: number, item: IUser) {
         return item.id;
     }
-    get purchaseOrder() {
-        return this._purchaseOrder;
-    }
 
-    set purchaseOrder(purchaseOrder: IPurchaseOrder) {
-        this._purchaseOrder = purchaseOrder;
-        this.expectedDate = moment(purchaseOrder.expectedDate).format(DATE_TIME_FORMAT);
-        this.creationDate = moment(purchaseOrder.creationDate).format(DATE_TIME_FORMAT);
+    /**
+     * Event thrown when click on the Add button
+     *
+     * @memberof PurchaseOrderUpdateComponent
+     */
+    addPurchoseOrderLine() {
+        if (this.demandSelector.selectedDemand != null) {
+            this.addPurchaseOrderLineFromDemand(this.demandSelector.selectedDemand);
+        }
     }
-
-    get demand() {
-        return this._demand;
-    }
-
-    set demand(demand: IDemand) {
-        this._demand = demand;
+    /**
+     * Add a line to the purchase order from a demand
+     *
+     * @private
+     * @param {IDemand} demand
+     * @memberof PurchaseOrderUpdateComponent
+     */
+    private addPurchaseOrderLineFromDemand(demand: IDemand) {
+        console.log(demand);
+        const line = new PurchaseOrderLine();
+        line.lineNumber = this.purchaseOrder.purchaseOrderLines.length + 1;
+        line.orderPrice = 0;
+        line.quantity = demand.quantity - demand.quantityOrdered;
+        line.demand = demand;
+        this.purchaseOrder.purchaseOrderLines.push(line);
     }
 }

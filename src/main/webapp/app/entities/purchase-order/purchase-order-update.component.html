@@ -1,13 +1,20 @@
 <div class="row justify-content-center">
     <div class="col-8">
+        <div>
+            <jhi-demand-selector></jhi-demand-selector>
+            <button (click)="addPurchoseOrderLine()" class="btn btn-success">
+                <fa-icon [icon]="'plus'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.add">Save</span>
+            </button>
+        </div>
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
             <h2 id="jhi-purchase-order-heading" jhiTranslate="supplyMeApp.purchaseOrder.home.createOrEditLabel">Create or edit a Purchase Order</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!purchaseOrder.id">
-                    <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="purchaseOrder.id" readonly />
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.code" for="field_code">Code</label>
+                    <div class="d-flex">
+                        <input type="text" class="form-control" name="code" id="field_code" [(ngModel)]="purchaseOrder.code" readonly />
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.supplier" for="field_supplier">Supplier</label>
@@ -19,24 +26,20 @@
                         </option>
                     </select>
                 </div>
-                <div class="form-group" [hidden]="!purchaseOrder.id">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.code" for="field_code">Code</label>
-                    <label class="form-control" name="code" id="field_code">{{ purchaseOrder.code }}</label>
-                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.expectedDate" for="field_expectedDate">Expected Date</label>
                     <div class="d-flex">
-                        <input id="field_expectedDate" type="datetime-local" class="form-control" name="expectedDate" [(ngModel)]="expectedDate" />
+                        <input id="field_expectedDate" type="date" class="form-control" name="expectedDate" [(ngModel)]="expectedDate" />
                     </div>
                 </div>
                 <div class="form-group" [hidden]="!purchaseOrder.id">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.status" for="field_status">Status</label>
-                    <label class="form-control" name="code" id="field_status">{{ purchaseOrder.status | translate }}</label>
+                    <input type="text" class="form-control" name="code" id="field_status" readonly value="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status | translate}}" />
                 </div>
                 <div class="form-group" [hidden]="!purchaseOrder.id">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.creationDate" for="field_creationDate">Creation Date</label>
                     <div class="d-flex">
-                        <label id="field_creationDate" class="form-control" name="creationDate">{{ purchaseOrder.creationDate | dateFormat }}</label>
+                        <input id="field_creationDate" type="datetime-local" class="form-control" name="creationDate" [(ngModel)]="creationDate" readonly />
                     </div>
                 </div>
             </div>
@@ -44,21 +47,35 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <td>#</td>
-                                <td>Part number</td>
-                                <td>Material name</td>
-                                <td>Quantity</td>
-                                <td>Price</td>
+                                <th class="text-center"><span>#</span></th>
+                                <th class="text-center"><span jhiTranslate="supplyMeApp.material.partNumber">Material Part Number</span></th>
+                                <th class="text-center"><span jhiTranslate="supplyMeApp.material.name">Material Name</span></th>
+                                <th class="text-center"><span jhiTranslate="supplyMeApp.purchaseOrderLine.quantity">Quantity</span></th>
+                                <th class="text-center"><span jhiTranslate="supplyMeApp.purchaseOrderLine.orderPrice">Price</span></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let purchaseOrderLine of purchaseOrder.purchaseOrderLines;trackBy: trackLineById;let id=index" >
-                                <td>{{ purchaseOrderLine.lineNumber }}</td>
-                                <td>{{ purchaseOrderLine.demand.material.partNumber }}</td>
+                                <td class="text-right">{{ purchaseOrderLine.lineNumber }}</td>
+                                <td class="text-center">{{ purchaseOrderLine.demand.material.partNumber }}</td>
                                 <td>{{ purchaseOrderLine.demand.material.name }}</td>
-                                <td contenteditable='true' (input)="changeValue(id, 'quantity', $event)">{{ purchaseOrderLine.quantity }}</td>
-                                <td contenteditable='true' (input)="changeValue(id, 'orderPrice', $event)">{{ purchaseOrderLine.orderPrice }}</td>
-                                <td><button></button></td>
+                                <td class="text-right" contenteditable='true' (input)="changeValue(id, 'quantity', $event)">
+                                    <span class="numeric">{{ purchaseOrderLine.quantity }}</span>
+                                </td>
+                                <td class="text-right" contenteditable='true' (input)="changeValue(id, 'orderPrice', $event)" >
+                                    <span class="numeric">{{ purchaseOrderLine.orderPrice | currency:'CNY':'symbol-narrow':'1.0-3' }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <button
+                                        (click)="deletePurchaseOrderLine(purchaseOrderLine)"
+                                        replaceUrl="true"
+                                        queryParamsHandling="merge"
+                                        class="btn btn-danger btn-sm">
+                                        <fa-icon [icon]="'times'"></fa-icon>
+                                        <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                 </table>

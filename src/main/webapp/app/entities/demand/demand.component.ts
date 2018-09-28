@@ -40,7 +40,7 @@ export class DemandComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private principal: Principal
     ) {
-        this.searchCriteria.fullText =
+        this.searchCriteria.query =
             this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
                 ? this.activatedRoute.snapshot.params['search']
                 : '';
@@ -65,7 +65,7 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     clear() {
-        this.searchCriteria.fullText = '';
+        this.searchCriteria.query = '';
         this.searchCriteria.status = DemandStatus.NEW;
         this.searchCriteria.materialId = null;
         this.searchCriteria.projectId = null;
@@ -128,9 +128,6 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     isPurchaseOrderAllowed(demand: IDemand) {
-        console.log(
-            `Id ${demand.id}. Value: ${demand.quantityOrdered == null || demand.quantity.valueOf() > demand.quantityOrdered.valueOf()}`
-        );
         return (
             ((demand.status === DemandStatus.ORDERED &&
                 (demand.quantityOrdered == null || demand.quantity.valueOf() > demand.quantityOrdered.valueOf())) ||

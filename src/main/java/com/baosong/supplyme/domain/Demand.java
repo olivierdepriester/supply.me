@@ -192,6 +192,21 @@ public class Demand implements Serializable {
         this.quantityDelivered = quantityDelivered;
     }
 
+    public Demand quantityOrdered(Double quantityOrdered) {
+        this.setQuantityOrdered(quantityOrdered);
+        return this;
+    }
+
+    /**
+     * Gets if the demand can be added to a purchase order
+     * @return
+     */
+    public boolean getCanBePurchased() {
+        // The demand must be approved or ordered and not fully fulfilled by an existing order
+        return (this.getQuantityOrdered() == null || this.getQuantityOrdered() < this.getQuantity() )
+            && (DemandStatus.APPROVED.equals(this.status) || DemandStatus.ORDERED.equals(this.status));
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

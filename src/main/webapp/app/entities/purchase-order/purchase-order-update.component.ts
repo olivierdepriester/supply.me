@@ -26,8 +26,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     @ViewChild(DemandSelectorComponent) private demandSelector: DemandSelectorComponent;
 
-    demandToAdd: IDemand;
-
     isSaving: boolean;
     editField: string;
 
@@ -40,7 +38,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         private jhiAlertService: JhiAlertService,
         private purchaseOrderService: PurchaseOrderService,
         private supplierService: SupplierService,
-        private demandService: DemandService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -53,14 +50,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         this.expectedDate = moment(purchaseOrder.expectedDate).format(DATE_FORMAT);
         this.creationDate = moment(purchaseOrder.creationDate).format(DATE_TIME_FORMAT);
     }
-
-    // get demand() {
-    //     return this._demand;
-    // }
-
-    // set demand(demand: IDemand) {
-    //     this._demand = demand;
-    // }
 
     ngOnInit() {
         this.isSaving = false;
@@ -116,7 +105,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     changeValue(id: number, property: string, event: any) {
         this.editField = event.target.textContent;
-        console.log(this.editField);
         this.purchaseOrder.purchaseOrderLines[id][property] = this.editField;
     }
 
@@ -145,8 +133,8 @@ export class PurchaseOrderUpdateComponent implements OnInit {
      * @memberof PurchaseOrderUpdateComponent
      */
     addPurchoseOrderLine() {
-        if (this.demandSelector.selectedDemand != null) {
-            this.addPurchaseOrderLineFromDemand(this.demandSelector.selectedDemand);
+        if (this.demandSelector.selectedData != null) {
+            this.addPurchaseOrderLineFromDemand(this.demandSelector.selectedData);
         }
     }
     /**
@@ -157,7 +145,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
      * @memberof PurchaseOrderUpdateComponent
      */
     private addPurchaseOrderLineFromDemand(demand: IDemand) {
-        console.log(demand);
         const line = new PurchaseOrderLine();
         line.lineNumber = this.purchaseOrder.purchaseOrderLines.length + 1;
         line.orderPrice = 0;

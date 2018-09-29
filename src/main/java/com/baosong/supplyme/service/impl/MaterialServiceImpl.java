@@ -1,21 +1,32 @@
 package com.baosong.supplyme.service.impl;
 
-import com.baosong.supplyme.service.MaterialService;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.management.Query;
+
+import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.Material;
 import com.baosong.supplyme.repository.MaterialRepository;
 import com.baosong.supplyme.repository.search.MaterialSearchRepository;
+import com.baosong.supplyme.service.MaterialService;
+
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Material.
@@ -30,6 +41,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     private final MaterialSearchRepository materialSearchRepository;
 
+    @Autowired
+    private ElasticsearchTemplate template;
+
     public MaterialServiceImpl(MaterialRepository materialRepository, MaterialSearchRepository materialSearchRepository) {
         this.materialRepository = materialRepository;
         this.materialSearchRepository = materialSearchRepository;
@@ -43,7 +57,8 @@ public class MaterialServiceImpl implements MaterialService {
      */
     @Override
     public Material save(Material material) {
-        log.debug("Request to save Material : {}", material);        Material result = materialRepository.save(material);
+        log.debug("Request to save Material : {}", material);
+        Material result = materialRepository.save(material);
         materialSearchRepository.save(result);
         return result;
     }
@@ -98,5 +113,19 @@ public class MaterialServiceImpl implements MaterialService {
     @Transactional(readOnly = true)
     public Page<Material> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Materials for query {}", query);
-        return materialSearchRepository.search(queryStringQuery(query), pageable);    }
+        // SearchQuery query2 = new NativeSearchQueryBuilder()
+        // .withQuery(queryStringQuery(query.endsWith("*") ? query : new StringBuilder(query).append("*").toString()))
+        // .withSort(SortBuilders.fieldSort("partNumber.keyword").order(SortOrder.ASC))
+        // .withPageable(pageable)
+        // .build();
+        // return materialSearchRepository.search(query2);
+        return materialSearchRepository.search(queryStringQuery(query.endsWith("*") ? query : new StringBuilder(query).append("*").toString()), pageable);
+    }
+
+    @Override
+    public void rebuildIndex() {
+        template.deleteIndex(Material.class);
+        List<Material> items = materialRepository.findAll();
+        items.stream().forEach(d -> materialSearchRepository.save(d));
+    }
 }

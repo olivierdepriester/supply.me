@@ -13,16 +13,17 @@
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
             	<div class="input-group w-100 mt-3">
-					<label class="criteria-label" jhiTranslate="supplyMeApp.demand.project" for="field_status">Project</label>
+					<label class="criteria-label" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
 					<select class="form-control" id="field_project" name="project" [(ngModel)]="searchCriteria.projectId" >
                         <option [ngValue]="null"></option>
                         <option [ngValue]="projectOption.id" *ngFor="let projectOption of projects">{{projectOption.code + ' - ' + projectOption.description }}</option>
                     </select>
-                    <label class="criteria-label" jhiTranslate="supplyMeApp.demand.material" for="field_status">Material</label>
-					<select class="form-control" id="field_material" name="material" [(ngModel)]="searchCriteria.materialId" >
+                    <label class="criteria-label" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
+                    <jhi-material-selector id="field_material" style="width:45%"></jhi-material-selector>
+					<!-- <select class="form-control" id="field_material" name="material" [(ngModel)]="searchCriteria.materialId" >
                         <option [ngValue]="null"></option>
                         <option [ngValue]="materialOption.id" *ngFor="let materialOption of materials">{{materialOption.partNumber + ' - ' + materialOption.description }}</option>
-                    </select>
+                    </select> -->
             	</div>
             	<div class="input-group mt-3">
 					<label class="criteria-label" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>

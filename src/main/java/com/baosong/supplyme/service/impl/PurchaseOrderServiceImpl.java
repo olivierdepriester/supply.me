@@ -107,13 +107,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             }
         }
 
-        for (PurchaseOrderLine line : persistedPurchaseOrder.getPurchaseOrderLines()) {
-            line.purchaseOrder(purchaseOrder);
+        for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLines()) {
+            if (line.getId() == null) {
+                persistedPurchaseOrder.getPurchaseOrderLines().add(line);
+                line.purchaseOrder(persistedPurchaseOrder);
+            } else {
+                PurchaseOrderLine persistedLine = persistedPurchaseOrder.getPurchaseOrderLines().stream()
+                    .filter(l -> l.getId().equals(line.getId()))
+                    .findAny().get();
+                persistedLine.quantity(line.getQuantity()).orderPrice(line.getOrderPrice());
+            }
+
             if (line.getDemand() != null) {
                 // Set demand status to ORDERED
                 line.setDemand(demandService.changeStatus(line.getDemand().getId(), DemandStatus.ORDERED));
                 double quantityOrdered = demandService.getQuantityOrderedFromPO(line.getDemand().getId());
-                line.getDemand().setQuantityOrdered(quantityOrdered + line.getQuantity());
+                line.getDemand().setQuantityOrdered(quantityOrdered);
                 demandService.save(line.getDemand());
             }
         }

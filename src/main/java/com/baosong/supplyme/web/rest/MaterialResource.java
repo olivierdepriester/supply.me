@@ -145,4 +145,10 @@ public class MaterialResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @PostMapping("/_search/materials/rebuild")
+    @Timed
+    public ResponseEntity<Void> rebuildIndex() {
+        materialService.rebuildIndex();
+		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "0")).build();
+    }
 }

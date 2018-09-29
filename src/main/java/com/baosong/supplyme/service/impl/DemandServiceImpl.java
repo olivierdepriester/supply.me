@@ -154,13 +154,17 @@ public class DemandServiceImpl implements DemandService {
     			.collect(Collectors.toList());
     }
 
+    /**
+     * Search demands allowed to be added to a purchase order
+     *
+     * @param query search term
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<Demand> searchDemandsToPurchase(String query, Pageable pageable) {
-        // QueryBuilders.matchQuery(Demand_.status.toString(), DemandStatus.APPROVED);
         BoolQueryBuilder booleanQueryBuilder = QueryBuilders.boolQuery()
             .must(QueryBuilders.termQuery("canBePurchased", true))
-            .must(QueryBuilders.queryStringQuery(query));
+            .must(QueryBuilders.queryStringQuery(query.endsWith("*")? query.toLowerCase(): new StringBuilder(query.toLowerCase()).append("*").toString() ));
         return this.demandSearchRepository.search(booleanQueryBuilder, pageable);
     }
 

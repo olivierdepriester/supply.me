@@ -231,5 +231,16 @@
         "idexists": "A new {{ entityName }} cannot already have an ID",
         "idnull": "Invalid ID"
     },
-    "footer": "This is your footer"
+    "footer": "This is your footer",
+    "selector": {
+        "demand": {
+            "placeholder": "Type here to select a demand"
+        },
+        "material": {
+            "placeholder": "Type here to select a material"
+        },
+        "project": {
+            "placeholder": "Type here to select a project"
+        }
+    }
 }

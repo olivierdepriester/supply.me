@@ -1,22 +1,22 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { DemandService } from 'app/entities/demand/demand.service';
-import * as dataModel from '../../../shared/model/demand.model';
-import { DemandSelectorItem } from './';
+import { MaterialService } from 'app/entities/material/material.service';
+import * as dataModel from '../../../shared/model/material.model';
+import { MaterialSelectorItem } from './';
 import { HttpResponse } from '@angular/common/http';
 import { SELECTOR_SIZE } from 'app/app.constants';
 import { AutoComplete } from 'primeng/primeng';
 
 @Component({
-    selector: 'jhi-demand-selector',
-    templateUrl: './demand-selector.component.html',
+    selector: 'jhi-material-selector',
+    templateUrl: './material-selector.component.html',
     styles: []
 })
-export class DemandSelectorComponent implements OnInit {
-    filteredItems: DemandSelectorItem[];
-    @Input() selectedData: dataModel.IDemand;
+export class MaterialSelectorComponent implements OnInit {
+    filteredItems: MaterialSelectorItem[];
+    @Input() selectedData: dataModel.IMaterial;
     @ViewChild(AutoComplete) private autoComplete: AutoComplete;
     private lastQuery = '';
-    constructor(private service: DemandService) {}
+    constructor(private service: MaterialService) {}
 
     ngOnInit() {}
 
@@ -26,11 +26,11 @@ export class DemandSelectorComponent implements OnInit {
     }
 
     private search() {
-        // Search demands that can be transformed into a purchase
+        // Search material
         this.service
-            .searchPurchasable({ query: this.lastQuery, size: SELECTOR_SIZE })
-            .subscribe((res: HttpResponse<dataModel.IDemand[]>) => {
-                this.filteredItems = Array.from(res.body, demand => new DemandSelectorItem(demand));
+            .search({ query: this.lastQuery, size: SELECTOR_SIZE, sort: ['partNumber.keyword,asc', 'id'] })
+            .subscribe((res: HttpResponse<dataModel.IMaterial[]>) => {
+                this.filteredItems = Array.from(res.body, data => new MaterialSelectorItem(data));
             });
     }
 

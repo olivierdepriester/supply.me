@@ -2,7 +2,7 @@ import { IMaterial } from '../../shared/model/material.model';
 import { IProject } from '../../shared/model/project.model';
 import { MaterialService } from '../material';
 import { ProjectService } from '../project';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -12,6 +12,7 @@ import { IDemand, DemandSearchCriteria, DemandStatus } from 'app/shared/model/de
 import { Principal } from 'app/core';
 import { DemandService } from './demand.service';
 import { faShareSquare, faThumbsUp, faThumbsDown, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { MaterialSelectorComponent } from 'app/entities/component/material-selector';
 
 @Component({
     selector: 'jhi-demand',
@@ -22,7 +23,7 @@ export class DemandComponent implements OnInit, OnDestroy {
     demands: IDemand[];
     currentAccount: any;
     eventSubscriber: Subscription;
-    searchCriteria: DemandSearchCriteria = {};
+    searchCriteria: DemandSearchCriteria = new DemandSearchCriteria();
     materials: IMaterial[];
     projects: IProject[];
     faShareSquare = faShareSquare;
@@ -31,9 +32,9 @@ export class DemandComponent implements OnInit, OnDestroy {
     faShoppingCart = faShoppingCart;
     authorities: boolean[] = new Array();
 
+    @ViewChild(MaterialSelectorComponent) private materialSelector: MaterialSelectorComponent;
     constructor(
         private demandService: DemandService,
-        private materialService: MaterialService,
         private projectService: ProjectService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
@@ -56,9 +57,7 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     search(query) {
-        if (!query) {
-            return this.clear();
-        }
+        this.searchCriteria.materialId = this.materialSelector.selectedData.id;
         this.demandService
             .search(this.searchCriteria)
             .subscribe((res: HttpResponse<IDemand[]>) => (this.demands = res.body), (res: HttpErrorResponse) => this.onError(res.message));
@@ -101,13 +100,13 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        // Material list loading
-        this.materialService
-            .query()
-            .subscribe(
-                (res: HttpResponse<IMaterial[]>) => (this.materials = res.body),
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+        // // Material list loading
+        // this.materialService
+        //     .query()
+        //     .subscribe(
+        //         (res: HttpResponse<IMaterial[]>) => (this.materials = res.body),
+        //         (res: HttpErrorResponse) => this.onError(res.message)
+        //     );
         // Project list loading
         this.projectService
             .query()

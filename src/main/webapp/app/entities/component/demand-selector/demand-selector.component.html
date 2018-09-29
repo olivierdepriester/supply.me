@@ -1,5 +1,7 @@
 <div>
-    <p-autoComplete [suggestions]="results" (onClear)="onClear()" (onUnselect)="onUnselect()" (onSelect)="onSelect($event)" (completeMethod)="searchDemands($event)" [minLength]="3" [style]="{'width':'100%'}" [inputStyle]="{'width':'50%'}" field="displayedValue">
+    <p-autoComplete [suggestions]="filteredItems" (onClear)="onClear()" (onSelect)="onSelect($event)" (onFocus)="onFocus($event)"
+            (completeMethod)="searchData($event)" placeholder="{{'selector.demand.placeholder' | translate}}"
+            [minLength]="3" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" field="displayedValue">
         <ng-template let-demandItem pTemplate="item">
             <div>
                 <div>{{ demandItem.displayedValue }}</div>

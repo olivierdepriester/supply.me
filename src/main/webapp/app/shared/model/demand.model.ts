@@ -42,5 +42,15 @@ export class Demand implements IDemand {
 }
 
 export class DemandSearchCriteria {
-    constructor(public query?: string, public status?: DemandStatus, public materialId?: number, public projectId?: number) {}
+    constructor(
+        public query?: string,
+        public status?: DemandStatus,
+        public materialId?: number,
+        public material?: IMaterial,
+        public projectId?: number
+    ) {
+        if (material == null) {
+            material = {};
+        }
+    }
 }

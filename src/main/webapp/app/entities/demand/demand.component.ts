@@ -1,8 +1,8 @@
-import { IMaterial } from '../../shared/model/material.model';
+import { IMaterial, Material } from '../../shared/model/material.model';
 import { IProject } from '../../shared/model/project.model';
 import { MaterialService } from '../material';
 import { ProjectService } from '../project';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,6 @@ import { IDemand, DemandSearchCriteria, DemandStatus } from 'app/shared/model/de
 import { Principal } from 'app/core';
 import { DemandService } from './demand.service';
 import { faShareSquare, faThumbsUp, faThumbsDown, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
-import { MaterialSelectorComponent } from 'app/entities/component/material-selector';
 
 @Component({
     selector: 'jhi-demand',
@@ -32,7 +31,6 @@ export class DemandComponent implements OnInit, OnDestroy {
     faShoppingCart = faShoppingCart;
     authorities: boolean[] = new Array();
 
-    @ViewChild(MaterialSelectorComponent) private materialSelector: MaterialSelectorComponent;
     constructor(
         private demandService: DemandService,
         private projectService: ProjectService,
@@ -57,7 +55,11 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     search(query) {
-        this.searchCriteria.materialId = this.materialSelector.selectedData.id;
+        if (this.searchCriteria.material != null) {
+            this.searchCriteria.materialId = this.searchCriteria.material.id;
+        } else {
+            this.searchCriteria.materialId = null;
+        }
         this.demandService
             .search(this.searchCriteria)
             .subscribe((res: HttpResponse<IDemand[]>) => (this.demands = res.body), (res: HttpErrorResponse) => this.onError(res.message));
@@ -67,6 +69,7 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.searchCriteria.query = '';
         this.searchCriteria.status = DemandStatus.NEW;
         this.searchCriteria.materialId = null;
+        this.searchCriteria.material = null;
         this.searchCriteria.projectId = null;
         this.loadAll();
     }
@@ -100,14 +103,6 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        // // Material list loading
-        // this.materialService
-        //     .query()
-        //     .subscribe(
-        //         (res: HttpResponse<IMaterial[]>) => (this.materials = res.body),
-        //         (res: HttpErrorResponse) => this.onError(res.message)
-        //     );
-        // Project list loading
         this.projectService
             .query()
             .subscribe(

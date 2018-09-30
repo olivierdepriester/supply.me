@@ -1,18 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import * as moment from 'moment';
-import { DATE_FORMAT } from 'app/shared/constants/input.constants';
-import { JhiAlertService } from 'ng-jhipster';
-
-import { IDemand } from 'app/shared/model/demand.model';
-import { DemandService } from './demand.service';
-import { IMaterial } from 'app/shared/model/material.model';
-import { MaterialService } from 'app/entities/material';
-import { IProject } from 'app/shared/model/project.model';
-import { ProjectService } from 'app/entities/project';
 import { IUser, UserService } from 'app/core';
+import { ProjectService } from 'app/entities/project';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { IDemand } from 'app/shared/model/demand.model';
+import { IMaterial } from 'app/shared/model/material.model';
+import { IProject } from 'app/shared/model/project.model';
+import * as moment from 'moment';
+import { JhiAlertService } from 'ng-jhipster';
+import { Observable } from 'rxjs';
+import { DemandService } from './demand.service';
 
 @Component({
     selector: 'jhi-demand-update',
@@ -29,11 +27,10 @@ export class DemandUpdateComponent implements OnInit {
     users: IUser[];
     expectedDate: string;
     creationDate: string;
+    @ViewChild('editForm') editForm: HTMLFormElement;
 
     constructor(
-        private jhiAlertService: JhiAlertService,
         private demandService: DemandService,
-        private materialService: MaterialService,
         private projectService: ProjectService,
         private userService: UserService,
         private activatedRoute: ActivatedRoute
@@ -44,24 +41,13 @@ export class DemandUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ demand }) => {
             this.demand = demand;
         });
-        this.materialService.query().subscribe(
-            (res: HttpResponse<IMaterial[]>) => {
-                this.materials = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.projectService.query().subscribe(
-            (res: HttpResponse<IProject[]>) => {
-                this.projects = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+
+        this.projectService.query().subscribe((res: HttpResponse<IProject[]>) => {
+            this.projects = res.body;
+        });
+        this.userService.query().subscribe((res: HttpResponse<IUser[]>) => {
+            this.users = res.body;
+        });
     }
 
     previousState() {
@@ -91,8 +77,11 @@ export class DemandUpdateComponent implements OnInit {
         this.isSaving = false;
     }
 
-    private onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
+    onValidate(event: boolean) {
+        console.log(`onValidate ${event}`);
+        console.log(this.demand);
+        if (this.demand.material != null && this.demand.project != null) {
+        }
     }
 
     trackMaterialById(index: number, item: IMaterial) {

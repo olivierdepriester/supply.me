@@ -1,22 +1,37 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+import { Component, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { SELECTOR_SIZE } from 'app/app.constants';
 import { MaterialService } from 'app/entities/material/material.service';
+import { AutoComplete } from 'primeng/primeng';
 import * as dataModel from '../../../shared/model/material.model';
 import { MaterialSelectorItem } from './';
-import { HttpResponse } from '@angular/common/http';
-import { SELECTOR_SIZE } from 'app/app.constants';
-import { AutoComplete } from 'primeng/primeng';
 
 @Component({
     selector: 'jhi-material-selector',
     templateUrl: './material-selector.component.html',
-    styles: []
+    styles: [],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MaterialSelectorComponent),
+            multi: true
+        }
+    ]
 })
-export class MaterialSelectorComponent implements OnInit {
+export class MaterialSelectorComponent implements OnInit, ControlValueAccessor {
     filteredItems: MaterialSelectorItem[];
+    selectedItem: MaterialSelectorItem;
     @Input() selectedData: dataModel.IMaterial;
+
     @ViewChild(AutoComplete) private autoComplete: AutoComplete;
     private lastQuery = '';
+
     constructor(private service: MaterialService) {}
+
+    validateForm(): boolean {
+        return true;
+    }
 
     ngOnInit() {}
 
@@ -35,7 +50,7 @@ export class MaterialSelectorComponent implements OnInit {
     }
 
     onSelect(event) {
-        this.selectedData = event.data;
+        this.value = event.data;
     }
 
     onFocus(event: any) {
@@ -50,6 +65,56 @@ export class MaterialSelectorComponent implements OnInit {
     }
 
     onClear() {
-        this.selectedData = null;
+        this.value = null;
     }
+
+    get value(): any {
+        return this.selectedData;
+    }
+
+    // set accessor including call the onchange callback
+    set value(v: any) {
+        if (v !== this.selectedData) {
+            this.selectedData = v;
+            this.onChange(v);
+        }
+    }
+
+    /**
+     * Invoked when the model has been changed
+     */
+    onChange: (_: any) => void = (_: any) => {};
+
+    /**
+     * Invoked when the model has been touched
+     */
+    onTouched: () => void = () => {};
+
+    writeValue(value: any): void {
+        if (value !== undefined && value != null) {
+            this.value = value;
+            this.selectedItem = new MaterialSelectorItem(value);
+        } else {
+            this.value = null;
+            this.selectedItem = null;
+        }
+    }
+
+    /**
+     * Registers a callback function that should be called when the control's value changes in the UI.
+     * @param fn
+     */
+    registerOnChange(fn: any): void {
+        this.onChange = fn;
+    }
+
+    /**
+     * Registers a callback function that should be called when the control receives a blur event.
+     * @param fn
+     */
+    registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    setDisabledState?(isDisabled: boolean): void {}
 }

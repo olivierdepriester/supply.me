@@ -19,7 +19,7 @@
                         <option [ngValue]="projectOption.id" *ngFor="let projectOption of projects">{{projectOption.code + ' - ' + projectOption.description }}</option>
                     </select>
                     <label class="criteria-label" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
-                    <jhi-material-selector id="field_material" style="width:45%"></jhi-material-selector>
+                    <jhi-material-selector id="field_material" name="material" style="width:45%" [(ngModel)]="searchCriteria.material" ></jhi-material-selector>
 					<!-- <select class="form-control" id="field_material" name="material" [(ngModel)]="searchCriteria.materialId" >
                         <option [ngValue]="null"></option>
                         <option [ngValue]="materialOption.id" *ngFor="let materialOption of materials">{{materialOption.partNumber + ' - ' + materialOption.description }}</option>
@@ -70,16 +70,16 @@
             <tr *ngFor="let demand of demands ;trackBy: trackId">
             	<td><input type="checkbox" attr.data-rowid="{{demand.id}}"/></td>
                 <td><a [routerLink]="['/demand', demand.id, 'view' ]">{{demand.id}}</a></td>
-                <td>
-                    <div *ngIf="demand.material">
-                        <a [routerLink]="['../material', demand.material?.id, 'view' ]" >{{demand.material?.partNumber}}</a>
+                <td class="text-center">
+                    <div *ngIf="demand.material" title="{{ demand.material?.partNumber + ' - ' + demand.material?.name + '\n' + demand.material?.description }}">
+                        <a [routerLink]="['../material', demand.material?.id, 'view' ]">{{demand.material?.partNumber}}</a>
                     </div>
                 </td>
                 <td class="text-right">
                     <span class="numeric">{{demand.quantity}}</span>
                 </td>
                 <td>
-                    <div *ngIf="demand.project">
+                    <div *ngIf="demand.project" title="{{ demand.project?.code + ' - ' + demand.project?.description }}">
                         <a [routerLink]="['../project', demand.project?.id, 'view' ]" >{{demand.project?.code}}</a>
                     </div>
                 </td>

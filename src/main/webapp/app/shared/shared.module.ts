@@ -3,13 +3,14 @@ import { NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 
 import { NgbDateMomentAdapter } from './util/datepicker-adapter';
 import { SupplyMeSharedLibsModule, SupplyMeSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective } from './';
+import { SelectorRequiredDirective } from 'app/entities/component/selector-required.directive';
 
 @NgModule({
     imports: [SupplyMeSharedLibsModule, SupplyMeSharedCommonModule],
-    declarations: [JhiLoginModalComponent, HasAnyAuthorityDirective],
+    declarations: [JhiLoginModalComponent, HasAnyAuthorityDirective, SelectorRequiredDirective],
     providers: [{ provide: NgbDateAdapter, useClass: NgbDateMomentAdapter }],
     entryComponents: [JhiLoginModalComponent],
-    exports: [SupplyMeSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective],
+    exports: [SupplyMeSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective, SelectorRequiredDirective],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SupplyMeSharedModule {}

@@ -5,6 +5,10 @@ export class MaterialSelectorItem {
     public id?: number;
     constructor(public data?: dataModel.IMaterial) {
         this.id = this.data.id;
-        this.displayedValue = `${data.partNumber} - ${data.name}`;
+        if (data != null) {
+            this.displayedValue = `${data.partNumber} - ${data.name}`;
+        } else {
+            this.displayedValue = 'None';
+        }
     }
 }

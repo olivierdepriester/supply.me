@@ -11,12 +11,12 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
-                    <select class="form-control" id="field_material" name="material" required [(ngModel)]="demand.material" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="materialOption.id === demand.material?.id ? demand.material : materialOption" *ngFor="let materialOption of materials; trackBy: trackMaterialById">
-                            {{materialOption.partNumber + ' - ' + materialOption.name }}
-                        </option>
-                    </select>
+                    <jhi-material-selector required id="field_material" name="material" [(ngModel)]="demand.material" style="display: block"></jhi-material-selector>
+                    <div [hidden]="!(editForm.controls.material?.dirty && editForm.controls.material?.invalid)">
+                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.quantity" for="field_quantity">Quantity</label>

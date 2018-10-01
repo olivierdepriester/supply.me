@@ -19,6 +19,16 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
+                    <jhi-project-selector required id="field_project" name="project" [(ngModel)]="demand.project" style="display: block"></jhi-project-selector>
+                    <div [hidden]="!(editForm.controls.project?.dirty && editForm.controls.project?.invalid)">
+                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.quantity" for="field_quantity">Quantity</label>
                     <input type="number" class="form-control" name="quantity" id="field_quantity"
                         [(ngModel)]="demand.quantity" required/>
@@ -39,13 +49,6 @@
                         <input id="field_expectedDate" type="date" class="form-control" name="expectedDate" [(ngModel)]="expectedDate"
                         />
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
-                    <select required class="form-control" id="field_project" name="project" [(ngModel)]="demand.project" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="projectOption.id === demand.project?.id ? demand.project : projectOption" *ngFor="let projectOption of projects; trackBy: trackProjectById">{{projectOption.code + ' - ' + projectOption.description}}</option>
-                    </select>
                 </div>
             </div>
             <div>

@@ -1,7 +1,3 @@
-import { IMaterial, Material } from '../../shared/model/material.model';
-import { IProject } from '../../shared/model/project.model';
-import { MaterialService } from '../material';
-import { ProjectService } from '../project';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
@@ -22,9 +18,8 @@ export class DemandComponent implements OnInit, OnDestroy {
     demands: IDemand[];
     currentAccount: any;
     eventSubscriber: Subscription;
+
     searchCriteria: DemandSearchCriteria = new DemandSearchCriteria();
-    materials: IMaterial[];
-    projects: IProject[];
     faShareSquare = faShareSquare;
     faThumbsUp = faThumbsUp;
     faThumbsDown = faThumbsDown;
@@ -33,7 +28,6 @@ export class DemandComponent implements OnInit, OnDestroy {
 
     constructor(
         private demandService: DemandService,
-        private projectService: ProjectService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
         private activatedRoute: ActivatedRoute,
@@ -55,23 +49,16 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     search(query) {
-        if (this.searchCriteria.material != null) {
-            this.searchCriteria.materialId = this.searchCriteria.material.id;
-        } else {
-            this.searchCriteria.materialId = null;
-        }
         this.demandService
-            .search(this.searchCriteria)
+            .search(this.searchCriteria.getQuery())
             .subscribe((res: HttpResponse<IDemand[]>) => (this.demands = res.body), (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
         this.searchCriteria.query = '';
-        this.searchCriteria.status = DemandStatus.NEW;
-        this.searchCriteria.materialId = null;
+        this.searchCriteria.status = null;
         this.searchCriteria.material = null;
-        this.searchCriteria.projectId = null;
-        this.loadAll();
+        this.searchCriteria.project = null;
     }
 
     sendToApproval(demand: IDemand) {
@@ -103,12 +90,6 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.projectService
-            .query()
-            .subscribe(
-                (res: HttpResponse<IProject[]>) => (this.projects = res.body),
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
         // Current user
         this.principal.identity().then(account => {
             this.currentAccount = account;
@@ -117,7 +98,6 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.principal.hasAuthority('ROLE_APPROVAL_LVL1').then(value => (this.authorities['ROLE_APPROVAL_LVL1'] = value));
         this.principal.hasAuthority('ROLE_APPROVAL_LVL2').then(value => (this.authorities['ROLE_APPROVAL_LVL2'] = value));
 
-        this.loadAll();
         this.registerChangeInDemands();
     }
 

@@ -183,11 +183,11 @@ public class DemandServiceImpl implements DemandService {
             booleanQueryBuilder.must(QueryBuilders.termQuery("project.id", projectId));
         }
         if (demandStatus != null) {
-            booleanQueryBuilder.must(QueryBuilders.termQuery("status", demandStatus));
+            booleanQueryBuilder.must(QueryBuilders.matchQuery("status", demandStatus.toString()));
         }
         return StreamSupport
-    			.stream(demandSearchRepository.search(booleanQueryBuilder).spliterator(), false)
-                .collect(Collectors.toList());
+            .stream(demandSearchRepository.search(booleanQueryBuilder).spliterator(), false)
+            .collect(Collectors.toList());
     }
 
     @Override

@@ -14,20 +14,14 @@
             <form name="searchForm" class="form-inline">
             	<div class="input-group w-100 mt-3">
 					<label class="criteria-label" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
-					<select class="form-control" id="field_project" name="project" [(ngModel)]="searchCriteria.projectId" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="projectOption.id" *ngFor="let projectOption of projects">{{projectOption.code + ' - ' + projectOption.description }}</option>
-                    </select>
+                    <jhi-project-selector id="field_project" name="project" style="width:45%" [(ngModel)]="searchCriteria.project" ></jhi-project-selector>
                     <label class="criteria-label" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
                     <jhi-material-selector id="field_material" name="material" style="width:45%" [(ngModel)]="searchCriteria.material" ></jhi-material-selector>
-					<!-- <select class="form-control" id="field_material" name="material" [(ngModel)]="searchCriteria.materialId" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="materialOption.id" *ngFor="let materialOption of materials">{{materialOption.partNumber + ' - ' + materialOption.description }}</option>
-                    </select> -->
             	</div>
             	<div class="input-group mt-3">
 					<label class="criteria-label" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>
             		<select class="form-control" name="status" [(ngModel)]="searchCriteria.status" id="field_status" >
+                        <option value=""></option>
                         <option value="NEW">{{'supplyMeApp.DemandStatus.NEW' | translate}}</option>
                         <option value="WAITING_FOR_APPROVAL">{{'supplyMeApp.DemandStatus.WAITING_FOR_APPROVAL' | translate}}</option>
                         <option value="APPROVED">{{'supplyMeApp.DemandStatus.APPROVED' | translate}}</option>

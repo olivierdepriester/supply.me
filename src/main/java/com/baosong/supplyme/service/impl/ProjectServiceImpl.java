@@ -98,7 +98,11 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> search(String query) {
         log.debug("Request to search Projects for query {}", query);
         return StreamSupport
-            .stream(projectSearchRepository.search(queryStringQuery(query)).spliterator(), false)
+            .stream(projectSearchRepository.search(
+                queryStringQuery(
+                    query.endsWith("*") ? query.toLowerCase() : new StringBuilder(query.toLowerCase()).append("*").toString()
+                    )).spliterator(),
+                false)
             .collect(Collectors.toList());
     }
 }

@@ -5,6 +5,7 @@ import { SupplyMeSharedModule } from 'app/shared';
 import { SupplyMeAdminModule } from 'app/admin/admin.module';
 import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
 import { MaterialSelectorModule } from 'app/entities/component/material-selector';
+import { ProjectSelectorModule } from 'app/entities/component/project-selector';
 import {
     DemandComponent,
     DemandDetailComponent,
@@ -18,7 +19,14 @@ import {
 const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
 
 @NgModule({
-    imports: [SupplyMeSharedModule, SupplyMeAdminModule, AutoCompleteModule, MaterialSelectorModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [
+        SupplyMeSharedModule,
+        SupplyMeAdminModule,
+        AutoCompleteModule,
+        MaterialSelectorModule,
+        ProjectSelectorModule,
+        RouterModule.forChild(ENTITY_STATES)
+    ],
     declarations: [DemandComponent, DemandDetailComponent, DemandUpdateComponent, DemandDeleteDialogComponent, DemandDeletePopupComponent],
     entryComponents: [DemandComponent, DemandUpdateComponent, DemandDeleteDialogComponent, DemandDeletePopupComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

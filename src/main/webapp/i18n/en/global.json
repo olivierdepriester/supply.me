@@ -241,6 +241,10 @@
         },
         "project": {
             "placeholder": "Type here to select a project"
+        },
+        "supplier": {
+            "placeholder": "Type here to select a supplier"
         }
+
     }
 }

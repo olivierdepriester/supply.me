@@ -31,10 +31,7 @@ import { SupplyMeMutablePropertiesModule } from './mutable-properties/mutable-pr
         SupplyMeMutablePropertiesModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
-    declarations: [],
-    entryComponents: [],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    exports: []
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SupplyMeEntityModule {}

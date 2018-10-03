@@ -28,31 +28,29 @@
     <div class="table-responsive" *ngIf="purchaseOrders">
         <table class="table table-striped">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <tr class="text-center" jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
             <th jhiSortBy="code"><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="supplier.id"><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="expectedDate"><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">Expected Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="status"><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.purchaseOrder.creationDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="supplier.id"><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="creationUser.id"><span jhiTranslate="supplyMeApp.purchaseOrder.creationUser">Creation User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
             <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let purchaseOrder of purchaseOrders ;trackBy: trackId">
-                <td><a [routerLink]="['/purchase-order', purchaseOrder.id, 'view' ]">{{purchaseOrder.id}}</a></td>
-                <td>{{purchaseOrder.code}}</td>
-                <td>{{purchaseOrder.expectedDate | date:'medium'}}</td>
-                <td jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</td>
-                <td>{{purchaseOrder.creationDate | date:'medium'}}</td>
+                <td class="text-center"><a [routerLink]="['/purchase-order', purchaseOrder.id, 'view' ]">{{purchaseOrder.code}}</a></td>
                 <td>
                     <div *ngIf="purchaseOrder.supplier">
-                        <a [routerLink]="['../supplier', purchaseOrder.supplier?.id, 'view' ]" >{{purchaseOrder.supplier?.id}}</a>
+                        <a [routerLink]="['../supplier', purchaseOrder.supplier?.id, 'view' ]" >{{purchaseOrder.supplier?.referenceNumber + ' - ' + purchaseOrder.supplier?.name}}</a>
                     </div>
                 </td>
+                <td class="text-center">{{purchaseOrder.expectedDate | dateFormat }}</td>
+                <td jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</td>
+                <td class="text-center">{{purchaseOrder.creationDate | datetimeFormat }}</td>
                 <td>
-                    {{purchaseOrder.creationUser?.id}}
+                    {{purchaseOrder.creationUser?.lastName + ' ' + purchaseOrder.creationUser?.firstName }}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

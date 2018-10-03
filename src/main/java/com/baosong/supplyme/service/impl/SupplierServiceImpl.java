@@ -98,5 +98,8 @@ public class SupplierServiceImpl implements SupplierService {
     @Transactional(readOnly = true)
     public Page<Supplier> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Suppliers for query {}", query);
-        return supplierSearchRepository.search(queryStringQuery(query), pageable);    }
+        return supplierSearchRepository.search(queryStringQuery(
+            query.endsWith("*") ? query.toLowerCase(): new StringBuilder(query.toLowerCase()).append('*').toString()
+            ), pageable);
+    }
 }

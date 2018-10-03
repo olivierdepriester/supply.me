@@ -43,8 +43,10 @@ public interface PurchaseOrderService {
      * Delete the "id" purchaseOrder.
      *
      * @param id the id of the entity
+     * @exception ServiceException
+     *
      */
-    void delete(Long id);
+    void delete(Long id) throws ServiceException;
 
     /**
      * Search for the purchaseOrder corresponding to the query.

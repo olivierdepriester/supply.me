@@ -1,14 +1,12 @@
 import * as dataModel from '../../../shared/model/material.model';
+import { AbstractSelectorItem } from 'app/entities/component/abstract-selector';
 
-export class MaterialSelectorItem {
-    public displayedValue?: string;
-    public id?: number;
+export class MaterialSelectorItem extends AbstractSelectorItem {
+    public displayValue: string;
+    public description: string;
     constructor(public data?: dataModel.IMaterial) {
-        this.id = this.data.id;
-        if (data != null) {
-            this.displayedValue = `${data.partNumber} - ${data.name}`;
-        } else {
-            this.displayedValue = 'None';
-        }
+        super(data);
+        this.displayValue = `${data.partNumber} - ${data.name}`;
+        this.description = data.description;
     }
 }

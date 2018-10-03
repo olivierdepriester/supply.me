@@ -9,6 +9,7 @@ import com.baosong.supplyme.web.rest.errors.InternalServerErrorException;
 import com.baosong.supplyme.web.rest.util.HeaderUtil;
 import com.baosong.supplyme.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -135,8 +136,12 @@ public class PurchaseOrderResource {
     @Timed
     public ResponseEntity<Void> deletePurchaseOrder(@PathVariable Long id) {
         log.debug("REST request to delete PurchaseOrder : {}", id);
-        purchaseOrderService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        try {
+            purchaseOrderService.delete(id);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        } catch (ServiceException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     /**

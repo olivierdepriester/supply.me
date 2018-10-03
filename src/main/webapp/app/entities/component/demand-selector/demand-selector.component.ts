@@ -1,55 +1,31 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+import { Component, ViewChild } from '@angular/core';
+import { SELECTOR_SIZE } from 'app/app.constants';
+import { AbstractSelectorComponent } from 'app/entities/component/abstract-selector';
 import { DemandService } from 'app/entities/demand/demand.service';
+import { AutoComplete } from 'primeng/primeng';
+import { Observable } from 'rxjs';
 import * as dataModel from '../../../shared/model/demand.model';
 import { DemandSelectorItem } from './';
-import { HttpResponse } from '@angular/common/http';
-import { SELECTOR_SIZE } from 'app/app.constants';
-import { AutoComplete } from 'primeng/primeng';
 
 @Component({
     selector: 'jhi-demand-selector',
     templateUrl: './demand-selector.component.html',
     styles: []
 })
-export class DemandSelectorComponent implements OnInit {
-    filteredItems: DemandSelectorItem[];
-    @Input() selectedData: dataModel.IDemand;
+export class DemandSelectorComponent extends AbstractSelectorComponent<dataModel.IDemand, DemandSelectorItem> {
     @ViewChild(AutoComplete) private autoComplete: AutoComplete;
-    private lastQuery = '';
-    constructor(private service: DemandService) {}
 
-    ngOnInit() {}
-
-    searchData(event) {
-        this.lastQuery = event.query;
-        this.search();
+    protected getNew(data: dataModel.IDemand): DemandSelectorItem {
+        return new DemandSelectorItem(data);
     }
-
-    private search() {
-        // Search demands that can be transformed into a purchase
-        this.service
-            .searchPurchasable({ query: this.lastQuery, size: SELECTOR_SIZE })
-            .subscribe((res: HttpResponse<dataModel.IDemand[]>) => {
-                this.filteredItems = Array.from(res.body, demand => new DemandSelectorItem(demand));
-            });
+    protected searchServiceFunction(textQuery: string): Observable<HttpResponse<dataModel.IDemand[]>> {
+        return this.service.searchPurchasable({ query: textQuery, size: SELECTOR_SIZE });
     }
-
-    onSelect(event) {
-        this.selectedData = event.data;
+    protected getAutoCompleteComponent() {
+        return this.autoComplete;
     }
-
-    onFocus(event: any) {
-        if (this.filteredItems == null && this.lastQuery === '') {
-            // If no search before : focus send a search based on an empty query
-            this.search();
-        } else {
-            // Otherwise refresh the list content with the latest results
-            this.filteredItems = Array.from(this.filteredItems);
-        }
-        this.autoComplete.show();
-    }
-
-    onClear() {
-        this.selectedData = null;
+    constructor(private service: DemandService) {
+        super();
     }
 }

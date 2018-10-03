@@ -8,13 +8,13 @@
                 <dt><span jhiTranslate="supplyMeApp.demand.material">Material</span></dt>
                 <dd>
                     <div *ngIf="demand.material">
-                        <a [routerLink]="['/material', demand.material?.id, 'view']">{{demand.material?.partNumber + ' ' + demand.material?.name}}</a>
+                        <a [routerLink]="['/material', demand.material?.id, 'view']">{{demand.material?.partNumber + ' - ' + demand.material?.name}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.project">Project</span></dt>
                 <dd>
                     <div *ngIf="demand.project">
-                        <a [routerLink]="['/project', demand.project?.id, 'view']">{{demand.project?.code}}</a>
+                        <a [routerLink]="['/project', demand.project?.id, 'view']">{{demand.project?.code + ' - ' + demand.project?.description }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></dt>
@@ -63,8 +63,8 @@
                             </td>
                             <td><span jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + line.purchaseOrder.status}}">{{line.purchaseOrder.status}}</span> </td>
                             <td>{{ line.purchaseOrder.expectedDate | dateFormat }} </td>
-                            <td>{{ line.quantity }} </td>
-                            <td class="numeric">{{ line.orderPrice }} </td>
+                            <td class="numeric">{{ line.quantity }} </td>
+                            <td class="numeric">{{ line.orderPrice | currency:'CNY':'symbol-narrow':'1.0-3' }} </td>
                         </tr>
                     </tbody>
                 </table>

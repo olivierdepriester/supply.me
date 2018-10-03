@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
 import { DemandSelectorComponent } from './demand-selector.component';
 import { SupplyMeSharedCommonModule } from 'app/shared';
+import { AbstractSelectorModule } from 'app/entities/component/abstract-selector';
 @NgModule({
-    imports: [CommonModule, AutoCompleteModule, SupplyMeSharedCommonModule],
+    imports: [CommonModule, AutoCompleteModule, SupplyMeSharedCommonModule, AbstractSelectorModule],
     declarations: [DemandSelectorComponent],
     entryComponents: [DemandSelectorComponent],
     exports: [DemandSelectorComponent],

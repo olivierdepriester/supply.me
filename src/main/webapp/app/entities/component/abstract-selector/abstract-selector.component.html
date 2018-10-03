@@ -1,10 +1,10 @@
 <div>
     <p-autoComplete name="autoComplete" [(ngModel)]="selectedItem" [suggestions]="filteredItems" (onClear)="onClear()" (onSelect)="onSelect($event)" (onFocus)="onFocus($event)"
         (completeMethod)="searchData($event)" placeholder="{{'selector.project.placeholder' | translate}}"
-        [minLength]="3" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" field="displayValue">
+        [minLength]="3" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" field="displayedValue">
         <ng-template let-item pTemplate="item">
             <div>
-                <div title="{{ item.description }}">{{ item.displayValue }}</div>
+                <div title="{{ item.description }}">{{ item.displayedValue }}</div>
             </div>
         </ng-template>
     </p-autoComplete>

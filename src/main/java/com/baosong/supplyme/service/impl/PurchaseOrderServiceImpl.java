@@ -78,9 +78,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             persistedPurchaseOrder = purchaseOrder;
         } else {
             // Update -> Retrieve entity from database
-            persistedPurchaseOrder = findOne(purchaseOrder.getId()).get()
-                .expectedDate(purchaseOrder.getExpectedDate())
-                .supplier(purchaseOrder.getSupplier());
+            persistedPurchaseOrder = findOne(purchaseOrder.getId()).get().expectedDate(purchaseOrder.getExpectedDate())
+                    .supplier(purchaseOrder.getSupplier());
             // Gets the POLs ids remaining in the PO to save
             final Set<Long> purchaseOrderLineIdsPresent = purchaseOrder.getPurchaseOrderLines().stream()
                     .filter(pol -> pol.getId() != null).map(PurchaseOrderLine::getId).collect(Collectors.toSet());
@@ -108,19 +107,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
 
         for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLines()) {
-            if (line.getId() == null) {
-                persistedPurchaseOrder.getPurchaseOrderLines().add(line);
-                line.purchaseOrder(persistedPurchaseOrder);
-            } else {
-                PurchaseOrderLine persistedLine = persistedPurchaseOrder.getPurchaseOrderLines().stream()
-                    .filter(l -> l.getId().equals(line.getId()))
-                    .findAny().get();
-                persistedLine.quantity(line.getQuantity()).orderPrice(line.getOrderPrice());
+            line.purchaseOrder(persistedPurchaseOrder);
+            if (purchaseOrder.getId() != null) {
+                // If PO update : add new lines or update existing lines
+                if (line.getId() == null) {
+                    persistedPurchaseOrder.getPurchaseOrderLines().add(line);
+                } else {
+                    PurchaseOrderLine persistedLine = persistedPurchaseOrder.getPurchaseOrderLines().stream()
+                            .filter(l -> l.getId().equals(line.getId())).findAny().get();
+                    persistedLine.quantity(line.getQuantity()).orderPrice(line.getOrderPrice());
+                }
             }
 
             if (line.getDemand() != null) {
                 // Set demand status to ORDERED
                 line.setDemand(demandService.changeStatus(line.getDemand().getId(), DemandStatus.ORDERED));
+                /// Calculate the demand ordered quantity
                 double quantityOrdered = demandService.getQuantityOrderedFromPO(line.getDemand().getId());
                 line.getDemand().setQuantityOrdered(quantityOrdered);
                 demandService.save(line.getDemand());
@@ -163,9 +165,21 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      * @param id the id of the entity
      */
     @Override
-    public void delete(Long id) {
+    public void delete(Long id) throws ServiceException {
         log.debug("Request to delete PurchaseOrder : {}", id);
-        purchaseOrderRepository.deleteById(id);
+        PurchaseOrder purchaseOrder = findOne(id).get();
+        for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLines()) {
+            // Get demand
+            Demand demand = line.getDemand();
+            demand.setQuantityOrdered(demand.getQuantityOrdered() - line.getQuantity());
+            if (demand.getQuantityOrdered() <= 0) {
+                // If no quantity remaining --> status decrease
+                demand.setStatus(DemandStatus.APPROVED);
+            }
+            // Update line
+            demandService.save(demand);
+        }
+        purchaseOrderRepository.delete(purchaseOrder);
         purchaseOrderSearchRepository.deleteById(id);
     }
 

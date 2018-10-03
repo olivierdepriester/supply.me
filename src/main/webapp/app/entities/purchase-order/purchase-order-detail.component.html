@@ -9,9 +9,15 @@
                 <dd>
                     <span>{{purchaseOrder.code}}</span>
                 </dd>
+                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span></dt>
+                <dd>
+                    <div *ngIf="purchaseOrder.supplier">
+                        <a [routerLink]="['/supplier', purchaseOrder.supplier?.id, 'view']">{{purchaseOrder.supplier?.referenceNumber + ' - ' + purchaseOrder.supplier?.name}}</a>
+                    </div>
+                </dd>
                 <dt><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">Expected Date</span></dt>
                 <dd>
-                    <span>{{purchaseOrder.expectedDate}}</span>
+                    <span>{{purchaseOrder.expectedDate | dateFormat }}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span></dt>
                 <dd>
@@ -19,19 +25,39 @@
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.purchaseOrder.creationDate">Creation Date</span></dt>
                 <dd>
-                    <span>{{purchaseOrder.creationDate}}</span>
-                </dd>
-                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span></dt>
-                <dd>
-                    <div *ngIf="purchaseOrder.supplier">
-                        <a [routerLink]="['/supplier', purchaseOrder.supplier?.id, 'view']">{{purchaseOrder.supplier?.id}}</a>
-                    </div>
+                    <span>{{purchaseOrder.creationDate | datetimeFormat}}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.purchaseOrder.creationUser">Creation User</span></dt>
                 <dd>
-                    {{purchaseOrder.creationUser?.id}}
+                    {{purchaseOrder.creationUser?.lastName + ' ' + purchaseOrder.creationUser?.firstName}}
                 </dd>
             </dl>
+            <div class="table-responsive" *ngIf="purchaseOrder.purchaseOrderLines">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><span>#</span></th>
+                            <th class="text-center"><span jhiTranslate="supplyMeApp.material.partNumber">Material Part Number</span></th>
+                            <th class="text-center"><span jhiTranslate="supplyMeApp.material.name">Material Name</span></th>
+                            <th class="text-center"><span jhiTranslate="supplyMeApp.purchaseOrderLine.quantity">Quantity</span></th>
+                            <th class="text-center"><span jhiTranslate="supplyMeApp.purchaseOrderLine.orderPrice">Price</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let purchaseOrderLine of purchaseOrder.purchaseOrderLines" >
+                            <td class="text-right">{{ purchaseOrderLine.lineNumber }}</td>
+                            <td class="text-center">{{ purchaseOrderLine.demand.material.partNumber }}</td>
+                            <td>{{ purchaseOrderLine.demand.material.name }}</td>
+                            <td class="text-right">
+                                <span class="numeric">{{ purchaseOrderLine.quantity }}</span>
+                            </td>
+                            <td class="text-right" >
+                                <span class="numeric">{{ purchaseOrderLine.orderPrice | currency:'CNY':'symbol-narrow':'1.0-3' }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <button type="submit"
                     (click)="previousState()"

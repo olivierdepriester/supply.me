@@ -2,13 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
-import { DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { map } from 'rxjs/operators';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IPurchaseOrder, PurchaseOrderStatus } from 'app/shared/model/purchase-order.model';
-import { Demand } from 'app/shared/model/demand.model';
 
 type EntityResponseType = HttpResponse<IPurchaseOrder>;
 type EntityArrayResponseType = HttpResponse<IPurchaseOrder[]>;
@@ -25,7 +23,6 @@ export class PurchaseOrderService {
         purchaseOrder.status = PurchaseOrderStatus.NEW;
         purchaseOrder.code = '0000000000';
         const copy = this.convertDateFromClient(purchaseOrder);
-        console.log(copy);
         return this.http
             .post<IPurchaseOrder>(this.resourceUrl, copy, { observe: 'response' })
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
@@ -69,7 +66,6 @@ export class PurchaseOrderService {
             creationDate:
                 purchaseOrder.creationDate != null && purchaseOrder.creationDate.isValid() ? purchaseOrder.creationDate.toJSON() : null
         });
-        // copy.purchaseOrderLines[0].purchaseOrder = null;
         return copy;
     }
 

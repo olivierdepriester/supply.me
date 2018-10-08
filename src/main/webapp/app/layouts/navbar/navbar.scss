@@ -4,11 +4,11 @@ Navbar
 
 .navbar-version {
     font-size: 10px;
-    color: #ccc;
+    color: #fff;
 }
 
 .jh-navbar {
-    background-color: #353d47;
+    background-color: darkblue;
     padding: 0.2em 1em;
     .profile-image {
         margin: -10px 0px;
@@ -19,7 +19,7 @@ Navbar
     .dropdown-item.active,
     .dropdown-item.active:focus,
     .dropdown-item.active:hover {
-        background-color: #353d47;
+        background-color: darkblue;
     }
     .dropdown-toggle::after {
         margin-left: 0.15em;
@@ -34,7 +34,7 @@ Navbar
         font-weight: 400;
     }
     .jh-navbar-toggler {
-        color: #ccc;
+        color: #cccccc;
         font-size: 1.5em;
         padding: 10px;
         &:hover {
@@ -59,6 +59,11 @@ Navbar
     display: inline-block;
     vertical-align: middle;
 }
+.navbar-dark {
+    .nav-link {
+        color: #fff;
+    }
+}
 
 /* ==========================================================================
 Logo styles
@@ -68,10 +73,10 @@ Logo styles
         padding: 5px 15px;
         .logo-img {
             height: 45px;
-            width: 70px;
+            width: 150px;
             display: inline-block;
             vertical-align: middle;
-            background: url('../../../content/images/logo-jhipster.png') no-repeat center center;
+            background: url('../../../content/images/baosong.png') no-repeat center center;
             background-size: contain;
         }
     }

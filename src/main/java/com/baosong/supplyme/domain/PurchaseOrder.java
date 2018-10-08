@@ -56,7 +56,8 @@ public class PurchaseOrder implements Serializable {
     @JsonIgnoreProperties("")
     private User creationUser;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("lineNumber asc")
     List<PurchaseOrderLine> purchaseOrderLines;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

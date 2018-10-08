@@ -8,13 +8,11 @@ import { JhiAlertService } from 'ng-jhipster';
 
 import { IPurchaseOrder } from 'app/shared/model/purchase-order.model';
 import { PurchaseOrderService } from './purchase-order.service';
-import { ISupplier } from 'app/shared/model/supplier.model';
-import { SupplierService } from 'app/entities/supplier';
 import { IUser } from 'app/core';
 import { IDemand } from 'app/shared/model/demand.model';
 import { IPurchaseOrderLine, PurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
-import { DemandService } from 'app/entities/demand';
 import { DemandSelectorComponent } from 'app/entities/component/demand-selector';
+import { isNumber } from 'util';
 
 @Component({
     selector: 'jhi-purchase-order-update',
@@ -27,9 +25,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
     @ViewChild(DemandSelectorComponent) private demandSelector: DemandSelectorComponent;
 
     isSaving: boolean;
-    editField: string;
-
-    suppliers: ISupplier[];
 
     expectedDate: string;
     creationDate: string;
@@ -37,7 +32,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
     constructor(
         private jhiAlertService: JhiAlertService,
         private purchaseOrderService: PurchaseOrderService,
-        private supplierService: SupplierService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -63,13 +57,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         if (this._demand != null && !this.purchaseOrder.id) {
             this.addPurchaseOrderLineFromDemand(this._demand);
         }
-
-        this.supplierService.query().subscribe(
-            (res: HttpResponse<ISupplier[]>) => {
-                this.suppliers = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
     }
 
     previousState() {
@@ -79,11 +66,33 @@ export class PurchaseOrderUpdateComponent implements OnInit {
     save() {
         this.isSaving = true;
         this.purchaseOrder.expectedDate = moment(this.expectedDate, DATE_FORMAT);
-        if (this.purchaseOrder.id !== undefined) {
-            this.subscribeToSaveResponse(this.purchaseOrderService.update(this.purchaseOrder));
-        } else {
-            this.subscribeToSaveResponse(this.purchaseOrderService.create(this.purchaseOrder));
+        if (this.validate()) {
+            if (this.purchaseOrder.id !== undefined) {
+                this.subscribeToSaveResponse(this.purchaseOrderService.update(this.purchaseOrder));
+            } else {
+                this.subscribeToSaveResponse(this.purchaseOrderService.create(this.purchaseOrder));
+            }
         }
+        this.isSaving = false;
+    }
+
+    private validate(): boolean {
+        let result = true;
+        const errorMessages: any[] = new Array();
+        const wrongPrices = this.purchaseOrder.purchaseOrderLines.filter(l => isNaN(Number(l.orderPrice)));
+        const wrongQuantities = this.purchaseOrder.purchaseOrderLines.filter(l => isNaN(Number(l.quantity)));
+        if (wrongPrices.length !== 0) {
+            errorMessages.push({ key: 'error.purchaseOrder.validation.orderPrice', value: wrongPrices.map(l => l.lineNumber).join(',') });
+            result = false;
+        }
+        if (wrongQuantities.length !== 0) {
+            errorMessages.push({ key: 'error.purchaseOrder.validation.quantity', value: wrongQuantities.map(l => l.lineNumber).join(',') });
+            result = false;
+        }
+        if (!result) {
+            errorMessages.forEach(item => this.jhiAlertService.error(item.key, { value: item.value }, null));
+        }
+        return result;
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<IPurchaseOrder>>) {
@@ -97,19 +106,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-
-    private onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    changeValue(id: number, property: string, event: any) {
-        this.editField = event.target.textContent;
-        this.purchaseOrder.purchaseOrderLines[id][property] = this.editField;
-    }
-
-    trackSupplierById(index: number, item: ISupplier) {
-        return item.id;
     }
 
     trackLineById(index: number, item: IPurchaseOrderLine) {
@@ -132,7 +128,7 @@ export class PurchaseOrderUpdateComponent implements OnInit {
      *
      * @memberof PurchaseOrderUpdateComponent
      */
-    addPurchoseOrderLine() {
+    addPurchaseOrderLine() {
         if (this.demandSelector.selectedData != null) {
             this.addPurchaseOrderLineFromDemand(this.demandSelector.selectedData);
         }
@@ -146,10 +142,18 @@ export class PurchaseOrderUpdateComponent implements OnInit {
      */
     private addPurchaseOrderLineFromDemand(demand: IDemand) {
         const line = new PurchaseOrderLine();
-        line.lineNumber = this.purchaseOrder.purchaseOrderLines.length + 1;
+        line.lineNumber = this.getNewPOLineNumber();
         line.orderPrice = 0;
         line.quantity = demand.quantity - demand.quantityOrdered;
         line.demand = demand;
         this.purchaseOrder.purchaseOrderLines.push(line);
+    }
+
+    private getNewPOLineNumber(): number {
+        return (
+            this.purchaseOrder.purchaseOrderLines
+                .map(l => l.lineNumber)
+                .reduce((previous, current) => (current > previous ? current : previous), 0) + 1
+        );
     }
 }

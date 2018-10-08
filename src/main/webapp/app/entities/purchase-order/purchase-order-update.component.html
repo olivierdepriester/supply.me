@@ -3,6 +3,7 @@
         <form name="editForm" role="form" novalidate #editForm="ngForm">
             <h2 id="jhi-purchase-order-heading" jhiTranslate="supplyMeApp.purchaseOrder.home.createOrEditLabel">Create or edit a Purchase Order</h2>
             <div>
+                <jhi-alert></jhi-alert>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!purchaseOrder.id">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.code" for="field_code">Code</label>
@@ -14,16 +15,6 @@
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.supplier" for="field_supplier">Supplier</label>
                     <jhi-supplier-selector required id="field_supplier" name="supplier" [(ngModel)]="purchaseOrder.supplier" style="display: block"></jhi-supplier-selector>
                 </div>
-                <!-- <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.supplier" for="field_supplier">Supplier</label>
-                    <select class="form-control" id="field_supplier" name="supplier" [(ngModel)]="purchaseOrder.supplier" required >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="supplierOption.id === purchaseOrder.supplier?.id ? purchaseOrder.supplier : supplierOption"
-                        *ngFor="let supplierOption of suppliers; trackBy: trackSupplierById">
-                            {{supplierOption.referenceNumber}} - {{supplierOption.name}}
-                        </option>
-                    </select>
-                </div> -->
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.expectedDate" for="field_expectedDate">Expected Date</label>
                     <div class="d-flex">
@@ -42,9 +33,9 @@
                 </div>
             </div>
             <div>
-                <label style="float:left; margin:10px" jhiTranslate="supplyMeApp.purchaseOrder.demandToAdd">Demand to add :</label>
+                <label style="float:left; margin:10px" jhiTranslate="supplyMeApp.purchaseOrder.demand.add">Demand to add :</label>
                 <jhi-demand-selector style="float:left; width:70%"></jhi-demand-selector>
-                <button style="float:left" (click)="addPurchoseOrderLine()" class="btn btn-success">
+                <button style="float:left" (click)="addPurchaseOrderLine()" class="btn btn-success">
                     <fa-icon [icon]="'plus'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.add">Add</span>
                 </button>
             </div>
@@ -62,15 +53,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let purchaseOrderLine of purchaseOrder.purchaseOrderLines;trackBy: trackLineById;let id=index" >
+                            <tr *ngFor="let purchaseOrderLine of purchaseOrder.purchaseOrderLines;trackBy: trackLineById;" >
                                 <td class="text-right">{{ purchaseOrderLine.lineNumber }}</td>
                                 <td class="text-center">{{ purchaseOrderLine.demand.material.partNumber }}</td>
                                 <td>{{ purchaseOrderLine.demand.material.name }}</td>
-                                <td class="text-right" contenteditable='true' (input)="changeValue(id, 'quantity', $event)">
-                                    <span class="numeric">{{ purchaseOrderLine.quantity }}</span>
+                                <td class="text-right">
+                                    <input class="numeric" name="{{ 'quantity_' + purchaseOrderLine.lineNumber}}" [(ngModel)]="purchaseOrderLine.quantity">
                                 </td>
-                                <td class="text-right" contenteditable='true' (input)="changeValue(id, 'orderPrice', $event)" >
-                                    <span class="numeric">{{ purchaseOrderLine.orderPrice | currency:'CNY':'symbol-narrow':'1.0-3' }}</span>
+                                <td class="text-right" >
+                                    <span>&yen;</span>
+                                    <input class="numeric" name="{{ 'price_' + purchaseOrderLine.lineNumber}}" [(ngModel)]="purchaseOrderLine.orderPrice">
                                 </td>
                                 <td class="text-center">
                                     <button
@@ -80,6 +72,12 @@
                                         class="btn btn-danger btn-sm">
                                         <fa-icon [icon]="'times'"></fa-icon>
                                         <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                    </button>
+                                    <button
+                                        [routerLink]="['/demand', purchaseOrderLine.demand.id, 'view' ]"
+                                        class="btn btn-info btn-sm">
+                                        <fa-icon [icon]="'eye'"></fa-icon>
+                                        <span class="d-none d-md-inline" jhiTranslate="supplyMeApp.purchaseOrder.demand.view">View</span>
                                     </button>
                                 </td>
                             </tr>

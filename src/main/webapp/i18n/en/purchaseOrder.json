@@ -23,7 +23,10 @@
             "creationDate": "Creation Date",
             "supplier": "Supplier",
             "creationUser": "Creation User",
-            "demandToAdd": "Add a demand : "
+            "demand": {
+                "add": "Add a demand : ",
+                "view": "View the demand"
+            }
         }
     }
 }

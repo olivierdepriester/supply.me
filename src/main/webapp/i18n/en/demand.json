@@ -22,7 +22,8 @@
             "creationDate": "Creation Date",
             "material": "Material",
             "project": "Project",
-            "creationUser": "Creation User"
+            "creationUser": "Creation User",
+            "owned": "Only my demands"
         }
     }
 }

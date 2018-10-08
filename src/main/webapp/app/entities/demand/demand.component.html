@@ -13,14 +13,14 @@
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
             	<div class="input-group w-100 mt-3">
-					<label class="criteria-label" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
-                    <jhi-project-selector id="field_project" name="project" style="width:45%" [(ngModel)]="searchCriteria.project" ></jhi-project-selector>
-                    <label class="criteria-label" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
-                    <jhi-material-selector id="field_material" name="material" style="width:45%" [(ngModel)]="searchCriteria.material" ></jhi-material-selector>
+                    <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
+                    <jhi-project-selector class="w35" id="field_project" name="project" [(ngModel)]="searchCriteria.project" ></jhi-project-selector>
+                    <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
+                    <jhi-material-selector class="w35" id="field_material" name="material" [(ngModel)]="searchCriteria.material" ></jhi-material-selector>
             	</div>
-            	<div class="input-group mt-3">
-					<label class="criteria-label" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>
-            		<select class="form-control" name="status" [(ngModel)]="searchCriteria.status" id="field_status" >
+            	<div class="input-group w-100 mt-3">
+                    <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>
+                    <select class="form-control w35" name="status" [(ngModel)]="searchCriteria.status" id="field_status" >
                         <option value=""></option>
                         <option value="NEW">{{'supplyMeApp.DemandStatus.NEW' | translate}}</option>
                         <option value="WAITING_FOR_APPROVAL">{{'supplyMeApp.DemandStatus.WAITING_FOR_APPROVAL' | translate}}</option>
@@ -30,7 +30,10 @@
                         <option value="FULLY_DELIVERED">{{'supplyMeApp.DemandStatus.FULLY_DELIVERED' | translate}}</option>
                         <option value="REJECTED">{{'supplyMeApp.DemandStatus.REJECTED' | translate}}</option>
                     </select>
-            	</div>
+                    <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.owned" for="field_owned">Only my demands</label>
+                    <input type="checkbox" class="form-control w10" name="owned" id="field_owned" [(ngModel)]="searchCriteria.currentUser" >
+                    <div style="width: 40%"></div>
+                </div>
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="searchCriteria.query" id="currentSearch" name="currentSearch" placeholder="{{ 'supplyMeApp.demand.home.search' | translate }}">
                     <button class="input-group-append btn btn-info" (click)="search(searchCriteria)">

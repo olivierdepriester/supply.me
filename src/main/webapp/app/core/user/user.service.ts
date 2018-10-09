@@ -9,6 +9,7 @@ import { IUser } from './user.model';
 @Injectable({ providedIn: 'root' })
 export class UserService {
     private resourceUrl = SERVER_API_URL + 'api/users';
+    private resourceSearchUrl = SERVER_API_URL + 'api/_search/users';
 
     constructor(private http: HttpClient) {}
 
@@ -24,9 +25,28 @@ export class UserService {
         return this.http.get<IUser>(`${this.resourceUrl}/${login}`, { observe: 'response' });
     }
 
+    /**
+     * Gets all the users
+     *
+     * @param {*} [req] Only pagination data. No filter is used
+     * @returns {Observable<HttpResponse<IUser[]>>}
+     * @memberof UserService
+     */
     query(req?: any): Observable<HttpResponse<IUser[]>> {
         const options = createRequestOption(req);
         return this.http.get<IUser[]>(this.resourceUrl, { params: options, observe: 'response' });
+    }
+
+    /**
+     * Search the users using a query filter
+     *
+     * @param {*} [req]
+     * @returns {Observable<HttpResponse<IUser[]>>}
+     * @memberof UserService
+     */
+    search(req?: any): Observable<HttpResponse<IUser[]>> {
+        const options = createRequestOption(req);
+        return this.http.get<IUser[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 
     delete(login: string): Observable<HttpResponse<any>> {

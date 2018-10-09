@@ -23,7 +23,11 @@
             "material": "Material",
             "project": "Project",
             "creationUser": "Creation User",
-            "owned": "Only my demands"
+            "button" : {
+                "sendToApproval": "Send the demand to approval",
+                "reject": "Reject the demand",
+                "approve": "Approve the demand"
+            }
         }
     }
 }

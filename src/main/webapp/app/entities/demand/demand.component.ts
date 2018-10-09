@@ -1,13 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-
-import { IDemand, DemandSearchCriteria, DemandStatus } from 'app/shared/model/demand.model';
+import { faShareSquare, faShoppingCart, faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { Principal } from 'app/core';
+import { DemandSearchCriteria, DemandStatus, IDemand } from 'app/shared/model/demand.model';
+import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
-import { faShareSquare, faThumbsUp, faThumbsDown, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'jhi-demand',
@@ -48,7 +47,7 @@ export class DemandComponent implements OnInit, OnDestroy {
         );
     }
 
-    search(query) {
+    search() {
         this.demandService
             .search(this.searchCriteria.getQuery())
             .subscribe((res: HttpResponse<IDemand[]>) => (this.demands = res.body), (res: HttpErrorResponse) => this.onError(res.message));
@@ -59,6 +58,7 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.searchCriteria.status = null;
         this.searchCriteria.material = null;
         this.searchCriteria.project = null;
+        this.searchCriteria.creationUser = null;
     }
 
     sendToApproval(demand: IDemand) {
@@ -93,11 +93,12 @@ export class DemandComponent implements OnInit, OnDestroy {
         // Current user
         this.principal.identity().then(account => {
             this.currentAccount = account;
+            this.searchCriteria.creationUser = this.currentAccount;
+            this.search();
         });
         this.principal.hasAuthority('ROLE_PURCHASER').then(value => (this.authorities['ROLE_PURCHASER'] = value));
         this.principal.hasAuthority('ROLE_APPROVAL_LVL1').then(value => (this.authorities['ROLE_APPROVAL_LVL1'] = value));
         this.principal.hasAuthority('ROLE_APPROVAL_LVL2').then(value => (this.authorities['ROLE_APPROVAL_LVL2'] = value));
-
         this.registerChangeInDemands();
     }
 

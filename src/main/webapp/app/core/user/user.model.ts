@@ -1,3 +1,5 @@
+import { ISelectable } from 'app/shared/model/selectable.model';
+
 export interface IUser {
     id?: any;
     login?: string;
@@ -14,7 +16,7 @@ export interface IUser {
     password?: string;
 }
 
-export class User implements IUser {
+export class User implements IUser, ISelectable {
     constructor(
         public id?: any,
         public login?: string,

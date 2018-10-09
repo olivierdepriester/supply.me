@@ -26,6 +26,7 @@ import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.MailService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.UserService;
+import com.baosong.supplyme.service.util.DemandSearchCriteria;
 import com.google.common.collect.Sets;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -170,20 +171,23 @@ public class DemandServiceImpl implements DemandService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Demand> search(String query, Long materialId, Long projectId, DemandStatus demandStatus) {
-        log.debug("Request to search Demands for query {}", query);
+	public List<Demand> search(DemandSearchCriteria criteria) {
+        log.debug("Request to search Demands for query {}", criteria);
         BoolQueryBuilder booleanQueryBuilder = QueryBuilders.boolQuery();
-        if (!StringUtils.isEmpty(query)) {
-            booleanQueryBuilder.must(QueryBuilders.queryStringQuery(query));
+        if (!StringUtils.isEmpty(criteria.getQuery())) {
+            booleanQueryBuilder.must(QueryBuilders.queryStringQuery(criteria.getQuery()));
         }
-        if (materialId != null) {
-            booleanQueryBuilder.must(QueryBuilders.termQuery("material.id", materialId));
+        if (criteria.getMaterialId() != null) {
+            booleanQueryBuilder.must(QueryBuilders.termQuery("material.id", criteria.getMaterialId()));
         }
-        if (projectId != null) {
-            booleanQueryBuilder.must(QueryBuilders.termQuery("project.id", projectId));
+        if (criteria.getProjectId() != null) {
+            booleanQueryBuilder.must(QueryBuilders.termQuery("project.id", criteria.getProjectId()));
         }
-        if (demandStatus != null) {
-            booleanQueryBuilder.must(QueryBuilders.matchQuery("status", demandStatus.toString()));
+        if (criteria.getCreationUserId() != null) {
+            booleanQueryBuilder.must(QueryBuilders.termQuery("creationUser.id", criteria.getCreationUserId()));
+        }
+        if (criteria.getDemandStatus() != null) {
+            booleanQueryBuilder.must(QueryBuilders.matchQuery("status", criteria.getDemandStatus().toString()));
         }
         return StreamSupport
             .stream(demandSearchRepository.search(booleanQueryBuilder).spliterator(), false)

@@ -6,6 +6,7 @@ import { SupplyMeAdminModule } from 'app/admin/admin.module';
 import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
 import { MaterialSelectorModule } from 'app/entities/component/material-selector';
 import { ProjectSelectorModule } from 'app/entities/component/project-selector';
+import { UserSelectorModule } from 'app/entities/component/user-selector';
 import {
     DemandComponent,
     DemandDetailComponent,
@@ -25,6 +26,7 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         AutoCompleteModule,
         MaterialSelectorModule,
         ProjectSelectorModule,
+        UserSelectorModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [DemandComponent, DemandDetailComponent, DemandUpdateComponent, DemandDeleteDialogComponent, DemandDeletePopupComponent],

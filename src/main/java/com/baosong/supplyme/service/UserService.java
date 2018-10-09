@@ -33,6 +33,8 @@ import com.baosong.supplyme.service.dto.UserDTO;
 import com.baosong.supplyme.service.util.RandomUtil;
 import com.baosong.supplyme.web.rest.errors.InvalidPasswordException;
 
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
 /**
  * Service class for managing users.
  */
@@ -284,8 +286,15 @@ public class UserService {
 		Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
 		Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
 	}
-	
+
 	public List<User> getUsersFromAuthority(String authority) {
 		return userRepository.findAllByActivatedIsTrueAndAuthorities_Name(authority);
+	}
+
+	public Page<UserDTO> search(String query, Pageable pageable) {
+        log.debug("Request to search for a page of Users for query {}", query);
+        return this.userSearchRepository.search(queryStringQuery(
+            query.endsWith("*") ? query.toLowerCase(): new StringBuilder(query.toLowerCase()).append('*').toString()
+            ), pageable).map(UserDTO::new);
 	}
 }

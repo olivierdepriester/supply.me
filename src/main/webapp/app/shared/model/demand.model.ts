@@ -47,7 +47,7 @@ export class DemandSearchCriteria {
         public status?: DemandStatus,
         public material?: IMaterial,
         public project?: IProject,
-        public currentUser?: boolean
+        public creationUser?: IUser
     ) {}
 
     getQuery() {
@@ -56,7 +56,7 @@ export class DemandSearchCriteria {
             status: this.status,
             materialId: this.material != null ? this.material.id : null,
             projectId: this.project != null ? this.project.id : null,
-            currentUser: this.currentUser
+            creationUserId: this.creationUser != null ? this.creationUser.id : null
         };
     }
 }

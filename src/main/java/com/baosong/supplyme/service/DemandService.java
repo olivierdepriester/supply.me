@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
+import com.baosong.supplyme.service.util.DemandSearchCriteria;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,13 +59,10 @@ public interface DemandService {
 
 	/**
 	 * Search for demands based on the parameters below
-	 * @param query query of the full text search
-	 * @param materialId material filter
-	 * @param projectId project filter
-	 * @param demandStatus status filter
+	 * @param criteria Bean with the search parameters
 	 * @return
 	 */
-    List<Demand> search(String query, Long materialId, Long projectId, DemandStatus demandStatus);
+    List<Demand> search(DemandSearchCriteria criteria);
 
     /**
      * Change the status of a demand

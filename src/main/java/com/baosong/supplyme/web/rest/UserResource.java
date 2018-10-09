@@ -210,4 +210,19 @@ public class UserResource {
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
-}
+
+        /**
+     * SEARCH /_search/users/:query : search for the User corresponding
+     * to the query.
+     *
+     * @param query the query to search
+     * @return the result of the search
+     */
+    @GetMapping("/_search/users")
+    @Timed
+    public ResponseEntity<List<UserDTO>> searchSuppliers(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Suppliers for query {}", query);
+        Page<UserDTO> page = userService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/suppliers");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }}

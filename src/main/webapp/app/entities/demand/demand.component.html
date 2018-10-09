@@ -30,13 +30,12 @@
                         <option value="FULLY_DELIVERED">{{'supplyMeApp.DemandStatus.FULLY_DELIVERED' | translate}}</option>
                         <option value="REJECTED">{{'supplyMeApp.DemandStatus.REJECTED' | translate}}</option>
                     </select>
-                    <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.owned" for="field_owned">Only my demands</label>
-                    <input type="checkbox" class="form-control w10" name="owned" id="field_owned" [(ngModel)]="searchCriteria.currentUser" >
-                    <div style="width: 40%"></div>
+                    <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.creationUser" for="field_creationUser">Creation User</label>
+                    <jhi-user-selector class="w35" id="field_creationUser" name="creationUser" [(ngModel)]="searchCriteria.creationUser" ></jhi-user-selector>
                 </div>
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="searchCriteria.query" id="currentSearch" name="currentSearch" placeholder="{{ 'supplyMeApp.demand.home.search' | translate }}">
-                    <button class="input-group-append btn btn-info" (click)="search(searchCriteria)">
+                    <button class="input-group-append btn btn-info" (click)="search()">
                         <fa-icon [icon]="'search'"></fa-icon>
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="searchCriteria.query">
@@ -52,15 +51,15 @@
         <table class="table table-striped">
             <thead>
             <tr>
-            <th></th>
-            <th class="text-center"><span jhiTranslate="global.field.id">ID</span></th>
-            <th class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span></th>
-            <th class="text-center"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></th>
-            <th class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span></th>
-            <th class="text-center"><span jhiTranslate="supplyMeApp.demand.status">Status</span></th>
-            <th class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></th>
-            <th class="text-center"><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span></th>
-            <th></th>
+                <th></th>
+                <th class="text-center"><span jhiTranslate="global.field.id">ID</span></th>
+                <th class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span></th>
+                <th class="text-center"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></th>
+                <th class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span></th>
+                <th class="text-center"><span jhiTranslate="supplyMeApp.demand.status">Status</span></th>
+                <th class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></th>
+                <th class="text-center"><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -103,13 +102,14 @@
 		                     </button>
 		                     <button type="submit"
 		                             [routerLink]="['/demand']"
-		                             class="btn btn-primary btn-sm"
+                                     class="btn btn-primary btn-sm"
+                                     title="{{ 'supplyMeApp.demand.button.sendToApproval' | translate }}"
 		                             (click)="sendToApproval(demand)" >
 		                         <fa-icon [icon]="faShareSquare"></fa-icon>
 		                     </button>
 		                     <button type="submit"
 		                             [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/delete'} }]"
-		                             replaceUrl="true"
+                                     replaceUrl="true"
 		                             queryParamsHandling="merge"
 		                             class="btn btn-danger btn-sm">
 		                         <fa-icon [icon]="'times'"></fa-icon>
@@ -119,14 +119,16 @@
 	                    <ng-template #approvalDemandBlock>
 	                         <button type="submit"
 		                             [routerLink]="['/demand']"
-		                             class="btn btn-primary btn-sm"
+                                     class="btn btn-primary btn-sm"
+                                     title="{{ 'supplyMeApp.demand.button.approve' | translate }}"
 		                             (click)="approve(demand)" >
 		                         <fa-icon [icon]="faThumbsUp"></fa-icon>
 		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
 	                     	</button>
 		                     <button type="submit"
 		                             [routerLink]="['/demand']"
-		                             class="btn btn-primary btn-sm"
+                                     class="btn btn-primary btn-sm"
+                                     title="{{ 'supplyMeApp.demand.button.reject' | translate }}"
 		                             (click)="reject(demand)" >
 		                         <fa-icon [icon]="faThumbsDown"></fa-icon>
 		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->

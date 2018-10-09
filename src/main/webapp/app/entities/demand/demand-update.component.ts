@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { IUser, UserService } from 'app/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { IUser, UserService, Principal } from 'app/core';
 import { ProjectService } from 'app/entities/project';
 import { DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { IDemand } from 'app/shared/model/demand.model';
@@ -19,34 +19,26 @@ import { DemandService } from './demand.service';
 export class DemandUpdateComponent implements OnInit {
     private _demand: IDemand;
     isSaving: boolean;
-
-    materials: IMaterial[];
-
-    projects: IProject[];
-
-    users: IUser[];
     expectedDate: string;
     creationDate: string;
     @ViewChild('editForm') editForm: HTMLFormElement;
 
     constructor(
         private demandService: DemandService,
-        private projectService: ProjectService,
-        private userService: UserService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private router: Router,
+        private principal: Principal
     ) {}
 
     ngOnInit() {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ demand }) => {
             this.demand = demand;
-        });
-
-        this.projectService.query().subscribe((res: HttpResponse<IProject[]>) => {
-            this.projects = res.body;
-        });
-        this.userService.query().subscribe((res: HttpResponse<IUser[]>) => {
-            this.users = res.body;
+            this.principal.identity().then(account => {
+                if (!this.demandService.isEditAllowed(this.demand, account)) {
+                    this.router.navigate(['accessdenied']);
+                }
+            });
         });
     }
 

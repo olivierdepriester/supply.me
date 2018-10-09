@@ -90,7 +90,7 @@
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
-	                    <div *ngIf="demand.status == 'NEW' || demand.status == 'REJECTED'; then editableDemandBlock" ></div>
+	                    <div *ngIf="isEditAllowed(demand); then editableDemandBlock" ></div>
 	                    <div *ngIf="demand.status == 'WAITING_FOR_APPROVAL'; then approvalDemandBlock" ></div>
                         <div *ngIf="isPurchaseOrderAllowed(demand); then orderDemandBlock" ></div>
                         <ng-template #editableDemandBlock>

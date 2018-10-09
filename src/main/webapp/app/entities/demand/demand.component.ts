@@ -99,16 +99,21 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.principal.hasAuthority('ROLE_PURCHASER').then(value => (this.authorities['ROLE_PURCHASER'] = value));
         this.principal.hasAuthority('ROLE_APPROVAL_LVL1').then(value => (this.authorities['ROLE_APPROVAL_LVL1'] = value));
         this.principal.hasAuthority('ROLE_APPROVAL_LVL2').then(value => (this.authorities['ROLE_APPROVAL_LVL2'] = value));
+        this.principal.hasAuthority('ROLE_ADMIN').then(value => (this.authorities['ROLE_ADMIN'] = value));
         this.registerChangeInDemands();
     }
 
-    isPurchaseOrderAllowed(demand: IDemand) {
+    isPurchaseOrderAllowed(demand: IDemand): boolean {
         return (
             ((demand.status === DemandStatus.ORDERED &&
                 (demand.quantityOrdered == null || demand.quantity.valueOf() > demand.quantityOrdered.valueOf())) ||
                 demand.status === DemandStatus.APPROVED) &&
             this.authorities['ROLE_PURCHASER']
         );
+    }
+
+    isEditAllowed(demand: IDemand): boolean {
+        return this.demandService.isEditAllowed(demand, this.currentAccount);
     }
 
     ngOnDestroy() {

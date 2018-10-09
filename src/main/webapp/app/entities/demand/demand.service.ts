@@ -1,17 +1,12 @@
-import { AccountService } from '../../core/auth/account.service';
-import { Principal } from '../../core/auth/principal.service';
-import { HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import * as moment from 'moment';
-import { DATE_FORMAT } from 'app/shared/constants/input.constants';
-import { map } from 'rxjs/operators';
-
+import { Injectable } from '@angular/core';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
-import { IDemand, DemandStatus } from 'app/shared/model/demand.model';
-import { stringify } from 'querystring';
+import { DemandStatus, IDemand } from 'app/shared/model/demand.model';
+import * as moment from 'moment';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Principal } from '../../core/auth/principal.service';
 
 type EntityResponseType = HttpResponse<IDemand>;
 type EntityArrayResponseType = HttpResponse<IDemand[]>;
@@ -98,5 +93,12 @@ export class DemandService {
             demand.creationDate = demand.creationDate != null ? moment(demand.creationDate) : null;
         });
         return res;
+    }
+
+    isEditAllowed(demand: IDemand, account: any): boolean {
+        const result =
+            (demand.status === 'NEW' || demand.status === 'REJECTED') &&
+            ((account.authorities && account.authorities.includes('ROLE_ADMIN')) || demand.creationUser.id === account.id);
+        return result;
     }
 }

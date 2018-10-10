@@ -5,6 +5,7 @@ import { IPurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 
 export const enum PurchaseOrderStatus {
     NEW = 'NEW',
+    SENT = 'SENT',
     PARTIALLY_DELIVERED = 'PARTIALLY_DELIVERED',
     BILLED = 'BILLED'
 }

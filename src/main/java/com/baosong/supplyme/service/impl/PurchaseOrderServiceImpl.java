@@ -16,6 +16,8 @@ import com.baosong.supplyme.domain.enumeration.PurchaseOrderStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.PurchaseOrderRepository;
 import com.baosong.supplyme.repository.search.PurchaseOrderSearchRepository;
+import com.baosong.supplyme.security.AuthoritiesConstants;
+import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
@@ -71,17 +73,49 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public PurchaseOrder save(PurchaseOrder purchaseOrder) throws ServiceException {
         log.debug("Request to save PurchaseOrder : {}", purchaseOrder);
         PurchaseOrder persistedPurchaseOrder = null;
+        boolean statusChange = false;
         if (purchaseOrder.getId() == null) {
             // New purchase order --> Generate a new code
-            purchaseOrder.status(PurchaseOrderStatus.NEW).code(mutablePropertiesService.getNewPurchaseCode())
-                    .creationDate(Instant.now()).creationUser(userService.getCurrentUser().get());
-            persistedPurchaseOrder = purchaseOrder;
+            persistedPurchaseOrder = purchaseOrder.status(PurchaseOrderStatus.NEW)
+                    .code(mutablePropertiesService.getNewPurchaseCode()).creationDate(Instant.now())
+                    .creationUser(userService.getCurrentUser().get());
         } else {
             // Update -> Retrieve entity from database
-            persistedPurchaseOrder = findOne(purchaseOrder.getId()).get().expectedDate(purchaseOrder.getExpectedDate())
-                    .supplier(purchaseOrder.getSupplier());
+            persistedPurchaseOrder = findOne(purchaseOrder.getId()).get();
+            if (persistedPurchaseOrder.getStatus().equals(purchaseOrder.getStatus())) {
+                // Update value fields
+                persistedPurchaseOrder.expectedDate(purchaseOrder.getExpectedDate())
+                        .supplier(purchaseOrder.getSupplier());
+            } else {
+                // Update status
+                persistedPurchaseOrder.status(purchaseOrder.getStatus());
+                statusChange = true;
+            }
+        }
+        if (!statusChange) {
+            if(!isEditable(persistedPurchaseOrder)) {
+                throw new ServiceException(String.format("The purchase order %d can not be edited by the current user", persistedPurchaseOrder.getId()));
+            }
+            this.updatePurchaseOrderLines(persistedPurchaseOrder, purchaseOrder);
+        }
+        PurchaseOrder result = purchaseOrderRepository.save(persistedPurchaseOrder);
+        purchaseOrderSearchRepository.save(result);
+        return result;
+    }
+
+    /**
+     * Update the lines of a purchase order
+     *
+     * @param sourcePurchaseOrder    : source purchase order (bean with user data
+     * @param persistedPurchaseOrder : persisted version of the purchase order.
+     *                                  If the purchase order is new, persistedPurchaseOrder and sourcePurchaseOrder are the same
+     * @throws ServiceException
+     */
+    private void updatePurchaseOrderLines(PurchaseOrder sourcePurchaseOrder, PurchaseOrder persistedPurchaseOrder)
+            throws ServiceException {
+        if (persistedPurchaseOrder.getId() == null) {
             // Gets the POLs ids remaining in the PO to save
-            final Set<Long> purchaseOrderLineIdsPresent = purchaseOrder.getPurchaseOrderLines().stream()
+            final Set<Long> purchaseOrderLineIdsPresent = sourcePurchaseOrder.getPurchaseOrderLines().stream()
                     .filter(pol -> pol.getId() != null).map(PurchaseOrderLine::getId).collect(Collectors.toSet());
             // Identify the lines to remove from the PO
             Set<PurchaseOrderLine> linesToDelete = persistedPurchaseOrder.getPurchaseOrderLines().stream()
@@ -106,19 +140,21 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             }
         }
 
-        for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLines()) {
+        // Lines are updated if the call does not remain from a status change
+        for (PurchaseOrderLine line : sourcePurchaseOrder.getPurchaseOrderLines()) {
             line.purchaseOrder(persistedPurchaseOrder);
-            if (purchaseOrder.getId() != null) {
+            if (sourcePurchaseOrder.getId() != null) {
                 // If PO update : add new lines or update existing lines
                 if (line.getId() == null) {
+                    // New line
                     persistedPurchaseOrder.getPurchaseOrderLines().add(line);
                 } else {
+                    // Get the line
                     PurchaseOrderLine persistedLine = persistedPurchaseOrder.getPurchaseOrderLines().stream()
                             .filter(l -> l.getId().equals(line.getId())).findAny().get();
                     persistedLine.quantity(line.getQuantity()).orderPrice(line.getOrderPrice());
                 }
             }
-
             if (line.getDemand() != null) {
                 // Set demand status to ORDERED
                 line.setDemand(demandService.changeStatus(line.getDemand().getId(), DemandStatus.ORDERED));
@@ -128,9 +164,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 demandService.save(line.getDemand());
             }
         }
-        PurchaseOrder result = purchaseOrderRepository.save(persistedPurchaseOrder);
-        purchaseOrderSearchRepository.save(result);
-        return result;
     }
 
     /**
@@ -168,6 +201,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public void delete(Long id) throws ServiceException {
         log.debug("Request to delete PurchaseOrder : {}", id);
         PurchaseOrder purchaseOrder = findOne(id).get();
+        if (!isEditable(purchaseOrder)) {
+            throw new ServiceException(
+                    String.format("The purchase order %d can not be deleted by the current user", id));
+        }
         for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLines()) {
             // Get demand
             Demand demand = line.getDemand();
@@ -184,9 +221,20 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     /**
+     * Check if a purchase order can be edited
+     *
+     * @param purchaseOrder
+     * @return
+     */
+    private boolean isEditable(PurchaseOrder purchaseOrder) {
+        return PurchaseOrderStatus.NEW.equals(purchaseOrder.getStatus())
+                && SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.PURCHASER);
+    }
+
+    /**
      * Search for the purchaseOrder corresponding to the query.
      *
-     * @param query    the query of the search
+     * @param query    the search query
      * @param pageable the pagination information
      * @return the list of entities
      */

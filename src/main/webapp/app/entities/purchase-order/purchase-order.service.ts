@@ -19,9 +19,6 @@ export class PurchaseOrderService {
     constructor(private http: HttpClient) {}
 
     create(purchaseOrder: IPurchaseOrder): Observable<EntityResponseType> {
-        purchaseOrder.creationDate = moment();
-        purchaseOrder.status = PurchaseOrderStatus.NEW;
-        purchaseOrder.code = '0000000000';
         const copy = this.convertDateFromClient(purchaseOrder);
         return this.http
             .post<IPurchaseOrder>(this.resourceUrl, copy, { observe: 'response' })
@@ -81,5 +78,9 @@ export class PurchaseOrderService {
             purchaseOrder.creationDate = purchaseOrder.creationDate != null ? moment(purchaseOrder.creationDate) : null;
         });
         return res;
+    }
+
+    public isEditable(purchaseOrder: IPurchaseOrder, account: any): boolean {
+        return purchaseOrder.status === PurchaseOrderStatus.NEW && account.authorities && account.authorities.includes('ROLE_PURCHASER');
     }
 }

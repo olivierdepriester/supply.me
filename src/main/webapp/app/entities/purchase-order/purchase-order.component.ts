@@ -4,12 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
-import { IPurchaseOrder } from 'app/shared/model/purchase-order.model';
+import { IPurchaseOrder, PurchaseOrderStatus } from 'app/shared/model/purchase-order.model';
 import { Principal } from 'app/core';
 
 import { ITEMS_PER_PAGE } from 'app/shared';
 import { PurchaseOrderService } from './purchase-order.service';
-
+import { faFileContract } from '@fortawesome/free-solid-svg-icons';
 @Component({
     selector: 'jhi-purchase-order',
     templateUrl: './purchase-order.component.html'
@@ -26,6 +26,8 @@ export class PurchaseOrderComponent implements OnInit, OnDestroy {
     reverse: any;
     totalItems: number;
     currentSearch: string;
+
+    faFileContract = faFileContract;
 
     constructor(
         private purchaseOrderService: PurchaseOrderService,
@@ -140,6 +142,17 @@ export class PurchaseOrderComponent implements OnInit, OnDestroy {
             result.push('id');
         }
         return result;
+    }
+
+    send(purchaseOrder: IPurchaseOrder) {
+        purchaseOrder.status = PurchaseOrderStatus.SENT;
+        this.purchaseOrderService
+            .update(purchaseOrder)
+            .subscribe((res: HttpResponse<IPurchaseOrder>) => {}, (res: HttpErrorResponse) => this.onError(res.message));
+    }
+
+    isEditAllowed(purchaseOrder: IPurchaseOrder): boolean {
+        return this.purchaseOrderService.isEditable(purchaseOrder, this.currentAccount);
     }
 
     private paginatePurchaseOrders(data: IPurchaseOrder[], headers: HttpHeaders) {

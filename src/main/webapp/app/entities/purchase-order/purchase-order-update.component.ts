@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT, DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { JhiAlertService } from 'ng-jhipster';
 
-import { IPurchaseOrder } from 'app/shared/model/purchase-order.model';
+import { IPurchaseOrder, PurchaseOrderStatus } from 'app/shared/model/purchase-order.model';
 import { PurchaseOrderService } from './purchase-order.service';
-import { IUser } from 'app/core';
+import { IUser, Principal } from 'app/core';
 import { IDemand } from 'app/shared/model/demand.model';
 import { IPurchaseOrderLine, PurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 import { DemandSelectorComponent } from 'app/entities/component/demand-selector';
@@ -32,7 +32,9 @@ export class PurchaseOrderUpdateComponent implements OnInit {
     constructor(
         private jhiAlertService: JhiAlertService,
         private purchaseOrderService: PurchaseOrderService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private principal: Principal,
+        private router: Router
     ) {}
 
     get purchaseOrder() {
@@ -49,14 +51,29 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ purchaseOrder, demand }) => {
             this.purchaseOrder = purchaseOrder;
-            this._demand = demand;
+            // If new purchase order, initialize default values to make the object consistent
+            if (!this.purchaseOrder.id) {
+                purchaseOrder.creationDate = moment();
+                purchaseOrder.status = PurchaseOrderStatus.NEW;
+                purchaseOrder.code = '0000000000';
+            }
+            // Check if the purchase order can be edited
+            this.principal.identity().then(account => {
+                if (!this.purchaseOrderService.isEditable(this.purchaseOrder, account)) {
+                    // Forbidden
+                    this.router.navigate(['accessdenied']);
+                } else {
+                    // Initialization end
+                    this._demand = demand;
+                    if (this.purchaseOrder.purchaseOrderLines == null) {
+                        this.purchaseOrder.purchaseOrderLines = new Array();
+                    }
+                    if (this._demand != null && !this.purchaseOrder.id) {
+                        this.addPurchaseOrderLineFromDemand(this._demand);
+                    }
+                }
+            });
         });
-        if (this.purchaseOrder.purchaseOrderLines == null) {
-            this.purchaseOrder.purchaseOrderLines = new Array();
-        }
-        if (this._demand != null && !this.purchaseOrder.id) {
-            this.addPurchaseOrderLineFromDemand(this._demand);
-        }
     }
 
     previousState() {
@@ -76,6 +93,13 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         this.isSaving = false;
     }
 
+    /**
+     * Validate purchase porder data before being saved
+     *
+     * @private
+     * @returns {boolean} false if purchase order is not valid
+     * @memberof PurchaseOrderUpdateComponent
+     */
     private validate(): boolean {
         let result = true;
         const errorMessages: any[] = new Array();

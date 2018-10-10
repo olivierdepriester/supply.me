@@ -197,7 +197,8 @@
             "open": "Open",
             "save": "Save",
             "view": "View",
-            "add": "Add"
+            "add": "Add",
+            "send": "Send"
         },
         "detail": {
             "field": "Field",

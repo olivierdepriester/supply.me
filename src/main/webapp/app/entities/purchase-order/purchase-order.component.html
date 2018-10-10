@@ -52,7 +52,7 @@
                 <td>
                     {{purchaseOrder.creationUser?.lastName + ' ' + purchaseOrder.creationUser?.firstName }}
                 </td>
-                <td class="text-right">
+                <td class="text-left">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['/purchase-order', purchaseOrder.id, 'view' ]"
@@ -60,19 +60,29 @@
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
-                        <button type="submit"
+                        <ng-container *ngIf="isEditAllowed(purchaseOrder); then thenTemplate;"></ng-container>
+                        <ng-template #thenTemplate>
+                            <button type="submit"
                                 [routerLink]="['/purchase-order', purchaseOrder.id, 'edit']"
-                                class="btn btn-primary btn-sm">
-                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'purchase-order/'+ purchaseOrder.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <fa-icon [icon]="'times'"></fa-icon>
-                        </button>
+                                class="btn btn-primary btn-sm"
+                                title="{{ 'entity.action.edit' | translate }}">
+                                <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            </button>
+                            <button type="submit"
+                                class="btn btn-primary btn-sm"
+                                (click)="send(purchaseOrder)"
+                                title="{{ 'entity.action.send' | translate }}">
+                                <fa-icon [icon]="faFileContract"></fa-icon>
+                            </button>
+                            <button type="submit"
+                                    [routerLink]="['/', { outlets: { popup: 'purchase-order/'+ purchaseOrder.id + '/delete'} }]"
+                                    replaceUrl="true"
+                                    queryParamsHandling="merge"
+                                    title="{{ 'entity.action.delete' | translate }}"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon [icon]="'times'"></fa-icon>
+                            </button>
+                        </ng-template>
                     </div>
                 </td>
             </tr>

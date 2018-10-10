@@ -98,7 +98,6 @@
 		                             [routerLink]="['/demand', demand.id, 'edit']"
 		                             class="btn btn-primary btn-sm">
 		                         <fa-icon [icon]="'pencil-alt'"></fa-icon>
-		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
 		                     </button>
 		                     <button type="submit"
 		                             [routerLink]="['/demand']"
@@ -113,7 +112,6 @@
 		                             queryParamsHandling="merge"
 		                             class="btn btn-danger btn-sm">
 		                         <fa-icon [icon]="'times'"></fa-icon>
-		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
 		                     </button>
 	                    </ng-template>
 	                    <ng-template #approvalDemandBlock>
@@ -123,7 +121,6 @@
                                      title="{{ 'supplyMeApp.demand.button.approve' | translate }}"
 		                             (click)="approve(demand)" >
 		                         <fa-icon [icon]="faThumbsUp"></fa-icon>
-		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
 	                     	</button>
 		                     <button type="submit"
 		                             [routerLink]="['/demand']"
@@ -131,7 +128,6 @@
                                      title="{{ 'supplyMeApp.demand.button.reject' | translate }}"
 		                             (click)="reject(demand)" >
 		                         <fa-icon [icon]="faThumbsDown"></fa-icon>
-		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
 		                     </button>
 	                    </ng-template>
 						<ng-template #orderDemandBlock>
@@ -140,7 +136,6 @@
                                      [queryParams]="{demandId : demand.id}"
 		                             class="btn btn-primary btn-sm">
 		                         <fa-icon [icon]="faShoppingCart"></fa-icon>
-		<!--                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
 	                     	</button>
 	                    </ng-template>
                     </div>

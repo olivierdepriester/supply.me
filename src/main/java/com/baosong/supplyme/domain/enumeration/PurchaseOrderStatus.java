@@ -5,6 +5,7 @@ package com.baosong.supplyme.domain.enumeration;
  */
 public enum PurchaseOrderStatus {
     NEW,
+    SENT,
     PARTIALLY_DELIVERED,
     BILLED
 }

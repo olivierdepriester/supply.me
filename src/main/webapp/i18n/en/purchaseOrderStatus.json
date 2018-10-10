@@ -2,9 +2,10 @@
     "supplyMeApp": {
         "PurchaseOrderStatus" : {
             "null": "",
-            "NEW": "NEW",
-            "PARTIALLY_DELIVERED": "PARTIALLY_DELIVERED",
-            "BILLED": "BILLED"
+            "NEW": "New",
+            "SENT": "Sent",
+            "PARTIALLY_DELIVERED": "Delivered",
+            "BILLED": "Billed"
         }
     }
 }

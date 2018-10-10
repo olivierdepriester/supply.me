@@ -3,6 +3,7 @@
         <div *ngIf="purchaseOrder">
             <h2><span jhiTranslate="supplyMeApp.purchaseOrder.detail.title">Purchase Order</span> {{purchaseOrder.id}}</h2>
             <hr>
+            <jhi-alert></jhi-alert>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span></dt>
@@ -46,7 +47,9 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let purchaseOrderLine of purchaseOrder.purchaseOrderLines" >
-                            <td class="text-right">{{ purchaseOrderLine.lineNumber }}</td>
+                            <td class="text-right">
+                                <a [routerLink]="['/demand', purchaseOrderLine.demand.id, 'view' ]">{{ purchaseOrderLine.lineNumber }}</a>
+                            </td>
                             <td class="text-center">{{ purchaseOrderLine.demand.material.partNumber }}</td>
                             <td>{{ purchaseOrderLine.demand.material.name }}</td>
                             <td class="text-right">
@@ -67,17 +70,23 @@
                     </tbody>
                 </table>
             </div>
-
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
                 <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
             </button>
-
-            <button *jhiHasAnyAuthority="'ROLE_PURCHASER'" type="button"
+            <button *ngIf="isEditable" type="button"
+                    [disabled] = "isSending"
                     [routerLink]="['/purchase-order', purchaseOrder.id, 'edit']"
                     class="btn btn-primary">
                 <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+            <button *ngIf="isEditable" type="button"
+                    [disabled] = "isSending"
+                    class="btn btn-primary"
+                    style="float:right"
+                    (click)="send()" >
+                <fa-icon [icon]="faFileContract"></fa-icon>&nbsp;<span jhiTranslate="entity.action.send"> Send</span>
             </button>
         </div>
     </div>

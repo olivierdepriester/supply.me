@@ -1,14 +1,12 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IUser, UserService, Principal } from 'app/core';
-import { ProjectService } from 'app/entities/project';
+import { IUser, Principal } from 'app/core';
 import { DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { IDemand } from 'app/shared/model/demand.model';
 import { IMaterial } from 'app/shared/model/material.model';
 import { IProject } from 'app/shared/model/project.model';
 import * as moment from 'moment';
-import { JhiAlertService } from 'ng-jhipster';
 import { Observable } from 'rxjs';
 import { DemandService } from './demand.service';
 
@@ -67,13 +65,6 @@ export class DemandUpdateComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-
-    onValidate(event: boolean) {
-        console.log(`onValidate ${event}`);
-        console.log(this.demand);
-        if (this.demand.material != null && this.demand.project != null) {
-        }
     }
 
     trackMaterialById(index: number, item: IMaterial) {

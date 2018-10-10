@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.baosong.supplyme.domain.Demand;
-import com.baosong.supplyme.domain.Demand_;
 import com.baosong.supplyme.domain.PurchaseOrderLine;
 import com.baosong.supplyme.domain.User;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
@@ -70,13 +69,15 @@ public class DemandServiceImpl implements DemandService {
 
     static {
         demandWorkflowRules = new HashMap<>();
-        demandWorkflowRules.put(DemandStatus.WAITING_FOR_APPROVAL, Sets.newHashSet(DemandStatus.NEW, DemandStatus.REJECTED));
+        demandWorkflowRules.put(DemandStatus.WAITING_FOR_APPROVAL,
+                Sets.newHashSet(DemandStatus.NEW, DemandStatus.REJECTED));
         demandWorkflowRules.put(DemandStatus.APPROVED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
         demandWorkflowRules.put(DemandStatus.REJECTED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
         demandWorkflowRules.put(DemandStatus.ORDERED, Sets.newHashSet(DemandStatus.APPROVED));
         demandWorkflowRules.put(DemandStatus.PARTIALLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED));
-        demandWorkflowRules.put(DemandStatus.FULLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
-   }
+        demandWorkflowRules.put(DemandStatus.FULLY_DELIVERED,
+                Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
+    }
 
     public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository) {
         this.demandRepository = demandRepository;
@@ -94,9 +95,9 @@ public class DemandServiceImpl implements DemandService {
     public Demand save(Demand demand) throws ServiceException {
         log.debug("Request to save Demand : {}", demand);
         if (demand.getId() == null) {
-        	demand.setStatus(DemandStatus.NEW);
-        	demand.setCreationDate(Instant.now());
-        	demand.setCreationUser(userService.getCurrentUser().orElse(null));
+            demand.setStatus(DemandStatus.NEW);
+            demand.setCreationDate(Instant.now());
+            demand.setCreationUser(userService.getCurrentUser().get());
         }
         Demand result = demandRepository.save(demand);
         demandSearchRepository.save(result);
@@ -114,7 +115,6 @@ public class DemandServiceImpl implements DemandService {
         log.debug("Request to get all Demands");
         return demandRepository.findAll();
     }
-
 
     /**
      * Get one demand by id.
@@ -150,9 +150,8 @@ public class DemandServiceImpl implements DemandService {
     @Override
     @Transactional(readOnly = true)
     public List<Demand> search(String query) {
-    	return StreamSupport
-    			.stream(demandSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-    			.collect(Collectors.toList());
+        return StreamSupport.stream(demandSearchRepository.search(queryStringQuery(query)).spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -164,14 +163,15 @@ public class DemandServiceImpl implements DemandService {
     @Transactional(readOnly = true)
     public Page<Demand> searchDemandsToPurchase(String query, Pageable pageable) {
         BoolQueryBuilder booleanQueryBuilder = QueryBuilders.boolQuery()
-            .must(QueryBuilders.termQuery("canBePurchased", true))
-            .must(QueryBuilders.queryStringQuery(query.endsWith("*")? query.toLowerCase(): new StringBuilder(query.toLowerCase()).append("*").toString() ));
+                .must(QueryBuilders.termQuery("canBePurchased", true))
+                .must(QueryBuilders.queryStringQuery(query.endsWith("*") ? query.toLowerCase()
+                        : new StringBuilder(query.toLowerCase()).append("*").toString()));
         return this.demandSearchRepository.search(booleanQueryBuilder, pageable);
     }
 
-	@Override
-	@Transactional(readOnly = true)
-	public List<Demand> search(DemandSearchCriteria criteria) {
+    @Override
+    @Transactional(readOnly = true)
+    public List<Demand> search(DemandSearchCriteria criteria) {
         log.debug("Request to search Demands for query {}", criteria);
         BoolQueryBuilder booleanQueryBuilder = QueryBuilders.boolQuery();
         if (!StringUtils.isEmpty(criteria.getQuery())) {
@@ -189,9 +189,8 @@ public class DemandServiceImpl implements DemandService {
         if (criteria.getDemandStatus() != null) {
             booleanQueryBuilder.must(QueryBuilders.matchQuery("status", criteria.getDemandStatus().toString()));
         }
-        return StreamSupport
-            .stream(demandSearchRepository.search(booleanQueryBuilder).spliterator(), false)
-            .collect(Collectors.toList());
+        return StreamSupport.stream(demandSearchRepository.search(booleanQueryBuilder).spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -201,17 +200,17 @@ public class DemandServiceImpl implements DemandService {
     }
 
     /**
-     * Set a demand to the given status.
-     * The wanted <b>status</b> may be modified depending on the workflow rules
+     * Set a demand to the given status. The wanted <b>status</b> may be modified
+     * depending on the workflow rules
      *
-     * @param id : Demand id
+     * @param id     : Demand id
      * @param status : Status to set.
      *
      * @return : Updated demand
      * @exception : ServiceException in case of issue
      */
-	@Override
-	public Demand changeStatus(Long id, DemandStatus status) throws ServiceException {
+    @Override
+    public Demand changeStatus(Long id, DemandStatus status) throws ServiceException {
         Demand demand = null;
         try {
             demand = findOne(id).get();
@@ -224,47 +223,74 @@ public class DemandServiceImpl implements DemandService {
             return demand;
         }
 
-		if (!demandWorkflowRules.containsKey(status)) {
+        if (!demandWorkflowRules.containsKey(status)) {
             // The wanted status can never be set
-			throw new ServiceException(String.format("The status %s can never be directly set", status));
-		} else if (!demandWorkflowRules.get(status).contains(demand.getStatus()) ) {
+            throw new ServiceException(String.format("The status %s can never be directly set", status));
+        } else if (!demandWorkflowRules.get(status).contains(demand.getStatus())) {
             // The current status prevent the new status of being set
-			throw new ServiceException(String.format("The status %s can not be set on demand %d (current is %s)", status, id, demand.getStatus()));
+            throw new ServiceException(String.format("The status %s can not be set on demand %d (current is %s)",
+                    status, id, demand.getStatus()));
         }
         DemandStatus targetStatus = status;
         demand.setStatus(targetStatus);
 
-		switch (status) {
+        switch (status) {
         case WAITING_FOR_APPROVAL:
-            // TODO Rules about demand estimated amount and recurrency
-			if(canBeSetToApproved(demand)) {
-				this.changeStatus(demand.getId(), DemandStatus.APPROVED);
-				return demand;
-			}
-			break;
-		case APPROVED:
-			List<User> recipients = userService.getUsersFromAuthority(AuthoritiesConstants.PURCHASER);
-			String to = recipients.stream().map(u -> u.getEmail()).collect(Collectors.joining(","));
-			mailService.sendApprovedDemandToPurchaserEmail(demand, to);
-			break;
-		case REJECTED:
+            if (!isDemandEditable(demand)) {
+                throw new ServiceException(
+                        String.format("The current user can not edit nor send it to approval the demand %d", id));
+            }
+            if (canBeSetToApproved(demand)) {
+                this.changeStatus(demand.getId(), DemandStatus.APPROVED);
+                return demand;
+            }
+            break;
+        case APPROVED:
+            if (!canBeSetToApproved(demand)) {
+                throw new ServiceException(String.format("The current user can not set the demand %d to approved", id));
+            }
+            // Send a mail to the purchasers
+            List<User> recipients = userService.getUsersFromAuthority(AuthoritiesConstants.PURCHASER);
+            String to = recipients.stream().map(u -> u.getEmail()).collect(Collectors.joining(","));
+            mailService.sendApprovedDemandToPurchaserEmail(demand, to);
+            break;
+        case REJECTED:
+            // Send a mail to the demand owner
             mailService.sendRejectedDemandEmail(demand, userService.getCurrentUser().get());
-			break;
-		default:
-			break;
-		}
-		this.save(demand);
-		return demand;
+            break;
+        default:
+            break;
+        }
+        return this.save(demand);
     }
 
+    /**
+     * Check if a demand can be set to the APPROVED status
+     * @param demand the demand to check
+     * @return true if the demand can be approved
+     */
     private boolean canBeSetToApproved(Demand demand) {
+        // TODO Rules about demand estimated amount and recurrency
         return SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL2);
     }
 
-	@Override
-	public void rebuildIndex() {
-		template.deleteIndex(Demand.class);
-		List<Demand> demands = findAll();
-		demands.stream().forEach(d -> demandSearchRepository.save(d));
-	}
+    @Override
+    public void rebuildIndex() {
+        template.deleteIndex(Demand.class);
+        List<Demand> demands = findAll();
+        demands.stream().forEach(d -> demandSearchRepository.save(d));
+    }
+
+    /**
+     * Check if a demand is editable
+     *
+     * @param demand the demand to check
+     * @return true if the demand can be edited
+     */
+    private boolean isDemandEditable(Demand demand) {
+        User currentUser = this.userService.getUserWithAuthorities().get();
+        return (demand.getCreationUser().getId() == currentUser.getId()
+                || currentUser.getAuthorities().stream().anyMatch(a -> a.getName().equals(AuthoritiesConstants.ADMIN)))
+                && (DemandStatus.NEW.equals(demand.getStatus()) || DemandStatus.REJECTED.equals(demand.getStatus()));
+    }
 }

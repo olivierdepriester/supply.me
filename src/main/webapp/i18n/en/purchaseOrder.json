@@ -23,6 +23,8 @@
             "creationDate": "Creation Date",
             "supplier": "Supplier",
             "creationUser": "Creation User",
+            "quantity": "Quantity",
+            "amount": "Amount",
             "demand": {
                 "add": "Add a demand : ",
                 "view": "View the demand"

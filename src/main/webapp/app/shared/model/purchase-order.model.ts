@@ -18,6 +18,9 @@ export interface IPurchaseOrder {
     creationDate?: Moment;
     supplier?: ISupplier;
     creationUser?: IUser;
+    quantity?: number;
+    amount?: number;
+    numberOfMaterials?: number;
     purchaseOrderLines?: IPurchaseOrderLine[];
 }
 
@@ -30,6 +33,9 @@ export class PurchaseOrder implements IPurchaseOrder {
         public creationDate?: Moment,
         public supplier?: ISupplier,
         public creationUser?: IUser,
-        public purchaseOrderLines?: IPurchaseOrderLine[]
+        public purchaseOrderLines?: IPurchaseOrderLine[],
+        public quantity?: number,
+        public amount?: number,
+        public numberOfMaterials?: number
     ) {}
 }

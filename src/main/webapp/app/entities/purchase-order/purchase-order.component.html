@@ -1,10 +1,11 @@
 <div>
     <h2 id="page-heading">
         <span jhiTranslate="supplyMeApp.purchaseOrder.home.title">Purchase Orders</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-purchase-order" [routerLink]="['/purchase-order/new']">
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-purchase-order"
+            [routerLink]="['/purchase-order/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
-            <span class="hidden-sm-down"  jhiTranslate="supplyMeApp.purchaseOrder.home.createLabel">
-            Create new Purchase Order
+            <span class="hidden-sm-down" jhiTranslate="supplyMeApp.purchaseOrder.home.createLabel">
+                Create new Purchase Order
             </span>
         </button>
     </h2>
@@ -13,7 +14,8 @@
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'supplyMeApp.purchaseOrder.home.search' | translate }}">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch"
+                        placeholder="{{ 'supplyMeApp.purchaseOrder.home.search' | translate }}">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
                         <fa-icon [icon]="'search'"></fa-icon>
                     </button>
@@ -24,68 +26,89 @@
             </form>
         </div>
     </div>
-    <br/>
+    <br />
     <div class="table-responsive" *ngIf="purchaseOrders">
         <table class="table table-striped">
             <thead>
-            <tr class="text-center" jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-            <th jhiSortBy="code"><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="supplier.id"><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="expectedDate"><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">Expected Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="status"><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.purchaseOrder.creationDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creationUser.id"><span jhiTranslate="supplyMeApp.purchaseOrder.creationUser">Creation User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th></th>
-            </tr>
+                <tr class="text-center" jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+                    <th jhiSortBy="code"><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="supplier.id"><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="expectedDate"><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">Expected
+                            Date</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="status"><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.purchaseOrder.creationDate">Creation
+                            Date</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="creationUser.id"><span jhiTranslate="supplyMeApp.purchaseOrder.creationUser">Creation
+                            User</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="quantity"><span jhiTranslate="supplyMeApp.purchaseOrder.quantity">Creation
+                            User</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="amount"><span jhiTranslate="supplyMeApp.purchaseOrder.amount">Creation
+                            User</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                </tr>
             </thead>
-            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
-            <tr *ngFor="let purchaseOrder of purchaseOrders ;trackBy: trackId">
-                <td class="text-center"><a [routerLink]="['/purchase-order', purchaseOrder.id, 'view' ]">{{purchaseOrder.code}}</a></td>
-                <td>
-                    <div *ngIf="purchaseOrder.supplier">
-                        <a [routerLink]="['../supplier', purchaseOrder.supplier?.id, 'view' ]" >{{purchaseOrder.supplier?.referenceNumber + ' - ' + purchaseOrder.supplier?.name}}</a>
-                    </div>
-                </td>
-                <td class="text-center">{{purchaseOrder.expectedDate | dateFormat }}</td>
-                <td jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</td>
-                <td class="text-center">{{purchaseOrder.creationDate | datetimeFormat }}</td>
-                <td>
-                    {{purchaseOrder.creationUser?.lastName + ' ' + purchaseOrder.creationUser?.firstName }}
-                </td>
-                <td class="text-left">
-                    <div class="btn-group flex-btn-group-container">
-                        <button type="submit"
-                                [routerLink]="['/purchase-order', purchaseOrder.id, 'view' ]"
-                                class="btn btn-info btn-sm">
-                            <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                        </button>
-                        <ng-container *ngIf="isEditAllowed(purchaseOrder); then thenTemplate;"></ng-container>
-                        <ng-template #thenTemplate>
-                            <button type="submit"
-                                [routerLink]="['/purchase-order', purchaseOrder.id, 'edit']"
-                                class="btn btn-primary btn-sm"
-                                title="{{ 'entity.action.edit' | translate }}">
-                                <fa-icon [icon]="'pencil-alt'"></fa-icon>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']"
+                [infiniteScrollDistance]="0">
+                <tr *ngFor="let purchaseOrder of purchaseOrders ;trackBy: trackId">
+                    <td class="text-center"><a [routerLink]="['/purchase-order', purchaseOrder.id, 'view' ]">{{purchaseOrder.code}}</a></td>
+                    <td>
+                        <div *ngIf="purchaseOrder.supplier">
+                            <a [routerLink]="['../supplier', purchaseOrder.supplier?.id, 'view' ]">{{purchaseOrder.supplier?.referenceNumber
+                                + ' - ' + purchaseOrder.supplier?.name}}</a>
+                        </div>
+                    </td>
+                    <td class="text-center">{{purchaseOrder.expectedDate | dateFormat }}</td>
+                    <td jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</td>
+                    <td class="text-center">{{purchaseOrder.creationDate | datetimeFormat }}</td>
+                    <td>
+                        {{purchaseOrder.creationUser?.lastName + ' ' + purchaseOrder.creationUser?.firstName }}
+                    </td>
+                    <td class="text-right">
+                        {{ purchaseOrder.quantity }}
+                    </td>
+                    <td class="text-right">
+                        {{ purchaseOrder.amount | currency:'CNY':'symbol-narrow':'1.0-3' }}
+                    </td>
+                    <td class="text-left">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit" [routerLink]="['/purchase-order', purchaseOrder.id, 'view' ]" class="btn btn-info btn-sm">
+                                <fa-icon [icon]="'eye'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                             </button>
-                            <button type="submit"
-                                class="btn btn-primary btn-sm"
-                                (click)="send(purchaseOrder)"
-                                title="{{ 'entity.action.send' | translate }}">
-                                <fa-icon [icon]="faFileContract"></fa-icon>
-                            </button>
-                            <button type="submit"
-                                    [routerLink]="['/', { outlets: { popup: 'purchase-order/'+ purchaseOrder.id + '/delete'} }]"
-                                    replaceUrl="true"
-                                    queryParamsHandling="merge"
-                                    title="{{ 'entity.action.delete' | translate }}"
+                            <ng-container *ngIf="isEditAllowed(purchaseOrder); then thenTemplate;"></ng-container>
+                            <ng-template #thenTemplate>
+                                <button type="submit" [routerLink]="['/purchase-order', purchaseOrder.id, 'edit']"
+                                    class="btn btn-primary btn-sm" title="{{ 'entity.action.edit' | translate }}">
+                                    <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-sm" (click)="send(purchaseOrder)"
+                                    title="{{ 'entity.action.send' | translate }}">
+                                    <fa-icon [icon]="faFileContract"></fa-icon>
+                                </button>
+                                <button type="submit" [routerLink]="['/', { outlets: { popup: 'purchase-order/'+ purchaseOrder.id + '/delete'} }]"
+                                    replaceUrl="true" queryParamsHandling="merge" title="{{ 'entity.action.delete' | translate }}"
                                     class="btn btn-danger btn-sm">
-                                <fa-icon [icon]="'times'"></fa-icon>
-                            </button>
-                        </ng-template>
-                    </div>
-                </td>
-            </tr>
+                                    <fa-icon [icon]="'times'"></fa-icon>
+                                </button>
+                            </ng-template>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>

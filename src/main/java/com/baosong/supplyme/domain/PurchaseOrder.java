@@ -48,6 +48,15 @@ public class PurchaseOrder implements Serializable {
     @Column(name = "creation_date", nullable = false)
     private Instant creationDate;
 
+    @Column(name = "quantity", nullable = true)
+    private Double quantity;
+
+    @Column(name = "amount", nullable = true)
+    private Double amount;
+
+    @Column(name = "number_of_materials", nullable = true)
+    private Long numberOfMaterials;
+
     @ManyToOne
     @JsonIgnoreProperties("")
     private Supplier supplier;
@@ -119,6 +128,45 @@ public class PurchaseOrder implements Serializable {
 
     public void setCreationDate(Instant creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public Double getQuantity() {
+        return this.quantity;
+    }
+
+    public PurchaseOrder quantity(Double quantity) {
+        this.setQuantity(quantity);
+        return this;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+    public Double getAmount() {
+        return this.amount;
+    }
+
+    public PurchaseOrder amount(Double amount) {
+        this.setAmount(amount);
+        return this;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public Long getNumberOfMaterials() {
+        return this.numberOfMaterials;
+    }
+
+    public PurchaseOrder numberOfMaterials(Long numberOfMaterials) {
+        this.setNumberOfMaterials(numberOfMaterials);
+        return this;
+    }
+
+    public void setNumberOfMaterials(Long numberOfMaterials) {
+        this.numberOfMaterials = numberOfMaterials;
     }
 
     public Supplier getSupplier() {

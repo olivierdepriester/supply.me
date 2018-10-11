@@ -49,7 +49,40 @@
         </createTable>
         <dropDefaultValue tableName="purchase_order" columnName="expected_date" columnDataType="datetime"/>
         <dropDefaultValue tableName="purchase_order" columnName="creation_date" columnDataType="datetime"/>
-        
+
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+    <changeSet id="20181011120000-1" author="olivier">
+        <addColumn tableName="purchase_order">
+            <column name="quantity" type="double">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <addColumn tableName="purchase_order">
+            <column name="amount" type="double">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <addColumn tableName="purchase_order">
+            <column name="number_of_materials" type="bigint">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <sql dbms="h2, postgresql"
+            endDelimiter=";"
+            splitStatements="true"
+            stripComments="false">
+            update purchase_order set quantity = t.quantity, amount = t.amount, number_of_materials = t.numberofmaterials
+            from (
+                select purchase_order_id,
+                    sum(p.quantity) as quantity,
+                    sum(p.quantity * p.order_price) as amount,
+                    count(distinct d.material_id) as numberofmaterials
+                from purchase_order_line p
+                    inner join demand d on d.id = p.demand_id group by purchase_order_id
+                ) t
+            where t.purchase_order_id = purchase_order.id
+        </sql>
+
+    </changeSet>
 </databaseChangeLog>

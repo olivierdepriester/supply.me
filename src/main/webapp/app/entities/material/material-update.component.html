@@ -4,9 +4,9 @@
             <h2 id="jhi-material-heading" jhiTranslate="supplyMeApp.material.home.createOrEditLabel">Create or edit a Material</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group">
+                <div *ngIf="material.id" class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.material.partNumber" for="field_partNumber">Part Number</label>
-                    <input type="text" class="form-control" name="partNumber" id="field_partNumber"
+                    <input type="text" class="form-control" disabled name="partNumber" id="field_partNumber"
                         [(ngModel)]="material.partNumber" required maxlength="10"/>
                     <div [hidden]="!(editForm.controls.partNumber?.dirty && editForm.controls.partNumber?.invalid)">
                         <small class="form-text text-danger"
@@ -39,11 +39,10 @@
                     <input type="text" class="form-control" name="description" id="field_description"
                         [(ngModel)]="material.description" />
                 </div>
-                <div class="form-group">
+                <div *ngIf="material.id" class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.material.creationDate" for="field_creationDate">Creation Date</label>
                     <div class="d-flex">
-                        <input id="field_creationDate" type="text" disabled class="form-control" name="creationDate" [(ngModel)]="creationDate"
-                        />
+                        <input id="field_creationDate" type="text" disabled class="form-control" name="creationDate" value="{{ material.creationDate | datetimeFormat }}" />
                     </div>
                 </div>
 

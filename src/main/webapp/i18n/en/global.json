@@ -198,7 +198,8 @@
             "save": "Save",
             "view": "View",
             "add": "Add",
-            "send": "Send"
+            "send": "Send",
+            "validate": "Validate"
         },
         "detail": {
             "field": "Field",

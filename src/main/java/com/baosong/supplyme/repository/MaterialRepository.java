@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, Long> {
-    // Material findFirstByPartNumberAndNotId(String partNumber, @Nullable Long id);
+    // @Query("select * from Material where partNumber = #partNumber and id != #id")
+    Material findFirstByPartNumberAndIdNotAndTemporaryIsFalse(String partNumber, @Nullable Long id);
 }

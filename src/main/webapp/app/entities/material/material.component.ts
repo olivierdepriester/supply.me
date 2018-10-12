@@ -12,7 +12,8 @@ import { MaterialService } from './material.service';
 
 @Component({
     selector: 'jhi-material',
-    templateUrl: './material.component.html'
+    templateUrl: './material.component.html',
+    styleUrls: ['./material.scss']
 })
 export class MaterialComponent implements OnInit, OnDestroy {
     materials: IMaterial[];

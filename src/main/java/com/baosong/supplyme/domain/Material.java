@@ -1,6 +1,8 @@
 package com.baosong.supplyme.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -51,15 +53,9 @@ public class Material implements Serializable {
     @Column(name = "temporary", nullable = false)
     private Boolean temporary;
 
-	public Boolean getTemporary()
-	{
-		return this.temporary;
-	}
-
-	public void setTemporary(Boolean temporary)
-	{
-		this.temporary = temporary;
-	}
+    @ManyToOne
+    @JsonIgnoreProperties("")
+    private User creationUser;
 
     @OneToMany(mappedBy = "material")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -69,7 +65,8 @@ public class Material implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Demand> demands = new HashSet<>();
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not
+    // remove
     public Long getId() {
         return id;
     }
@@ -130,6 +127,20 @@ public class Material implements Serializable {
         this.creationDate = creationDate;
     }
 
+    public User getCreationUser() {
+        return this.creationUser;
+    }
+
+    public Material creationUser(User creationUser) {
+        this.setCreationUser(creationUser);
+        return this;
+    }
+
+    public void setCreationUser(User creationUser) {
+        this.creationUser = creationUser;
+    }
+
+
     public Set<MaterialAvailability> getCodes() {
         return codes;
     }
@@ -153,6 +164,14 @@ public class Material implements Serializable {
 
     public void setCodes(Set<MaterialAvailability> materialAvailabilities) {
         this.codes = materialAvailabilities;
+    }
+
+    public Boolean isTemporary() {
+        return this.temporary;
+    }
+
+    public void setTemporary(Boolean temporary) {
+        this.temporary = temporary;
     }
 
     public Set<Demand> getDemands() {
@@ -179,7 +198,9 @@ public class Material implements Serializable {
     public void setDemands(Set<Demand> demands) {
         this.demands = demands;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and
+    // setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -203,12 +224,7 @@ public class Material implements Serializable {
 
     @Override
     public String toString() {
-        return "Material{" +
-            "id=" + getId() +
-            ", partNumber='" + getPartNumber() + "'" +
-            ", name='" + getName() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", creationDate='" + getCreationDate() + "'" +
-            "}";
+        return "Material{" + "id=" + getId() + ", partNumber='" + getPartNumber() + "'" + ", name='" + getName() + "'"
+                + ", description='" + getDescription() + "'" + ", creationDate='" + getCreationDate() + "'" + "}";
     }
 }

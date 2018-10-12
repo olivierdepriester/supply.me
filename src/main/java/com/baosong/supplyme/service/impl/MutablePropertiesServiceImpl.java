@@ -1,19 +1,6 @@
 package com.baosong.supplyme.service.impl;
 
-import com.baosong.supplyme.service.MutablePropertiesService;
-import com.baosong.supplyme.domain.MutableProperties;
-import com.baosong.supplyme.domain.enumeration.PropertiesKey;
-import com.baosong.supplyme.domain.errors.ServiceException;
-import com.baosong.supplyme.repository.MutablePropertiesRepository;
-import com.baosong.supplyme.repository.search.MutablePropertiesSearchRepository;
-
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,7 +8,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.baosong.supplyme.domain.MutableProperties;
+import com.baosong.supplyme.domain.enumeration.PropertiesKey;
+import com.baosong.supplyme.domain.errors.ServiceException;
+import com.baosong.supplyme.repository.MutablePropertiesRepository;
+import com.baosong.supplyme.repository.search.MutablePropertiesSearchRepository;
+import com.baosong.supplyme.service.MutablePropertiesService;
+
+import org.elasticsearch.index.query.QueryBuilders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Example;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service Implementation for managing MutableProperties.
@@ -36,13 +35,19 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
 
     private final MutablePropertiesSearchRepository mutablePropertiesSearchRepository;
 
-    private static Long purchaseOrderCode;
+    private static Long PURCHASE_ORDER_CODE;
+
+    private static Long MATERIAL_PART_NUMBER;
 
     public MutablePropertiesServiceImpl(MutablePropertiesRepository mutablePropertiesRepository,
             MutablePropertiesSearchRepository mutablePropertiesSearchRepository) {
         this.mutablePropertiesRepository = mutablePropertiesRepository;
         this.mutablePropertiesSearchRepository = mutablePropertiesSearchRepository;
-        purchaseOrderCode = getPropertyAsLong(PropertiesKey.PURCHASE_ORDER_CODE_GENERATOR);
+        PURCHASE_ORDER_CODE = getPropertyAsLong(PropertiesKey.PURCHASE_ORDER_CODE_GENERATOR);
+        MATERIAL_PART_NUMBER = getPropertyAsLong(PropertiesKey.MATERIAL_PART_NUMBER_GENERATOR);
+        if (MATERIAL_PART_NUMBER == 0L) {
+            MATERIAL_PART_NUMBER = 8000000000L; // Counter start : 80G
+        }
     }
 
     /**
@@ -53,7 +58,7 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
      * @throws NoSuchElementException
      */
     private MutableProperties getByKey(PropertiesKey key) throws NoSuchElementException {
-        return this.mutablePropertiesSearchRepository.search(QueryBuilders.matchQuery("key", key.toString())).iterator().next();
+        return this.mutablePropertiesRepository.findByKey(key);
     }
 
     /**
@@ -64,8 +69,8 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
      */
     @Override
     public String getNewPurchaseCode() throws ServiceException {
-        save(PropertiesKey.PURCHASE_ORDER_CODE_GENERATOR, ++purchaseOrderCode);
-        return String.format("%010d", purchaseOrderCode);
+        save(PropertiesKey.PURCHASE_ORDER_CODE_GENERATOR, ++PURCHASE_ORDER_CODE);
+        return String.format("%010d", PURCHASE_ORDER_CODE);
     }
 
     private Long getPropertyAsLong(PropertiesKey key) {
@@ -157,5 +162,16 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
         return StreamSupport
                 .stream(mutablePropertiesSearchRepository.search(queryStringQuery(query)).spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Get a new part number code and increments the counter
+     * @return a new formatted purchase order code
+     * @throws ServiceException if the property could not be saved
+     */
+    @Override
+    public String getNewPartNumber() throws ServiceException {
+        save(PropertiesKey.MATERIAL_PART_NUMBER_GENERATOR, ++MATERIAL_PART_NUMBER);
+        return String.format("%010d", MATERIAL_PART_NUMBER);
     }
 }

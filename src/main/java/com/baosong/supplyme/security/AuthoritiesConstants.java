@@ -16,7 +16,7 @@ public final class AuthoritiesConstants {
     public static final String USER = "ROLE_USER";
 
     public static final String ANONYMOUS = "ROLE_ANONYMOUS";
-    
+
     /**
      * Purchaser : manage purchase orders
      */
@@ -32,6 +32,10 @@ public final class AuthoritiesConstants {
      */
     public static final String APPROVAL_LVL2 = "ROLE_APPROVAL_LVL2";
 
+    /**
+     * Material manager : can create and edit every material
+     */
+    public static final String MATERIAL_MANAGER = "ROLE_MATERIAL_MANAGER";
 
     private AuthoritiesConstants() {
     }

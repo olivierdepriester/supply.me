@@ -57,4 +57,12 @@ public interface MutablePropertiesService {
      * @throws ServiceException if the property could not be saved
      */
     String getNewPurchaseCode() throws ServiceException;
+
+    /**
+     * Get a new part number code and increments the counter
+     * @return a new formatted purchase order code
+     * @throws ServiceException if the property could not be saved
+     */
+    String getNewPartNumber() throws ServiceException;
+
 }

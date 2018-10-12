@@ -53,5 +53,17 @@
             defaultNullValue="false"
         />
     </changeSet>
+
+    <changeSet id="20181012180000-1" author="olivier">
+        <addColumn tableName="material">
+            <column name="creation_user_id" type="bigint"/>
+        </addColumn>
+        <addForeignKeyConstraint
+            baseColumnNames="creation_user_id"
+            baseTableName="material"
+            constraintName="fk_material_creation_user_id"
+            referencedColumnNames="id"
+            referencedTableName="jhi_user"/>
+    </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

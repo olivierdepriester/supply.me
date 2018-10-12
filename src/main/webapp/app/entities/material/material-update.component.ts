@@ -7,6 +7,7 @@ import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 
 import { IMaterial } from 'app/shared/model/material.model';
 import { MaterialService } from './material.service';
+import { Principal } from 'app/core';
 
 @Component({
     selector: 'jhi-material-update',
@@ -15,15 +16,16 @@ import { MaterialService } from './material.service';
 export class MaterialUpdateComponent implements OnInit {
     private _material: IMaterial;
     isSaving: boolean;
-    creationDate: string;
+    private currentAccount: any;
 
-    constructor(private materialService: MaterialService, private activatedRoute: ActivatedRoute) {}
+    constructor(private materialService: MaterialService, private activatedRoute: ActivatedRoute, private principal: Principal) {}
 
     ngOnInit() {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ material }) => {
             this.material = material;
         });
+        this.principal.identity().then(account => (this.currentAccount = account));
     }
 
     previousState() {
@@ -32,10 +34,13 @@ export class MaterialUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.material.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
         if (this.material.id !== undefined) {
             this.subscribeToSaveResponse(this.materialService.update(this.material));
         } else {
+            this.material.temporary = false;
+            this.material.partNumber = '0000000000';
+            this.material.creationDate = moment();
+            this.material.creationUser = this.currentAccount;
             this.subscribeToSaveResponse(this.materialService.create(this.material));
         }
     }
@@ -58,6 +63,5 @@ export class MaterialUpdateComponent implements OnInit {
 
     set material(material: IMaterial) {
         this._material = material;
-        this.creationDate = moment(material.creationDate).format(DATE_TIME_FORMAT);
     }
 }

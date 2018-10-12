@@ -2,6 +2,7 @@ package com.baosong.supplyme.service.impl;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,11 @@ import com.baosong.supplyme.domain.Material;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.MaterialRepository;
 import com.baosong.supplyme.repository.search.MaterialSearchRepository;
+import com.baosong.supplyme.security.AuthoritiesConstants;
+import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.MaterialService;
+import com.baosong.supplyme.service.MutablePropertiesService;
+import com.baosong.supplyme.service.UserService;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -45,7 +50,14 @@ public class MaterialServiceImpl implements MaterialService {
     @Autowired
     private ElasticsearchTemplate template;
 
-    public MaterialServiceImpl(MaterialRepository materialRepository, MaterialSearchRepository materialSearchRepository) {
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private MutablePropertiesService mutablePropertiesService;
+
+    public MaterialServiceImpl(MaterialRepository materialRepository,
+            MaterialSearchRepository materialSearchRepository) {
         this.materialRepository = materialRepository;
         this.materialSearchRepository = materialSearchRepository;
     }
@@ -59,15 +71,38 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public Material save(Material material) throws ServiceException {
         log.debug("Request to save Material : {}", material);
-        // if (!material.getTemporary().booleanValue()) {
-        //     Material duplicatedPartNumber = materialRepository.findFirstByPartNumberAndNotId(material.getPartNumber(), material.getId());
-        //     if (duplicatedPartNumber != null) {
-        //         throw new ServiceException("The part number %s is already used");
-        //     }
-        // }
-        // Material result = materialRepository.save(material);
+        Material persistedMaterial = null;
+        if (!isMaterialEditable(material)) {
+            // Check the input material content allow it to be edited
+            throw new ServiceException("material.not.editable");
+        }
+        if (material.getId() == null) {
+            material.setCreationDate(Instant.now());
+            material.setCreationUser(userService.getCurrentUser().get());
+        } else {
+            // Get the persisted version of the material
+            persistedMaterial = findOne(material.getId()).get();
+            if (!isMaterialEditable(persistedMaterial)) {
+                // Check the persisted version in case of the
+                throw new ServiceException("material.not.editable");
+            }
+        }
+        if (!material.isTemporary().booleanValue()
+                && (material.getId() == null || persistedMaterial.isTemporary().booleanValue())) {
+            // If the material switch from temporary to definitive or if it is a new definitive material
+            // we generate a new part number for it
+            material.setPartNumber(mutablePropertiesService.getNewPartNumber());
+            material.setTemporary(Boolean.FALSE);
+        }
+        Material result = materialRepository.save(material);
         materialSearchRepository.save(result);
         return result;
+    }
+
+    private boolean isMaterialEditable(Material material) {
+        return SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MATERIAL_MANAGER)
+                || (material.isTemporary() && (material.getId() == null
+                        || material.getCreationUser().getLogin().equals(SecurityUtils.getCurrentUserLogin().get())));
     }
 
     /**
@@ -82,7 +117,6 @@ public class MaterialServiceImpl implements MaterialService {
         log.debug("Request to get all Materials");
         return materialRepository.findAll(pageable);
     }
-
 
     /**
      * Get one material by id.
@@ -112,7 +146,7 @@ public class MaterialServiceImpl implements MaterialService {
     /**
      * Search for the material corresponding to the query.
      *
-     * @param query the query of the search
+     * @param query    the query of the search
      * @param pageable the pagination information
      * @return the list of entities
      */
@@ -121,12 +155,15 @@ public class MaterialServiceImpl implements MaterialService {
     public Page<Material> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Materials for query {}", query);
         // SearchQuery query2 = new NativeSearchQueryBuilder()
-        // .withQuery(queryStringQuery(query.endsWith("*") ? query : new StringBuilder(query).append("*").toString()))
+        // .withQuery(queryStringQuery(query.endsWith("*") ? query : new
+        // StringBuilder(query).append("*").toString()))
         // .withSort(SortBuilders.fieldSort("partNumber.keyword").order(SortOrder.ASC))
         // .withPageable(pageable)
         // .build();
         // return materialSearchRepository.search(query2);
-        return materialSearchRepository.search(queryStringQuery(query.endsWith("*") ? query : new StringBuilder(query).append("*").toString()), pageable);
+        return materialSearchRepository.search(
+                queryStringQuery(query.endsWith("*") ? query : new StringBuilder(query).append("*").toString()),
+                pageable);
     }
 
     @Override

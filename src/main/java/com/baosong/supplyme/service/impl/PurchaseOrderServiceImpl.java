@@ -117,7 +117,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      */
     private void updatePurchaseOrderLines(PurchaseOrder sourcePurchaseOrder, PurchaseOrder persistedPurchaseOrder)
             throws ServiceException {
-        if (persistedPurchaseOrder.getId() == null) {
+        if (persistedPurchaseOrder.getId() != null) {
             // Gets the POLs ids remaining in the PO to save
             final Set<Long> purchaseOrderLineIdsPresent = sourcePurchaseOrder.getPurchaseOrderLines().stream()
                     .filter(pol -> pol.getId() != null).map(PurchaseOrderLine::getId).collect(Collectors.toSet());

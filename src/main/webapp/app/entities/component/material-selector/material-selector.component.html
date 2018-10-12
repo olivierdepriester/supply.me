@@ -4,7 +4,7 @@
         [minLength]="3" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" field="displayValue">
         <ng-template let-item pTemplate="item">
             <div>
-                <div title="{{ item.description }}">{{ item.displayValue }}</div>
+                <div [ngClass]="{'temporary': item.temporary }" title="{{ item.description }}">{{ item.displayValue }}</div>
             </div>
         </ng-template>
     </p-autoComplete>

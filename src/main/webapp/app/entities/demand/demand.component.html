@@ -91,7 +91,7 @@
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
 	                    <div *ngIf="isEditAllowed(demand); then editableDemandBlock" ></div>
-	                    <div *ngIf="demand.status == 'WAITING_FOR_APPROVAL'; then approvalDemandBlock" ></div>
+	                    <div *ngIf="isApprovalAllowed(demand); then approvalDemandBlock" ></div>
                         <div *ngIf="isPurchaseOrderAllowed(demand); then orderDemandBlock" ></div>
                         <ng-template #editableDemandBlock>
 		                     <button type="submit"
@@ -118,6 +118,7 @@
 	                         <button type="submit"
 		                             [routerLink]="['/demand']"
                                      class="btn btn-primary btn-sm"
+                                     [disabled]="demand.material.temporary"
                                      title="{{ 'supplyMeApp.demand.button.approve' | translate }}"
 		                             (click)="approve(demand)" >
 		                         <fa-icon [icon]="faThumbsUp"></fa-icon>

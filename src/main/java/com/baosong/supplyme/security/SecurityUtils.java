@@ -65,6 +65,7 @@ public final class SecurityUtils {
      *
      * @param authority the authority to check
      * @return true if the current user has the authority, false otherwise
+     * @see AuthoritiesConstants
      */
     public static boolean isCurrentUserInRole(String authority) {
         SecurityContext securityContext = SecurityContextHolder.getContext();

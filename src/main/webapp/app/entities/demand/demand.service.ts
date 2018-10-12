@@ -6,7 +6,6 @@ import { DemandStatus, IDemand } from 'app/shared/model/demand.model';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Principal } from '../../core/auth/principal.service';
 
 type EntityResponseType = HttpResponse<IDemand>;
 type EntityArrayResponseType = HttpResponse<IDemand[]>;
@@ -16,7 +15,7 @@ export class DemandService {
     private resourceUrl = SERVER_API_URL + 'api/demands';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/demands';
 
-    constructor(private http: HttpClient, private principal: Principal) {}
+    constructor(private http: HttpClient) {}
 
     create(demand: IDemand): Observable<EntityResponseType> {
         demand.creationDate = moment();
@@ -97,8 +96,17 @@ export class DemandService {
 
     isEditAllowed(demand: IDemand, account: any): boolean {
         const result =
-            (demand.status === 'NEW' || demand.status === 'REJECTED') &&
+            (demand.status === DemandStatus.NEW || demand.status === DemandStatus.REJECTED) &&
             ((account.authorities && account.authorities.includes('ROLE_ADMIN')) || demand.creationUser.id === account.id);
+        return result;
+    }
+
+    isApprovalAllowed(demand: IDemand, account: any): boolean {
+        const result =
+            demand.status === DemandStatus.WAITING_FOR_APPROVAL &&
+            // && !demand.material.temporary
+            account.authorities &&
+            (account.authorities.includes('ROLE_APPROVAL_LVL1') || account.authorities.includes('ROLE_APPROVAL_LVL2'));
         return result;
     }
 }

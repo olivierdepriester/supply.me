@@ -9,6 +9,7 @@ import javax.management.Query;
 
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.Material;
+import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.MaterialRepository;
 import com.baosong.supplyme.repository.search.MaterialSearchRepository;
 import com.baosong.supplyme.service.MaterialService;
@@ -56,9 +57,15 @@ public class MaterialServiceImpl implements MaterialService {
      * @return the persisted entity
      */
     @Override
-    public Material save(Material material) {
+    public Material save(Material material) throws ServiceException {
         log.debug("Request to save Material : {}", material);
-        Material result = materialRepository.save(material);
+        // if (!material.getTemporary().booleanValue()) {
+        //     Material duplicatedPartNumber = materialRepository.findFirstByPartNumberAndNotId(material.getPartNumber(), material.getId());
+        //     if (duplicatedPartNumber != null) {
+        //         throw new ServiceException("The part number %s is already used");
+        //     }
+        // }
+        // Material result = materialRepository.save(material);
         materialSearchRepository.save(result);
         return result;
     }

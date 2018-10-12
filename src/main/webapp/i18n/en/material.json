@@ -4,15 +4,15 @@
         "material" : {
             "home": {
                 "title": "Materials",
-                "createLabel": "Create a new Material",
-                "createOrEditLabel": "Create or edit a Material",
-                "search": "Search for Material"
+                "createLabel": "Create a new material",
+                "createOrEditLabel": "Create or edit a material",
+                "search": "Search for material"
             },
-            "created": "A new Material is created with identifier {{ param }}",
-            "updated": "A Material is updated with identifier {{ param }}",
-            "deleted": "A Material is deleted with identifier {{ param }}",
+            "created": "A new material is created with identifier {{ param }}",
+            "updated": "A material is updated with identifier {{ param }}",
+            "deleted": "A material is deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Material {{ id }}?"
+                "question": "Are you sure you want to delete material {{ id }}?"
             },
             "detail": {
                 "title": "Material"

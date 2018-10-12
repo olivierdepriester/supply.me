@@ -1,6 +1,7 @@
 package com.baosong.supplyme.service;
 
 import com.baosong.supplyme.domain.Material;
+import com.baosong.supplyme.domain.errors.ServiceException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,7 @@ public interface MaterialService {
      * @param material the entity to save
      * @return the persisted entity
      */
-    Material save(Material material);
+    Material save(Material material) throws ServiceException;
 
     /**
      * Get all the materials.

@@ -40,7 +40,18 @@
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="material" columnName="creation_date" columnDataType="datetime"/>
-        
+
+    </changeSet>
+
+    <changeSet id="20181011130000-1" author="jhipster">
+        <addColumn tableName="material">
+            <column name="temporary" type="boolean" />
+        </addColumn>
+        <addNotNullConstraint tableName="material"
+            columnDataType="boolean"
+            columnName="temporary"
+            defaultNullValue="false"
+        />
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

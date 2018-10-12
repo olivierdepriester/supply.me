@@ -3,9 +3,9 @@ package com.baosong.supplyme.domain.errors;
 public class ServiceException extends AbstractApplicationException {
 
 	/**
-	 * 
+	 *
 	 */
-	private static final long serialVersionUID = -5635854215631699865L;
+    private static final long serialVersionUID = -5635854215631699865L;
 
 	public ServiceException() {
 	}

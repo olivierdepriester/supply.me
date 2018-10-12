@@ -1,18 +1,18 @@
 import { HttpResponse } from '@angular/common/http';
-import { Component, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, forwardRef, ViewChild } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SELECTOR_SIZE } from 'app/app.constants';
+import { AbstractSelectorComponent } from 'app/entities/component/abstract-selector';
 import { MaterialService } from 'app/entities/material/material.service';
 import { AutoComplete } from 'primeng/primeng';
+import { Observable } from 'rxjs';
 import * as dataModel from '../../../shared/model/material.model';
 import { MaterialSelectorItem } from './';
-import { AbstractSelectorComponent } from 'app/entities/component/abstract-selector';
-import { Observable } from 'rxjs';
 
 @Component({
     selector: 'jhi-material-selector',
     templateUrl: './material-selector.component.html',
-    styles: [],
+    styleUrls: ['./material-selector.component.scss'],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,

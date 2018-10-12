@@ -9,4 +9,8 @@ export class MaterialSelectorItem extends AbstractSelectorItem {
         this.displayValue = `${data.partNumber} - ${data.name}`;
         this.description = data.description;
     }
+
+    public get temporary(): boolean {
+        return this.data.temporary;
+    }
 }

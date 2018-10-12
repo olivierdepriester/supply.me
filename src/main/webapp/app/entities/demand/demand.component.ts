@@ -112,6 +112,10 @@ export class DemandComponent implements OnInit, OnDestroy {
         );
     }
 
+    isApprovalAllowed(demand: IDemand) {
+        return this.demandService.isApprovalAllowed(demand, this.currentAccount);
+    }
+
     isEditAllowed(demand: IDemand): boolean {
         return this.demandService.isEditAllowed(demand, this.currentAccount);
     }

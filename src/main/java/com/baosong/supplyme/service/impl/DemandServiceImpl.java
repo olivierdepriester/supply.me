@@ -232,29 +232,33 @@ public class DemandServiceImpl implements DemandService {
                     status, id, demand.getStatus()));
         }
         DemandStatus targetStatus = status;
-        demand.setStatus(targetStatus);
-
         switch (status) {
         case WAITING_FOR_APPROVAL:
             if (!isDemandEditable(demand)) {
+                // Can not be edited -> Error
                 throw new ServiceException(
                         String.format("The current user can not edit nor send it to approval the demand %d", id));
             }
+            demand.setStatus(targetStatus);
             if (canBeSetToApproved(demand)) {
+                // Automatic approval if possible
                 this.changeStatus(demand.getId(), DemandStatus.APPROVED);
                 return demand;
             }
             break;
         case APPROVED:
             if (!canBeSetToApproved(demand)) {
+                // Can not be approved -> Error
                 throw new ServiceException(String.format("The current user can not set the demand %d to approved", id));
             }
+            demand.setStatus(targetStatus);
             // Send a mail to the purchasers
             List<User> recipients = userService.getUsersFromAuthority(AuthoritiesConstants.PURCHASER);
             String to = recipients.stream().map(u -> u.getEmail()).collect(Collectors.joining(","));
             mailService.sendApprovedDemandToPurchaserEmail(demand, to);
             break;
         case REJECTED:
+            demand.setStatus(targetStatus);
             // Send a mail to the demand owner
             mailService.sendRejectedDemandEmail(demand, userService.getCurrentUser().get());
             break;
@@ -271,7 +275,8 @@ public class DemandServiceImpl implements DemandService {
      */
     private boolean canBeSetToApproved(Demand demand) {
         // TODO Rules about demand estimated amount and recurrency
-        return SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL2);
+        return (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL1) || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL2))
+                && !demand.getMaterial().getTemporary().booleanValue();
     }
 
     @Override
@@ -289,8 +294,8 @@ public class DemandServiceImpl implements DemandService {
      */
     private boolean isDemandEditable(Demand demand) {
         User currentUser = this.userService.getUserWithAuthorities().get();
-        return (demand.getCreationUser().getId() == currentUser.getId()
-                || currentUser.getAuthorities().stream().anyMatch(a -> a.getName().equals(AuthoritiesConstants.ADMIN)))
+        return (demand.getCreationUser().getId().equals(currentUser.getId())
+                || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN))
                 && (DemandStatus.NEW.equals(demand.getStatus()) || DemandStatus.REJECTED.equals(demand.getStatus()));
     }
 }

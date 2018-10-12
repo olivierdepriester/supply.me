@@ -47,6 +47,20 @@ public class Material implements Serializable {
     @Column(name = "creation_date")
     private Instant creationDate;
 
+    @NotNull
+    @Column(name = "temporary", nullable = false)
+    private Boolean temporary;
+
+	public Boolean getTemporary()
+	{
+		return this.temporary;
+	}
+
+	public void setTemporary(Boolean temporary)
+	{
+		this.temporary = temporary;
+	}
+
     @OneToMany(mappedBy = "material")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<MaterialAvailability> codes = new HashSet<>();

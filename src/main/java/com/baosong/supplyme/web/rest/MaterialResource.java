@@ -2,6 +2,7 @@ package com.baosong.supplyme.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.baosong.supplyme.domain.Material;
+import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
 import com.baosong.supplyme.web.rest.util.HeaderUtil;
@@ -57,10 +58,14 @@ public class MaterialResource {
         if (material.getId() != null) {
             throw new BadRequestAlertException("A new material cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Material result = materialService.save(material);
-        return ResponseEntity.created(new URI("/api/materials/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        try {
+            Material result = materialService.save(material);
+            return ResponseEntity.created(new URI("/api/materials/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getMessage()) ;
+        }
     }
 
     /**
@@ -79,17 +84,22 @@ public class MaterialResource {
         if (material.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Material result = materialService.save(material);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, material.getId().toString()))
-            .body(result);
+        try {
+            Material result = materialService.save(material);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, material.getId().toString()))
+                .body(result);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getMessage()) ;
+        }
     }
 
     /**
-     * GET  /materials : get all the materials.
+     * GET /materials : get all the materials.
      *
      * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of materials in body
+     * @return the ResponseEntity with status 200 (OK) and the list of materials in
+     *         body
      */
     @GetMapping("/materials")
     @Timed
@@ -101,10 +111,11 @@ public class MaterialResource {
     }
 
     /**
-     * GET  /materials/:id : get the "id" material.
+     * GET /materials/:id : get the "id" material.
      *
      * @param id the id of the material to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the material, or with status 404 (Not Found)
+     * @return the ResponseEntity with status 200 (OK) and with body the material,
+     *         or with status 404 (Not Found)
      */
     @GetMapping("/materials/{id}")
     @Timed
@@ -115,7 +126,7 @@ public class MaterialResource {
     }
 
     /**
-     * DELETE  /materials/:id : delete the "id" material.
+     * DELETE /materials/:id : delete the "id" material.
      *
      * @param id the id of the material to delete
      * @return the ResponseEntity with status 200 (OK)
@@ -129,10 +140,10 @@ public class MaterialResource {
     }
 
     /**
-     * SEARCH  /_search/materials?query=:query : search for the material corresponding
-     * to the query.
+     * SEARCH /_search/materials?query=:query : search for the material
+     * corresponding to the query.
      *
-     * @param query the query of the material search
+     * @param query    the query of the material search
      * @param pageable the pagination information
      * @return the result of the search
      */
@@ -149,6 +160,6 @@ public class MaterialResource {
     @Timed
     public ResponseEntity<Void> rebuildIndex() {
         materialService.rebuildIndex();
-		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "0")).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "0")).build();
     }
 }

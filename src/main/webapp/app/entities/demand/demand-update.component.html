@@ -12,6 +12,12 @@
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
                     <jhi-material-selector required id="field_material" name="material" [(ngModel)]="demand.material" style="display: block"></jhi-material-selector>
+                    <a [routerLink]="['/', { outlets: { popup: 'demand/material/new'} }]"
+                            replaceUrl="true"
+                            queryParamsHandling="merge"
+                            jhiTranslate="supplyMeApp.demand.button.createMaterial"
+                            >
+                    </a>
                     <div [hidden]="!(editForm.controls.material?.dirty && editForm.controls.material?.invalid)">
                         <small class="form-text text-danger" jhiTranslate="entity.validation.required">
                         This field is required.

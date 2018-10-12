@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
+import { Demand, IDemand } from 'app/shared/model/demand.model';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Demand } from 'app/shared/model/demand.model';
-import { DemandService } from './demand.service';
-import { DemandComponent } from './demand.component';
+import { DemandDeletePopupComponent } from './demand-delete-dialog.component';
 import { DemandDetailComponent } from './demand-detail.component';
 import { DemandUpdateComponent } from './demand-update.component';
-import { DemandDeletePopupComponent } from './demand-delete-dialog.component';
-import { IDemand } from 'app/shared/model/demand.model';
+import { DemandComponent } from './demand.component';
+import { DemandService } from './demand.service';
+import { MaterialTemporaryPopupComponent } from './material-temporary-dialog.component';
 
 @Injectable({ providedIn: 'root' })
 export class DemandResolve implements Resolve<IDemand> {
@@ -70,24 +70,6 @@ export const demandRoute: Routes = [
             pageTitle: 'supplyMeApp.demand.home.title'
         },
         canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'demand/:id/sendToApproval',
-        component: DemandComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'supplyMeApp.demand.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'demand/:id/reject',
-        component: DemandComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'supplyMeApp.demand.home.title'
-        },
-        canActivate: [UserRouteAccessService]
     }
 ];
 
@@ -95,6 +77,19 @@ export const demandPopupRoute: Routes = [
     {
         path: 'demand/:id/delete',
         component: DemandDeletePopupComponent,
+        resolve: {
+            demand: DemandResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'supplyMeApp.demand.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
+    {
+        path: 'demand/material/new',
+        component: MaterialTemporaryPopupComponent,
         resolve: {
             demand: DemandResolve
         },

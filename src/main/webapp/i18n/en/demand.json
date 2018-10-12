@@ -26,7 +26,8 @@
             "button" : {
                 "sendToApproval": "Send the demand to approval",
                 "reject": "Reject the demand",
-                "approve": "Approve the demand"
+                "approve": "Approve the demand",
+                "createMaterial": "Create a new material for this demand"
             }
         }
     }

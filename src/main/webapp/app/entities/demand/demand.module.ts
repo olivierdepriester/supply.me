@@ -14,7 +14,9 @@ import {
     DemandDeletePopupComponent,
     DemandDeleteDialogComponent,
     demandRoute,
-    demandPopupRoute
+    demandPopupRoute,
+    MaterialTemporaryDialogComponent,
+    MaterialTemporaryPopupComponent
 } from './';
 
 const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
@@ -29,8 +31,23 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         UserSelectorModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
-    declarations: [DemandComponent, DemandDetailComponent, DemandUpdateComponent, DemandDeleteDialogComponent, DemandDeletePopupComponent],
-    entryComponents: [DemandComponent, DemandUpdateComponent, DemandDeleteDialogComponent, DemandDeletePopupComponent],
+    declarations: [
+        DemandComponent,
+        DemandDetailComponent,
+        DemandUpdateComponent,
+        DemandDeleteDialogComponent,
+        DemandDeletePopupComponent,
+        MaterialTemporaryDialogComponent,
+        MaterialTemporaryPopupComponent
+    ],
+    entryComponents: [
+        DemandComponent,
+        DemandUpdateComponent,
+        DemandDeleteDialogComponent,
+        DemandDeletePopupComponent,
+        MaterialTemporaryDialogComponent,
+        MaterialTemporaryPopupComponent
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SupplyMeDemandModule {}

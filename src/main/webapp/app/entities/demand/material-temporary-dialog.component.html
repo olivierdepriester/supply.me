@@ -1,0 +1,35 @@
+<form name="newMaterialForm" (ngSubmit)="save()" #newMaterialForm="ngForm">
+    <div class="modal-header">
+        <h4 class="modal-title" jhiTranslate="supplyMeApp.material.home.createLabel">Create a new material</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="supplyMeApp.material.name" for="field_name">Material</label>
+            <input class="form-control" id="field_name" name="name" required type="text" [(ngModel)]="material.name" maxlength="255"/>
+            <div [hidden]="!(newMaterialForm.controls.name?.dirty && newMaterialForm.controls.name?.invalid)">
+                <small class="form-text text-danger"
+                [hidden]="!newMaterialForm.controls.name?.errors?.required" jhiTranslate="entity.validation.required">
+                This field is required.
+                </small>
+                <small class="form-text text-danger"
+                [hidden]="!newMaterialForm.controls.name?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 255 }">
+                This field cannot be longer than 255 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="supplyMeApp.material.description" for="field_description">Material</label>
+            <input class="form-control" id="field_description" name="description" type="text" [(ngModel)]="material.description" />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="newMaterialForm.form.invalid" >
+            <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

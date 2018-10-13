@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IMaterial } from 'app/shared/model/material.model';
 import { MaterialService } from './material.service';
 import { HttpResponse } from '@angular/common/http';
+import { Principal } from 'app/core';
 
 @Component({
     selector: 'jhi-material-detail',
@@ -13,7 +14,7 @@ import { HttpResponse } from '@angular/common/http';
 export class MaterialDetailComponent implements OnInit {
     material: IMaterial;
 
-    constructor(private activatedRoute: ActivatedRoute, private materiaService: MaterialService) {}
+    constructor(private activatedRoute: ActivatedRoute, private materialService: MaterialService) {}
 
     ngOnInit() {
         this.activatedRoute.data.subscribe(({ material }) => {
@@ -23,7 +24,7 @@ export class MaterialDetailComponent implements OnInit {
 
     validate() {
         this.material.temporary = false;
-        this.materiaService.update(this.material).subscribe((res: HttpResponse<IMaterial>) => (this.material = res.body));
+        this.materialService.update(this.material).subscribe((res: HttpResponse<IMaterial>) => (this.material = res.body));
     }
 
     previousState() {

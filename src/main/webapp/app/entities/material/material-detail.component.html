@@ -23,22 +23,18 @@
                 </dd>
             </dl>
 
-            <button type="submit"
-                    (click)="previousState()"
-                    class="btn btn-info">
+            <button type="submit" (click)="previousState()" class="btn btn-info">
                 <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
             </button>
-            <button type="button"
-                    [routerLink]="['/material', material.id, 'edit']"
-                    class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-            </button>
-
-            <button *ngIf="material.temporary" type="button"
-                    class="btn btn-primary"
-                    (click)="validate()">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.validate"> Validate</span>
-            </button>
+            <ng-container *jhiHasAnyAuthority="'ROLE_MATERIAL_MANAGER'">
+                <button type="button" [routerLink]="['/material', material.id, 'edit']" class="btn btn-primary">
+                    <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                </button>
+                <button *ngIf="material.temporary" type="button" class="btn btn-primary" (click)="validate()">
+                    <fa-icon [icon]="['far','check-circle']"></fa-icon>&nbsp;<span jhiTranslate="entity.action.validate">
+                        Validate</span>
+                </button>
+            </ng-container>
         </div>
     </div>
 </div>

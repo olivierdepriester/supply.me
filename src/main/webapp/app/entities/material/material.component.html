@@ -3,8 +3,8 @@
         <span jhiTranslate="supplyMeApp.material.home.title">Materials</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-material" [routerLink]="['/material/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
-            <span class="hidden-sm-down"  jhiTranslate="supplyMeApp.material.home.createLabel">
-            Create new Material
+            <span class="hidden-sm-down" jhiTranslate="supplyMeApp.material.home.createLabel">
+                Create new Material
             </span>
         </button>
     </h2>
@@ -13,7 +13,8 @@
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'supplyMeApp.material.home.search' | translate }}">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch"
+                        placeholder="{{ 'supplyMeApp.material.home.search' | translate }}">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
                         <fa-icon [icon]="'search'"></fa-icon>
                     </button>
@@ -24,51 +25,61 @@
             </form>
         </div>
     </div>
-    <br/>
+    <br />
     <div class="table-responsive" *ngIf="materials">
         <table class="table table-striped">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="partNumber"><span jhiTranslate="supplyMeApp.material.partNumber">Part Number</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="name"><span jhiTranslate="supplyMeApp.material.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="description"><span jhiTranslate="supplyMeApp.material.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.material.creationDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th></th>
-            </tr>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+                    <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="partNumber"><span jhiTranslate="supplyMeApp.material.partNumber">Part Number</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="name"><span jhiTranslate="supplyMeApp.material.name">Name</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="description"><span jhiTranslate="supplyMeApp.material.description">Description</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.material.creationDate">Creation Date</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th></th>
+                </tr>
             </thead>
-            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
-            <tr *ngFor="let material of materials ;trackBy: trackId">
-                <td><a [routerLink]="['/material', material.id, 'view' ]">{{material.id}}</a></td>
-                <td [ngClass]="{'temporary': material.temporary}" >{{material.partNumber}}</td>
-                <td>{{material.name}}</td>
-                <td>{{material.description}}</td>
-                <td>{{material.creationDate | datetimeFormat }}</td>
-                <td class="text-right">
-                    <div class="btn-group flex-btn-group-container">
-                        <button type="submit"
-                                [routerLink]="['/material', material.id, 'view' ]"
-                                class="btn btn-info btn-sm">
-                            <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/material', material.id, 'edit']"
-                                class="btn btn-primary btn-sm">
-                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'material/'+ material.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                        </button>
-                    </div>
-                </td>
-            </tr>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']"
+                [infiniteScrollDistance]="0">
+                <tr *ngFor="let material of materials ;trackBy: trackId">
+                    <td><a [routerLink]="['/material', material.id, 'view' ]">{{material.id}}</a></td>
+                    <td [ngClass]="{'temporary': material.temporary}">{{material.partNumber}}</td>
+                    <td>{{material.name}}</td>
+                    <td>{{material.description}}</td>
+                    <td>{{material.creationDate | datetimeFormat }}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit" [routerLink]="['/material', material.id, 'view' ]" class="btn btn-info btn-sm">
+                                <fa-icon [icon]="'eye'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+                            <ng-container *jhiHasAnyAuthority="'ROLE_MATERIAL_MANAGER'">
+                                <button type="submit" [routerLink]="['/material', material.id, 'edit']" class="btn btn-primary btn-sm">
+                                    <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                                </button>
+                                <button *ngIf="material.temporary" type="button" (click)="validate(material)" class="btn btn-primary btn-sm">
+                                    <fa-icon [icon]="['far','check-circle']"></fa-icon>
+                                    <span class="d-none d-md-inline" jhiTranslate="entity.action.validate">Validate</span>
+                                </button>
+                                <button type="submit" [routerLink]="['/', { outlets: { popup: 'material/'+ material.id + '/delete'} }]"
+                                    replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
+                                    <fa-icon [icon]="'times'"></fa-icon>
+                                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                </button>
+                            </ng-container>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>

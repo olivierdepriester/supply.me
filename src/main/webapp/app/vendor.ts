@@ -41,7 +41,7 @@ import {
     faTasks,
     faHome
 } from '@fortawesome/free-solid-svg-icons';
-
+import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 // Adds the SVG icon to the library so you can use it in your page
 library.add(faUser);
 library.add(faSort);
@@ -77,6 +77,7 @@ library.add(faCalendarAlt);
 library.add(faSearch);
 library.add(faTrashAlt);
 library.add(faAsterisk);
+library.add(faCheckCircle);
 
 import 'quill/dist/quill.js';
 import '../../../../node_modules/fullcalendar/dist/fullcalendar.js';

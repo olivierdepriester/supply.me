@@ -115,6 +115,11 @@ export class MaterialComponent implements OnInit, OnDestroy {
         this.loadAll();
     }
 
+    validate(material: IMaterial) {
+        material.temporary = false;
+        this.materialService.update(material).subscribe((res: HttpResponse<IMaterial>) => (material = res.body));
+    }
+
     ngOnInit() {
         this.loadAll();
         this.principal.identity().then(account => {

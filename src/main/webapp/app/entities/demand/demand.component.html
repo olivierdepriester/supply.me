@@ -104,7 +104,7 @@
                                      class="btn btn-primary btn-sm"
                                      title="{{ 'supplyMeApp.demand.button.sendToApproval' | translate }}"
 		                             (click)="sendToApproval(demand)" >
-		                         <fa-icon [icon]="faShareSquare"></fa-icon>
+		                         <fa-icon [icon]="'share-square'"></fa-icon>
 		                     </button>
 		                     <button type="submit"
 		                             [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/delete'} }]"
@@ -121,14 +121,14 @@
                                      [disabled]="demand.material.temporary"
                                      title="{{ 'supplyMeApp.demand.button.approve' | translate }}"
 		                             (click)="approve(demand)" >
-		                         <fa-icon [icon]="faThumbsUp"></fa-icon>
+		                         <fa-icon [icon]="'thumbs-up'"></fa-icon>
 	                     	</button>
 		                     <button type="submit"
 		                             [routerLink]="['/demand']"
                                      class="btn btn-primary btn-sm"
                                      title="{{ 'supplyMeApp.demand.button.reject' | translate }}"
 		                             (click)="reject(demand)" >
-		                         <fa-icon [icon]="faThumbsDown"></fa-icon>
+		                         <fa-icon [icon]="'thumbs-down'"></fa-icon>
 		                     </button>
 	                    </ng-template>
 						<ng-template #orderDemandBlock>
@@ -136,7 +136,7 @@
                                      [routerLink]="['/purchase-order/new']"
                                      [queryParams]="{demandId : demand.id}"
 		                             class="btn btn-primary btn-sm">
-		                         <fa-icon [icon]="faShoppingCart"></fa-icon>
+		                         <fa-icon [icon]="'shopping-cart'"></fa-icon>
 	                     	</button>
 	                    </ng-template>
                     </div>

@@ -1,7 +1,6 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { faShareSquare, faShoppingCart, faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { Principal } from 'app/core';
 import { DemandSearchCriteria, DemandStatus, IDemand } from 'app/shared/model/demand.model';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
@@ -17,13 +16,7 @@ export class DemandComponent implements OnInit, OnDestroy {
     demands: IDemand[];
     currentAccount: any;
     eventSubscriber: Subscription;
-
     searchCriteria: DemandSearchCriteria = new DemandSearchCriteria();
-    faShareSquare = faShareSquare;
-    faThumbsUp = faThumbsUp;
-    faThumbsDown = faThumbsDown;
-    faShoppingCart = faShoppingCart;
-    authorities: boolean[] = new Array();
 
     constructor(
         private demandService: DemandService,
@@ -96,10 +89,6 @@ export class DemandComponent implements OnInit, OnDestroy {
             this.searchCriteria.creationUser = this.currentAccount;
             this.search();
         });
-        this.principal.hasAuthority('ROLE_PURCHASER').then(value => (this.authorities['ROLE_PURCHASER'] = value));
-        this.principal.hasAuthority('ROLE_APPROVAL_LVL1').then(value => (this.authorities['ROLE_APPROVAL_LVL1'] = value));
-        this.principal.hasAuthority('ROLE_APPROVAL_LVL2').then(value => (this.authorities['ROLE_APPROVAL_LVL2'] = value));
-        this.principal.hasAuthority('ROLE_ADMIN').then(value => (this.authorities['ROLE_ADMIN'] = value));
         this.registerChangeInDemands();
     }
 
@@ -108,7 +97,7 @@ export class DemandComponent implements OnInit, OnDestroy {
             ((demand.status === DemandStatus.ORDERED &&
                 (demand.quantityOrdered == null || demand.quantity.valueOf() > demand.quantityOrdered.valueOf())) ||
                 demand.status === DemandStatus.APPROVED) &&
-            this.authorities['ROLE_PURCHASER']
+            this.currentAccount.authorities.includes('ROLE_PURCHASER')
         );
     }
 

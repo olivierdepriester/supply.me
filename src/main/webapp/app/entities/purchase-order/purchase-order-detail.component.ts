@@ -5,7 +5,6 @@ import { IPurchaseOrder, PurchaseOrderStatus } from 'app/shared/model/purchase-o
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { PurchaseOrderService } from '.';
 import { JhiAlertService } from 'ng-jhipster';
-import { faFileContract } from '@fortawesome/free-solid-svg-icons';
 import { Principal } from 'app/core';
 
 @Component({
@@ -16,7 +15,6 @@ export class PurchaseOrderDetailComponent implements OnInit {
     purchaseOrder: IPurchaseOrder;
     isSending = false;
     isEditable = false;
-    faFileContract = faFileContract;
     currentAccount: any;
 
     constructor(

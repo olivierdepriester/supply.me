@@ -9,7 +9,6 @@ import { Principal } from 'app/core';
 
 import { ITEMS_PER_PAGE } from 'app/shared';
 import { PurchaseOrderService } from './purchase-order.service';
-import { faFileContract } from '@fortawesome/free-solid-svg-icons';
 @Component({
     selector: 'jhi-purchase-order',
     templateUrl: './purchase-order.component.html'
@@ -26,8 +25,6 @@ export class PurchaseOrderComponent implements OnInit, OnDestroy {
     reverse: any;
     totalItems: number;
     currentSearch: string;
-
-    faFileContract = faFileContract;
 
     constructor(
         private purchaseOrderService: PurchaseOrderService,

@@ -1,10 +1,8 @@
+import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { IMaterial } from 'app/shared/model/material.model';
 import { MaterialService } from './material.service';
-import { HttpResponse } from '@angular/common/http';
-import { Principal } from 'app/core';
 
 @Component({
     selector: 'jhi-material-detail',

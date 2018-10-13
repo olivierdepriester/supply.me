@@ -98,7 +98,7 @@
                                 </button>
                                 <button type="submit" class="btn btn-primary btn-sm" (click)="send(purchaseOrder)"
                                     title="{{ 'entity.action.send' | translate }}">
-                                    <fa-icon [icon]="faFileContract"></fa-icon>
+                                    <fa-icon [icon]="'file-contract'"></fa-icon>
                                 </button>
                                 <button type="submit" [routerLink]="['/', { outlets: { popup: 'purchase-order/'+ purchaseOrder.id + '/delete'} }]"
                                     replaceUrl="true" queryParamsHandling="merge" title="{{ 'entity.action.delete' | translate }}"

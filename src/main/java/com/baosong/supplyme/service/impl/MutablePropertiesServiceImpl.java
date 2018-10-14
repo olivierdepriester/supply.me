@@ -74,17 +74,16 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
     }
 
     private Long getPropertyAsLong(PropertiesKey key) {
-        try {
-            MutableProperties property = this.getByKey(key);
-            return Long.parseLong(property.getValue());
-        } catch (NoSuchElementException e) {
-            MutableProperties property = new MutableProperties();
+        MutableProperties property = null;
+        property = this.getByKey(key);
+        if (property == null) {
+            property = new MutableProperties();
             property.setKey(key);
             property.setValue("0");
             property.setValueType(Long.class.getCanonicalName());
             save(property);
-            return 0L;
         }
+        return Long.parseLong(property.getValue());
     }
 
     private <T> MutableProperties save(PropertiesKey key, T value) throws ServiceException {
@@ -166,6 +165,7 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
 
     /**
      * Get a new part number code and increments the counter
+     *
      * @return a new formatted purchase order code
      * @throws ServiceException if the property could not be saved
      */

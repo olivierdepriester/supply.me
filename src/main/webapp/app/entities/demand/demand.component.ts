@@ -55,15 +55,15 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     sendToApproval(demand: IDemand) {
-        this.changeStatus(demand, DemandStatus.WAITING_FOR_APPROVAL);
+        this.changeStatus(demand, DemandStatus.WAITING_FOR_APPROVAL, null);
     }
 
     approve(demand: IDemand) {
-        this.changeStatus(demand, DemandStatus.APPROVED);
+        this.changeStatus(demand, DemandStatus.APPROVED, null);
     }
 
     reject(demand: IDemand) {
-        this.changeStatus(demand, DemandStatus.REJECTED);
+        this.changeStatus(demand, DemandStatus.REJECTED, 'TODO reject comment');
     }
 
     /**
@@ -71,8 +71,8 @@ export class DemandComponent implements OnInit, OnDestroy {
      * @param demand
      * @param status
      */
-    private changeStatus(demand: IDemand, status: DemandStatus) {
-        this.demandService.changeStatus(demand.id, status).subscribe(
+    private changeStatus(demand: IDemand, status: DemandStatus, comment: string) {
+        this.demandService.changeStatus(demand.id, status, comment).subscribe(
             (res: HttpResponse<IDemand>) => {
                 demand.status = res.body.status;
             },

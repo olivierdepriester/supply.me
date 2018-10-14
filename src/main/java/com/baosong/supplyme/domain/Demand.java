@@ -8,8 +8,11 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
@@ -34,10 +37,10 @@ public class Demand implements Serializable {
     @Column(name = "quantity", nullable = false)
     private Double quantity;
 
-    @Column(name = "quantityordered")
+    @Column(name = "quantity_ordered")
     private Double quantityOrdered;
 
-    @Column(name = "quantitydelivered")
+    @Column(name = "quantity_delivered")
     private Double quantityDelivered;
 
     @NotNull
@@ -63,6 +66,20 @@ public class Demand implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("")
     private User creationUser;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "demand", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("creationDate desc")
+    private List<DemandStatusChange> demandStatusChanges;
+
+	public List<DemandStatusChange> getDemandStatusChanges()
+	{
+		return this.demandStatusChanges;
+	}
+
+	public void setDemandStatusChanges(List<DemandStatusChange> demandStatusChanges)
+	{
+		this.demandStatusChanges = demandStatusChanges;
+	}
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

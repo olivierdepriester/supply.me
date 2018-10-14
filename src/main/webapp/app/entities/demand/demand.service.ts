@@ -33,8 +33,8 @@ export class DemandService {
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    changeStatus(id: number, status: DemandStatus) {
-        const options = { id: `${id}`, status: `${status}` };
+    changeStatus(id: number, status: DemandStatus, comment: string) {
+        const options = { id: `${id}`, status: `${status}`, comment: `${comment}` };
         console.log(options);
         return this.http
             .put<IDemand>(`${this.resourceUrl}/changeStatus`, options, { observe: 'response' })

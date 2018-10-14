@@ -68,10 +68,11 @@ public interface DemandService {
      * Change the status of a demand
      * @param id Demand identifier
      * @param status Status to set
+     * @param comment Optional comment filled by the user who made the status change
      * @return The modified demand
      * @exception ServiceException In case of business rules violation
      */
-    Demand changeStatus(Long id, DemandStatus status) throws ServiceException;
+    Demand changeStatus(Long id, DemandStatus status, String comment) throws ServiceException;
 
     /**
      * Rebuild ElasticSearch index for demands

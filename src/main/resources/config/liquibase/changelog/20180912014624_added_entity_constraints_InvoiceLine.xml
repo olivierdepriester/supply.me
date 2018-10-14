@@ -7,7 +7,7 @@
         Added the constraints for entity InvoiceLine.
     -->
     <changeSet id="20180912014624-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="purchase_order_id"
                                  baseTableName="invoice_line"
                                  constraintName="fk_invoice_line_purchase_order_id"

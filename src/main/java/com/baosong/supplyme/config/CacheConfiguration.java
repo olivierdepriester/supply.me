@@ -57,6 +57,7 @@ public class CacheConfiguration {
             cm.createCache(com.baosong.supplyme.domain.Invoice.class.getName(), jcacheConfiguration);
             cm.createCache(com.baosong.supplyme.domain.InvoiceLine.class.getName(), jcacheConfiguration);
             cm.createCache(com.baosong.supplyme.domain.MutableProperties.class.getName(), jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.DemandStatusChange.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

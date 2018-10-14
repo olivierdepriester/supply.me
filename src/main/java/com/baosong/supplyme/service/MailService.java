@@ -127,16 +127,21 @@ public class MailService {
 		sendEmail(to, subject, content, false, true);
 	}
 
+    /**
+     * Send an email on reject to the demand owner from the user who rejected
+     * @param demand rejected demand
+     * @param user user who rejected the demand
+     */
 	public void sendRejectedDemandEmail(Demand demand, User user) {
 		log.debug("Sending rejected demand email for id {} from '{}'", demand.getId(), user.getLogin());
-		Locale locale = Locale.forLanguageTag(user.getLangKey());
+		Locale locale = Locale.forLanguageTag(demand.getCreationUser().getLangKey());
 		Context context = getInitializedContextForDemand(demand);
 		context.setLocale(locale);
 		context.setVariable("rejecter", String.format("%s %s", user.getLastName(), user.getFirstName()));
 		String content = templateEngine.process("mail/demandRejectEmail", context);
 		String subject = messageSource.getMessage("email.demand.reject.title",
 				new Object[] { demand.getMaterial().getPartNumber() }, locale);
-		sendEmail(user.getEmail(), subject, content, false, true);
+		sendEmail(demand.getCreationUser().getEmail(), subject, content, false, true);
 	}
 
 	private Context getInitializedContextForDemand(Demand demand) {

@@ -112,7 +112,7 @@ public class DemandResource {
         log.debug("REST request to update Demand : {}", demandStatusChange.getId());
         Demand result;
         try {
-            result = demandService.changeStatus(demandStatusChange.getId(), demandStatusChange.getStatus());
+            result = demandService.changeStatus(demandStatusChange.getId(), demandStatusChange.getStatus(), demandStatusChange.getComment());
             return ResponseEntity.ok()
                     .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, demandStatusChange.getId().toString()))
                     .body(result);

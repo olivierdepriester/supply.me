@@ -8,10 +8,12 @@ public class DemandStatusChangeVM {
 
 	@NotNull
 	private Long id;
-	
+
 	@NotNull
-	private DemandStatus status;
-	
+    private DemandStatus status;
+
+    private String comment;
+
 	public DemandStatusChangeVM() {
 	}
 
@@ -29,6 +31,14 @@ public class DemandStatusChangeVM {
 
 	public void setStatus(DemandStatus status) {
 		this.status = status;
-	}
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
 }

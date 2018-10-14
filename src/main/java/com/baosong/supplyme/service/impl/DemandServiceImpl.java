@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.baosong.supplyme.domain.Demand;
+import com.baosong.supplyme.domain.DemandStatusChange;
 import com.baosong.supplyme.domain.PurchaseOrderLine;
 import com.baosong.supplyme.domain.User;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
@@ -30,6 +31,7 @@ import com.google.common.collect.Sets;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.hibernate.query.criteria.internal.expression.function.CurrentTimeFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,8 +212,9 @@ public class DemandServiceImpl implements DemandService {
      * @exception : ServiceException in case of issue
      */
     @Override
-    public Demand changeStatus(Long id, DemandStatus status) throws ServiceException {
+    public Demand changeStatus(Long id, DemandStatus status, String comment) throws ServiceException {
         Demand demand = null;
+        User currentUser = userService.getCurrentUser().get();
         try {
             demand = findOne(id).get();
         } catch (NoSuchElementException e) {
@@ -232,6 +235,10 @@ public class DemandServiceImpl implements DemandService {
                     status, id, demand.getStatus()));
         }
         DemandStatus targetStatus = status;
+        DemandStatusChange demandStatusChange = new DemandStatusChange(demand, targetStatus, currentUser);
+        demandStatusChange.setComment(comment);
+        demand.getDemandStatusChanges().add(demandStatusChange);
+
         switch (status) {
         case WAITING_FOR_APPROVAL:
             if (!isDemandEditable(demand)) {
@@ -242,7 +249,7 @@ public class DemandServiceImpl implements DemandService {
             demand.setStatus(targetStatus);
             if (canBeSetToApproved(demand)) {
                 // Automatic approval if possible
-                this.changeStatus(demand.getId(), DemandStatus.APPROVED);
+                this.changeStatus(demand.getId(), DemandStatus.APPROVED, "Auto");
                 return demand;
             }
             break;
@@ -260,7 +267,7 @@ public class DemandServiceImpl implements DemandService {
         case REJECTED:
             demand.setStatus(targetStatus);
             // Send a mail to the demand owner
-            mailService.sendRejectedDemandEmail(demand, userService.getCurrentUser().get());
+            mailService.sendRejectedDemandEmail(demand, currentUser);
             break;
         default:
             break;
@@ -270,12 +277,14 @@ public class DemandServiceImpl implements DemandService {
 
     /**
      * Check if a demand can be set to the APPROVED status
+     *
      * @param demand the demand to check
      * @return true if the demand can be approved
      */
     private boolean canBeSetToApproved(Demand demand) {
         // TODO Rules about demand estimated amount and recurrency
-        return (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL1) || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL2))
+        return (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL1)
+                || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL2))
                 && !demand.getMaterial().isTemporary().booleanValue();
     }
 

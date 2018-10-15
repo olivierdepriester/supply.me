@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
@@ -47,9 +47,15 @@ export class DemandService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    find(id: number): Observable<EntityResponseType> {
+    find(id: number, loadChanges?: boolean): Observable<EntityResponseType> {
+        let options: HttpParams;
+        console.log(loadChanges);
+        if (loadChanges != null) {
+            options = new HttpParams().append('loadChanges', `${loadChanges}`);
+        }
+        console.log(options);
         return this.http
-            .get<IDemand>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .get<IDemand>(`${this.resourceUrl}/${id}`, { params: options, observe: 'response' })
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 

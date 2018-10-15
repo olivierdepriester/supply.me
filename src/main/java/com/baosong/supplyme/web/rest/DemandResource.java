@@ -143,9 +143,14 @@ public class DemandResource {
      */
     @GetMapping("/demands/{id}")
     @Timed
-    public ResponseEntity<Demand> getDemand(@PathVariable Long id) {
+    public ResponseEntity<Demand> getDemand(@PathVariable Long id, @RequestParam Optional<Boolean> loadChanges) {
         log.debug("REST request to get Demand : {}", id);
-        Optional<Demand> demand = demandService.findOne(id);
+        Optional<Demand> demand = null;
+        if (loadChanges.orElse(Boolean.FALSE)) {
+            demand = demandService.findOneWithStatusChanges(id);
+        } else {
+            demand = demandService.findOne(id);
+        }
         return ResponseUtil.wrapOrNotFound(demand);
     }
 

@@ -42,6 +42,14 @@ public interface DemandService {
     Optional<Demand> findOne(Long id);
 
     /**
+     * Get one demand by id with its status changes.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    Optional<Demand> findOneWithStatusChanges(Long id);
+
+    /**
      * Delete the "id" demand.
      *
      * @param id the id of the entity

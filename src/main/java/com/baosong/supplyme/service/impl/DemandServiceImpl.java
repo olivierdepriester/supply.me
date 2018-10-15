@@ -132,6 +132,21 @@ public class DemandServiceImpl implements DemandService {
     }
 
     /**
+     * Get one demand by id with its status changes.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Demand> findOneWithStatusChanges(Long id) {
+        log.debug("Request to get Demand with status changes : {}", id);
+        Optional<Demand> demand = demandRepository.findById(id);
+        demand.ifPresent(d -> d.getDemandStatusChanges().size());
+        return demand;
+    }
+
+    /**
      * Delete the demand by id.
      *
      * @param id the id of the entity

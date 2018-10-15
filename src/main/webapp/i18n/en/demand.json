@@ -23,6 +23,10 @@
             "material": "Material",
             "project": "Project",
             "creationUser": "Creation User",
+            "statusChange": {
+                "title": "Events",
+                "comment": "Comment"
+            },
             "commentPopup": {
                 "title": "Demand {{ id }} status change comment",
                 "placeholder": "Please fill your comment here."

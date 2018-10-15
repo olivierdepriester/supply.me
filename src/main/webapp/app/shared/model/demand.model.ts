@@ -13,6 +13,24 @@ export const enum DemandStatus {
     FULLY_DELIVERED = 'FULLY_DELIVERED'
 }
 
+export interface IDemandStatusChange {
+    id?: number;
+    status?: DemandStatus;
+    comment?: string;
+    creationDate?: Moment;
+    creationUser?: IUser;
+}
+
+export class DemandStatusChange implements IDemandStatusChange {
+    constructor(
+        public id?: number,
+        public status?: DemandStatus,
+        public comment?: string,
+        public creationDate?: Moment,
+        public creationUser?: IUser
+    ) {}
+}
+
 export interface IDemand {
     id?: number;
     quantity?: number;
@@ -24,6 +42,7 @@ export interface IDemand {
     creationUser?: IUser;
     quantityOrdered?: number;
     quantityDelivered?: number;
+    demandStatusChanges?: IDemandStatusChange[];
 }
 
 export class Demand implements IDemand {
@@ -37,7 +56,8 @@ export class Demand implements IDemand {
         public project?: IProject,
         public creationUser?: IUser,
         public quantityOrdered?: number,
-        public quantityDelivered?: number
+        public quantityDelivered?: number,
+        public demandStatusChanges?: IDemandStatusChange[]
     ) {}
 }
 

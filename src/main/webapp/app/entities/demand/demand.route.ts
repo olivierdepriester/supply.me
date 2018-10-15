@@ -26,16 +26,24 @@ export class DemandResolve implements Resolve<IDemand> {
     }
 }
 @Injectable({ providedIn: 'root' })
+export class DemandWithChangesResolve implements Resolve<IDemand> {
+    constructor(private service: DemandService) {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id, true).pipe(map((demand: HttpResponse<Demand>) => demand.body));
+        }
+        return of(new Demand());
+    }
+}
+@Injectable({ providedIn: 'root' })
 export class StatusResolve implements Resolve<DemandStatus> {
     constructor() {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         const status = route.queryParams['status'] ? route.queryParams['status'] : null;
-        console.log(status);
-        if (status) {
-            return status as DemandStatus;
-        }
-        return null;
+        return status as DemandStatus;
     }
 }
 
@@ -53,7 +61,7 @@ export const demandRoute: Routes = [
         path: 'demand/:id/view',
         component: DemandDetailComponent,
         resolve: {
-            demand: DemandResolve
+            demand: DemandWithChangesResolve
         },
         data: {
             authorities: ['ROLE_USER'],

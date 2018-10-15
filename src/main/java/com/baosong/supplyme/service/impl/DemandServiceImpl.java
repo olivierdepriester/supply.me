@@ -270,6 +270,7 @@ public class DemandServiceImpl implements DemandService {
             mailService.sendRejectedDemandEmail(demand, currentUser);
             break;
         default:
+            demand.setStatus(targetStatus);
             break;
         }
         return this.save(demand);

@@ -93,10 +93,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             }
         }
         if (!statusChange) {
+            // If not a status change, properties of the purchase order may have to be updated
             if(!isEditable(persistedPurchaseOrder)) {
                 throw new ServiceException(String.format("The purchase order %d can not be edited by the current user", persistedPurchaseOrder.getId()));
             }
+            // Update lines
             this.updatePurchaseOrderLines(purchaseOrder, persistedPurchaseOrder);
+            // Update agregated values
             persistedPurchaseOrder
                 .quantity(persistedPurchaseOrder.getPurchaseOrderLines().stream().mapToDouble(PurchaseOrderLine::getQuantity).sum())
                 .amount(persistedPurchaseOrder.getPurchaseOrderLines().stream().mapToDouble(pol -> pol.getQuantity() * pol.getOrderPrice()).sum())

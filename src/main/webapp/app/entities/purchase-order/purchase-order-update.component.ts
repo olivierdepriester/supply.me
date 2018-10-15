@@ -1,18 +1,16 @@
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import * as moment from 'moment';
-import { DATE_TIME_FORMAT, DATE_FORMAT } from 'app/shared/constants/input.constants';
-import { JhiAlertService } from 'ng-jhipster';
-
-import { IPurchaseOrder, PurchaseOrderStatus } from 'app/shared/model/purchase-order.model';
-import { PurchaseOrderService } from './purchase-order.service';
 import { IUser, Principal } from 'app/core';
+import { DemandSelectorComponent } from 'app/entities/component/demand-selector';
+import { DATE_FORMAT, DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { IDemand } from 'app/shared/model/demand.model';
 import { IPurchaseOrderLine, PurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
-import { DemandSelectorComponent } from 'app/entities/component/demand-selector';
-import { isNumber } from 'util';
+import { IPurchaseOrder, PurchaseOrderStatus } from 'app/shared/model/purchase-order.model';
+import * as moment from 'moment';
+import { JhiAlertService } from 'ng-jhipster';
+import { Observable } from 'rxjs';
+import { PurchaseOrderService } from './purchase-order.service';
 
 @Component({
     selector: 'jhi-purchase-order-update',
@@ -52,13 +50,16 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ purchaseOrder, demand }) => {
             this.purchaseOrder = purchaseOrder;
             // If new purchase order, initialize default values to make the object consistent
-            if (!this.purchaseOrder.id) {
-                purchaseOrder.creationDate = moment();
-                purchaseOrder.status = PurchaseOrderStatus.NEW;
-                purchaseOrder.code = '0000000000';
+            if (!purchaseOrder.id) {
+                this.purchaseOrder.creationDate = moment();
+                this.purchaseOrder.status = PurchaseOrderStatus.NEW;
+                this.purchaseOrder.code = '0000000000';
             }
             // Check if the purchase order can be edited
             this.principal.identity().then(account => {
+                if (!this.purchaseOrder.id) {
+                    this.purchaseOrder.creationUser = account;
+                }
                 if (!this.purchaseOrderService.isEditable(this.purchaseOrder, account)) {
                     // Forbidden
                     this.router.navigate(['accessdenied']);

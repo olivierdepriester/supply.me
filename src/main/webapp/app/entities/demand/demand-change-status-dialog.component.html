@@ -1,0 +1,20 @@
+<form name="commentForm" (ngSubmit)="saveComment()">
+    <div class="modal-header">
+        <h4 class="modal-title" jhiTranslate="supplyMeApp.demand.commentPopup.title" translateValues="{id: '{{demand.id}}'}">
+            Demand status change comment
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <textarea name="comment" [(ngModel)]="comment" rows="4" cols="80"  autofocus placeholder="{{'supplyMeApp.demand.commentPopup.placeholder' | translate }}"></textarea>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

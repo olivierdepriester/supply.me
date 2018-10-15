@@ -2,7 +2,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { Demand, IDemand } from 'app/shared/model/demand.model';
+import { Demand, IDemand, DemandStatus } from 'app/shared/model/demand.model';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DemandDeletePopupComponent } from './demand-delete-dialog.component';
@@ -11,6 +11,7 @@ import { DemandUpdateComponent } from './demand-update.component';
 import { DemandComponent } from './demand.component';
 import { DemandService } from './demand.service';
 import { MaterialTemporaryPopupComponent } from './material-temporary-dialog.component';
+import { DemandChangeStatusPopupComponent } from './demand-change-status-dialog.component';
 
 @Injectable({ providedIn: 'root' })
 export class DemandResolve implements Resolve<IDemand> {
@@ -22,6 +23,19 @@ export class DemandResolve implements Resolve<IDemand> {
             return this.service.find(id).pipe(map((demand: HttpResponse<Demand>) => demand.body));
         }
         return of(new Demand());
+    }
+}
+@Injectable({ providedIn: 'root' })
+export class StatusResolve implements Resolve<DemandStatus> {
+    constructor() {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        const status = route.queryParams['status'] ? route.queryParams['status'] : null;
+        console.log(status);
+        if (status) {
+            return status as DemandStatus;
+        }
+        return null;
     }
 }
 
@@ -82,6 +96,20 @@ export const demandPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
+            pageTitle: 'supplyMeApp.demand.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
+    {
+        path: 'demand/:id/comment',
+        component: DemandChangeStatusPopupComponent,
+        resolve: {
+            demand: DemandResolve,
+            status: StatusResolve
+        },
+        data: {
+            authorities: ['ROLE_APPROVAL_LVL1', 'ROLE_APPROVAL_LVL2'],
             pageTitle: 'supplyMeApp.demand.home.title'
         },
         canActivate: [UserRouteAccessService],

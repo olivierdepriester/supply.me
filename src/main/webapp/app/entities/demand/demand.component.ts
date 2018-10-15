@@ -62,10 +62,6 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.changeStatus(demand, DemandStatus.APPROVED, null);
     }
 
-    reject(demand: IDemand) {
-        this.changeStatus(demand, DemandStatus.REJECTED, 'TODO reject comment');
-    }
-
     /**
      * Change the status of a given demand
      * @param demand
@@ -74,7 +70,11 @@ export class DemandComponent implements OnInit, OnDestroy {
     private changeStatus(demand: IDemand, status: DemandStatus, comment: string) {
         this.demandService.changeStatus(demand.id, status, comment).subscribe(
             (res: HttpResponse<IDemand>) => {
-                demand.status = res.body.status;
+                // Refresh list modified demand
+                const demandInList = this.demands.find(d => d.id === res.body.id);
+                if (demandInList !== null) {
+                    demandInList.status = res.body.status;
+                }
             },
             (res: HttpErrorResponse) => {
                 this.onError(res.message);
@@ -118,7 +118,10 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     registerChangeInDemands() {
-        this.eventSubscriber = this.eventManager.subscribe('demandListModification', response => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('demandListModification', () => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('demandComment', response =>
+            this.changeStatus(response.content.demand, response.content.status, response.content.comment)
+        );
     }
 
     private onError(errorMessage: string) {

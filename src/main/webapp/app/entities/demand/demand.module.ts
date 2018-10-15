@@ -16,7 +16,9 @@ import {
     demandRoute,
     demandPopupRoute,
     MaterialTemporaryDialogComponent,
-    MaterialTemporaryPopupComponent
+    MaterialTemporaryPopupComponent,
+    DemandChangeStatusDialogComponent,
+    DemandChangeStatusPopupComponent
 } from './';
 
 const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
@@ -38,7 +40,9 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         DemandDeleteDialogComponent,
         DemandDeletePopupComponent,
         MaterialTemporaryDialogComponent,
-        MaterialTemporaryPopupComponent
+        MaterialTemporaryPopupComponent,
+        DemandChangeStatusDialogComponent,
+        DemandChangeStatusPopupComponent
     ],
     entryComponents: [
         DemandComponent,
@@ -46,7 +50,9 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         DemandDeleteDialogComponent,
         DemandDeletePopupComponent,
         MaterialTemporaryDialogComponent,
-        MaterialTemporaryPopupComponent
+        MaterialTemporaryPopupComponent,
+        DemandChangeStatusDialogComponent,
+        DemandChangeStatusPopupComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -33,7 +33,6 @@ export class PurchaseOrderDemandResolve implements Resolve<IDemand> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         const id = route.queryParams['demandId'] ? route.queryParams['demandId'] : null;
-        console.log(`DemandId : ${id}`);
         if (id) {
             return this.service.find(id).pipe(map((demand: HttpResponse<Demand>) => demand.body));
         }

@@ -7,9 +7,9 @@
                 "createOrEditLabel": "Create or edit a Demand",
                 "search": "Search for Demand"
             },
-            "created": "A new Demand is created with identifier {{ param }}",
-            "updated": "A Demand is updated with identifier {{ param }}",
-            "deleted": "A Demand is deleted with identifier {{ param }}",
+            "created": "A new demand has been created with identifier {{ param }}",
+            "updated": "A demand has been updated with identifier {{ param }}",
+            "deleted": "A demand has been deleted with identifier {{ param }}",
             "delete": {
                 "question": "Are you sure you want to delete Demand {{ id }}?"
             },
@@ -23,6 +23,10 @@
             "material": "Material",
             "project": "Project",
             "creationUser": "Creation User",
+            "commentPopup": {
+                "title": "Demand {{ id }} status change comment",
+                "placeholder": "Please fill your comment here."
+            },
             "button" : {
                 "sendToApproval": "Send the demand to approval",
                 "reject": "Reject the demand",

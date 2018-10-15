@@ -7,7 +7,6 @@ import { Validator, NG_VALIDATORS, AbstractControl, ValidationErrors, ValidatorF
 })
 export class SelectorRequiredDirective implements Validator {
     validate(control: AbstractControl): ValidationErrors {
-        console.log('Validate', control);
         if (control.value != null) {
             return null;
         } else {

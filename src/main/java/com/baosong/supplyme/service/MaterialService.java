@@ -22,6 +22,14 @@ public interface MaterialService {
     Material save(Material material) throws ServiceException;
 
     /**
+     * Save a material and propagate the modifications on indexed object using it.
+     *
+     * @param material The modified material.
+     * @return
+     */
+    Material saveAndCascadeIndex(Material material);
+
+    /**
      * Get all the materials.
      *
      * @param pageable the pagination information

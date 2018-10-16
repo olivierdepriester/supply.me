@@ -26,6 +26,30 @@ public interface DemandService {
     Demand save(Demand demand) throws ServiceException;
 
     /**
+     * Save a demand and propagate the modifications on indexed object using it.
+     *
+     * @param demand The modified demand.
+     * @return
+     */
+    Demand saveAndCascadeIndex(Demand demand);
+
+    /**
+     * Get all the demand using a given material.
+     *
+     * @param materialId material identifier
+     * @return
+     */
+    List<Demand> findByMaterialId(Long materialId);
+
+    /**
+     * Get all the demand using a given project.
+     *
+     * @param materialId material identifier
+     * @return
+     */
+    List<Demand> findByProjectId(Long projectId);
+
+    /**
      * Get all the demands.
      *
      * @return the list of entities

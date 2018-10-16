@@ -15,6 +15,7 @@ import com.baosong.supplyme.repository.MaterialRepository;
 import com.baosong.supplyme.repository.search.MaterialSearchRepository;
 import com.baosong.supplyme.security.AuthoritiesConstants;
 import com.baosong.supplyme.security.SecurityUtils;
+import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.UserService;
@@ -52,6 +53,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private DemandService demandService;
 
     @Autowired
     private MutablePropertiesService mutablePropertiesService;
@@ -94,9 +98,7 @@ public class MaterialServiceImpl implements MaterialService {
             material.setPartNumber(mutablePropertiesService.getNewPartNumber());
             material.setTemporary(Boolean.FALSE);
         }
-        Material result = materialRepository.save(material);
-        materialSearchRepository.save(result);
-        return result;
+        return this.saveAndCascadeIndex(material);
     }
 
     private boolean isMaterialEditable(Material material) {
@@ -154,13 +156,6 @@ public class MaterialServiceImpl implements MaterialService {
     @Transactional(readOnly = true)
     public Page<Material> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Materials for query {}", query);
-        // SearchQuery query2 = new NativeSearchQueryBuilder()
-        // .withQuery(queryStringQuery(query.endsWith("*") ? query : new
-        // StringBuilder(query).append("*").toString()))
-        // .withSort(SortBuilders.fieldSort("partNumber.keyword").order(SortOrder.ASC))
-        // .withPageable(pageable)
-        // .build();
-        // return materialSearchRepository.search(query2);
         return materialSearchRepository.search(
                 queryStringQuery(query.endsWith("*") ? query : new StringBuilder(query).append("*").toString()),
                 pageable);
@@ -171,5 +166,16 @@ public class MaterialServiceImpl implements MaterialService {
         template.deleteIndex(Material.class);
         List<Material> items = materialRepository.findAll();
         items.stream().forEach(d -> materialSearchRepository.save(d));
+    }
+
+    @Override
+    public Material saveAndCascadeIndex(Material material) {
+        boolean isNew = material.getId() == null;
+        Material result = materialRepository.save(material);
+        materialSearchRepository.save(result);
+        if (!isNew) {
+            this.demandService.findByMaterialId(material.getId()).forEach(demand -> this.demandService.saveAndCascadeIndex(demand));
+        }
+        return result;
     }
 }

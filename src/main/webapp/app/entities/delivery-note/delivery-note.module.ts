@@ -3,6 +3,8 @@ import { RouterModule } from '@angular/router';
 
 import { SupplyMeSharedModule } from 'app/shared';
 import { SupplyMeAdminModule } from 'app/admin/admin.module';
+import { SupplierSelectorModule } from 'app/entities/component/supplier-selector';
+import { PurchaseOrderLineSelectorModule } from 'app/entities/component/purchase-order-line-selector';
 import {
     DeliveryNoteComponent,
     DeliveryNoteDetailComponent,
@@ -16,7 +18,13 @@ import {
 const ENTITY_STATES = [...deliveryNoteRoute, ...deliveryNotePopupRoute];
 
 @NgModule({
-    imports: [SupplyMeSharedModule, SupplyMeAdminModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [
+        SupplyMeSharedModule,
+        SupplyMeAdminModule,
+        SupplierSelectorModule,
+        PurchaseOrderLineSelectorModule,
+        RouterModule.forChild(ENTITY_STATES)
+    ],
     declarations: [
         DeliveryNoteComponent,
         DeliveryNoteDetailComponent,

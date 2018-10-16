@@ -75,6 +75,11 @@ public class Material implements Serializable {
         this.id = id;
     }
 
+    public Material id(Long id) {
+        this.setId(id);
+        return this;
+    }
+
     public String getPartNumber() {
         return partNumber;
     }

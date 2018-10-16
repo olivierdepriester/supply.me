@@ -11,7 +11,6 @@ import com.baosong.supplyme.domain.PurchaseOrderLine;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
-import com.baosong.supplyme.web.rest.errors.InternalServerErrorException;
 import com.baosong.supplyme.web.rest.util.HeaderUtil;
 import com.baosong.supplyme.web.rest.util.PaginationUtil;
 import com.codahale.metrics.annotation.Timed;
@@ -166,9 +165,10 @@ public class PurchaseOrderLineResource {
      */
     @GetMapping("/_search/purchase-order-lines")
     @Timed
-    public ResponseEntity<List<PurchaseOrderLine>> searchPurchaseOrderLines(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<PurchaseOrderLine>> searchPurchaseOrderLines
+        (@RequestParam String query, @RequestParam Optional<Long> supplierId, Pageable pageable) {
         log.debug("REST request to search for a page of PurchaseOrderLines for query {}", query);
-        Page<PurchaseOrderLine> page = purchaseOrderLineService.search(query, pageable);
+        Page<PurchaseOrderLine> page = purchaseOrderLineService.search(query, supplierId.orElse(null), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/purchase-order-lines");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

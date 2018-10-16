@@ -14,6 +14,8 @@ import java.util.stream.StreamSupport;
 
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.DemandStatusChange;
+import com.baosong.supplyme.domain.Material;
+import com.baosong.supplyme.domain.Project;
 import com.baosong.supplyme.domain.PurchaseOrderLine;
 import com.baosong.supplyme.domain.User;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
@@ -35,6 +37,8 @@ import org.hibernate.query.criteria.internal.expression.function.CurrentTimeFunc
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -101,9 +105,7 @@ public class DemandServiceImpl implements DemandService {
             demand.setCreationDate(Instant.now());
             demand.setCreationUser(userService.getCurrentUser().get());
         }
-        Demand result = demandRepository.save(demand);
-        demandSearchRepository.save(result);
-        return result;
+        return this.saveAndCascadeIndex(demand);
     }
 
     /**
@@ -322,5 +324,28 @@ public class DemandServiceImpl implements DemandService {
         return (demand.getCreationUser().getId().equals(currentUser.getId())
                 || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN))
                 && (DemandStatus.NEW.equals(demand.getStatus()) || DemandStatus.REJECTED.equals(demand.getStatus()));
+    }
+
+    @Override
+    public Demand saveAndCascadeIndex(Demand demand) {
+        boolean isNew = demand.getId() == null;
+        Demand result = demandRepository.save(demand);
+        demandSearchRepository.save(result);
+        if (!isNew) {
+            this.purchaseOrderLineService.getByDemandId(demand.getId()).forEach(pol -> this.purchaseOrderLineService.saveAndCascaseIndex(pol));
+        }
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Demand> findByMaterialId(Long materialId) {
+        return this.demandRepository.findAll(Example.of(new Demand().material(new Material().id(materialId))));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Demand> findByProjectId(Long projectId) {
+        return this.demandRepository.findAll(Example.of(new Demand().project(new Project().id(projectId))));
     }
 }

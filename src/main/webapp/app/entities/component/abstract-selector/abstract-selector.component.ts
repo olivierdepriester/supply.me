@@ -1,18 +1,24 @@
-import { OnInit, Input } from '@angular/core';
-import { AbstractSelectorItem } from './abstract-selector.model';
-import { AutoComplete } from 'primeng/primeng';
 import { HttpResponse } from '@angular/common/http';
+import { Input, OnInit } from '@angular/core';
+import { ControlValueAccessor } from '@angular/forms';
 import { ISelectable } from 'app/shared/model/selectable.model';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { AbstractSelectorItem } from './abstract-selector.model';
 
 export abstract class AbstractSelectorComponent<T extends ISelectable, K extends AbstractSelectorItem>
     implements OnInit, ControlValueAccessor {
     filteredItems: K[];
     selectedItem: K;
-    @Input() selectedData: T;
-
+    /**
+     * Set or get if the autocomplete has to be refreshed
+     *
+     * @protected
+     * @memberof AbstractSelectorComponent
+     */
+    protected forceRefresh = false;
     private lastQuery = '';
+
+    @Input() selectedData: T;
 
     constructor() {}
 
@@ -25,12 +31,13 @@ export abstract class AbstractSelectorComponent<T extends ISelectable, K extends
 
     protected abstract getNew(data: T): K;
 
-    protected abstract searchServiceFunction(query: string): Observable<HttpResponse<T[]>>;
+    protected abstract searchServiceFunction(myQuery: string): Observable<HttpResponse<T[]>>;
 
     private search() {
         this.searchServiceFunction(this.lastQuery).subscribe((res: HttpResponse<T[]>) => {
             this.filteredItems = Array.from(res.body, data => this.getNew(data));
         });
+        this.forceRefresh = false;
     }
 
     onSelect(event) {
@@ -38,7 +45,7 @@ export abstract class AbstractSelectorComponent<T extends ISelectable, K extends
     }
 
     onFocus() {
-        if (this.filteredItems == null && this.lastQuery === '') {
+        if (this.itemListNeedRefresh()) {
             // If no search before : focus send a search based on an empty query
             this.search();
         } else {
@@ -50,6 +57,10 @@ export abstract class AbstractSelectorComponent<T extends ISelectable, K extends
 
     onClear() {
         this.value = null;
+    }
+
+    private itemListNeedRefresh(): boolean {
+        return this.forceRefresh || (this.filteredItems == null && this.lastQuery === '');
     }
 
     protected abstract getAutoCompleteComponent();

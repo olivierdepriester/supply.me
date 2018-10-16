@@ -104,6 +104,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 .quantity(persistedPurchaseOrder.getPurchaseOrderLines().stream().mapToDouble(PurchaseOrderLine::getQuantity).sum())
                 .amount(persistedPurchaseOrder.getPurchaseOrderLines().stream().mapToDouble(pol -> pol.getQuantity() * pol.getOrderPrice()).sum())
                 .numberOfMaterials(persistedPurchaseOrder.getPurchaseOrderLines().stream().mapToLong(pol -> pol.getDemand().getMaterial().getId()).distinct().count());
+        } else {
+            // To update lines index
+            persistedPurchaseOrder.getPurchaseOrderLines().forEach(pol -> this.purchaseOrderLineService.save(pol));
         }
         PurchaseOrder result = purchaseOrderRepository.save(persistedPurchaseOrder);
         purchaseOrderSearchRepository.save(result);
@@ -149,19 +152,24 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         // Lines are updated if the call does not remain from a status change
         for (PurchaseOrderLine line : sourcePurchaseOrder.getPurchaseOrderLines()) {
-            line.purchaseOrder(persistedPurchaseOrder);
             if (sourcePurchaseOrder.getId() != null) {
                 // If PO update : add new lines or update existing lines
                 if (line.getId() == null) {
                     // New line
+                    line.purchaseOrder(persistedPurchaseOrder);
                     persistedPurchaseOrder.getPurchaseOrderLines().add(line);
+                    //  No need to index lines now : it is required to be done when the PO is sent
+                    // purchaseOrderLineService.save(line);
                 } else {
                     // Get the line
                     PurchaseOrderLine persistedLine = persistedPurchaseOrder.getPurchaseOrderLines().stream()
                             .filter(l -> l.getId().equals(line.getId())).findAny().get();
                     persistedLine.quantity(line.getQuantity()).orderPrice(line.getOrderPrice());
+                    //  No need to index lines now : it is required to be done when the PO is sent
+                    // purchaseOrderLineService.save(persistedLine);
                 }
             }
+
             if (line.getDemand() != null) {
                 // Set demand status to ORDERED
                 line.setDemand(demandService.changeStatus(line.getDemand().getId(), DemandStatus.ORDERED, null));

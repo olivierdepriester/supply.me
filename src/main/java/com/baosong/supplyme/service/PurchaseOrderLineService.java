@@ -23,6 +23,14 @@ public interface PurchaseOrderLineService {
     PurchaseOrderLine save(PurchaseOrderLine purchaseOrderLine);
 
     /**
+     * Save a purchaseOrderLine and update indices using it.
+     *
+     * @param purchaseOrderLine the entity to save
+     * @return the persisted entity
+     */
+    PurchaseOrderLine saveAndCascaseIndex(PurchaseOrderLine purchaseOrderLine);
+
+    /**
      * Get all the purchaseOrderLines.
      *
      * @param pageable the pagination information
@@ -52,9 +60,10 @@ public interface PurchaseOrderLineService {
      * @param query the query of the search
      *
      * @param pageable the pagination information
+     * @param supplierId purchase order supplier identifier
      * @return the list of entities
      */
-    Page<PurchaseOrderLine> search(String query, Pageable pageable);
+    Page<PurchaseOrderLine> search(String query, Long supplierId, Pageable pageable);
 
     /**
      * Get the purchase order lines linked to a demand

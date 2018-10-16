@@ -1,5 +1,6 @@
 import { IMaterialAvailability } from 'app/shared/model//material-availability.model';
 import { ISelectable } from 'app/shared/model/selectable.model';
+
 export interface ISupplier {
     id?: number;
     referenceNumber?: string;

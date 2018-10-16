@@ -1,6 +1,6 @@
 <div>
     <p-autoComplete name="autoComplete" [(ngModel)]="selectedItem" [suggestions]="filteredItems" (onClear)="onClear()" (onSelect)="onSelect($event)" (onFocus)="onFocus($event)"
-        (completeMethod)="searchData($event)" placeholder="{{'selector.supplier.placeholder' | translate}}"
+        (completeMethod)="searchData($event)" placeholder="{{'selector.purchaseorderline.placeholder' | translate}}"
         [minLength]="3" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" field="displayValue">
         <ng-template let-item pTemplate="item">
             <div>

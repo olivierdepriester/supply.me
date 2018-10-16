@@ -22,6 +22,7 @@
             "status": "Status",
             "creationDate": "Creation Date",
             "supplier": "Supplier",
+            "purchaseOrder": "Purchase order",
             "creationUser": "Creation User"
         }
     }

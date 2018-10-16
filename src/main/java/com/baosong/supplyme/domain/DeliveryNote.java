@@ -10,6 +10,7 @@ import javax.validation.constraints.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 import com.baosong.supplyme.domain.enumeration.DeliveryNoteStatus;
@@ -53,6 +54,11 @@ public class DeliveryNote implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("")
     private User creationUser;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "deliveryNote", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("lineNumber asc")
+    @JsonIgnoreProperties("deliveryNote")
+    private List<DeliveryNoteLine> deliveryNoteLines;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -140,6 +146,17 @@ public class DeliveryNote implements Serializable {
     public void setCreationUser(User user) {
         this.creationUser = user;
     }
+
+	public List<DeliveryNoteLine> getDeliveryNoteLines()
+	{
+		return this.deliveryNoteLines;
+	}
+
+	public void setDeliveryNoteLines(List<DeliveryNoteLine> deliveryNoteLines)
+	{
+		this.deliveryNoteLines = deliveryNoteLines;
+	}
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

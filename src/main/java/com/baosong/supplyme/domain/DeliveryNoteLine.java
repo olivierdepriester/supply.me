@@ -38,7 +38,7 @@ public class DeliveryNoteLine implements Serializable {
     private Double quantity;
 
     @ManyToOne
-    @JsonIgnoreProperties("")
+    @JsonIgnoreProperties("deliveryNoteLines")
     private DeliveryNote deliveryNote;
 
     @ManyToOne

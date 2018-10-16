@@ -2,6 +2,7 @@ package com.baosong.supplyme.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.baosong.supplyme.domain.DeliveryNote;
+import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.service.DeliveryNoteService;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
 import com.baosong.supplyme.web.rest.util.HeaderUtil;
@@ -54,10 +55,14 @@ public class DeliveryNoteResource {
         if (deliveryNote.getId() != null) {
             throw new BadRequestAlertException("A new deliveryNote cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        DeliveryNote result = deliveryNoteService.save(deliveryNote);
-        return ResponseEntity.created(new URI("/api/delivery-notes/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        try {
+            DeliveryNote result = deliveryNoteService.save(deliveryNote);
+            return ResponseEntity.created(new URI("/api/delivery-notes/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException("The delivery note can not be created", ENTITY_NAME, e.getMessage());
+        }
     }
 
     /**
@@ -76,10 +81,14 @@ public class DeliveryNoteResource {
         if (deliveryNote.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        DeliveryNote result = deliveryNoteService.save(deliveryNote);
-        return ResponseEntity.ok()
+        try {
+            DeliveryNote result = deliveryNoteService.save(deliveryNote);
+            return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, deliveryNote.getId().toString()))
             .body(result);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException("The delivery note can not be updated", ENTITY_NAME, e.getMessage());
+        }
     }
 
     /**

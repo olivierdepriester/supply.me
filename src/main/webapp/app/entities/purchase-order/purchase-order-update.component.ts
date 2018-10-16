@@ -144,10 +144,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         }
     }
 
-    trackUserById(index: number, item: IUser) {
-        return item.id;
-    }
-
     /**
      * Event thrown when click on the Add button
      *

@@ -1,6 +1,7 @@
 import { Moment } from 'moment';
 import { ISupplier } from 'app/shared/model//supplier.model';
 import { IUser } from 'app/core/user/user.model';
+import { IDeliveryNoteLine } from './delivery-note-line.model';
 
 export const enum DeliveryNoteStatus {
     NEW = 'NEW'
@@ -14,6 +15,7 @@ export interface IDeliveryNote {
     creationDate?: Moment;
     supplier?: ISupplier;
     creationUser?: IUser;
+    deliveryNoteLines?: IDeliveryNoteLine[];
 }
 
 export class DeliveryNote implements IDeliveryNote {
@@ -24,6 +26,7 @@ export class DeliveryNote implements IDeliveryNote {
         public status?: DeliveryNoteStatus,
         public creationDate?: Moment,
         public supplier?: ISupplier,
-        public creationUser?: IUser
+        public creationUser?: IUser,
+        public deliveryNoteLines?: IDeliveryNoteLine[]
     ) {}
 }

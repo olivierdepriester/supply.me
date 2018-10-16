@@ -29,8 +29,8 @@
                     <label class="form-control-label" jhiTranslate="supplyMeApp.deliveryNote.deliveryDate" for="field_deliveryDate">Delivery
                         Date</label>
                     <div class="d-flex">
-                        <input id="field_deliveryDate" type="text" class="form-control" name="deliveryDate"
-                            [(ngModel)]="deliveryDate" required />
+                        <input id="field_deliveryDate" type="text" class="form-control" name="deliveryDate" [(ngModel)]="deliveryDate"
+                            required />
                     </div>
                     <div [hidden]="!(editForm.controls.deliveryDate?.dirty && editForm.controls.deliveryDate?.invalid)">
                         <small class="form-text text-danger" [hidden]="!editForm.controls.deliveryDate?.errors?.required"
@@ -53,14 +53,61 @@
                     <label class="form-control-label" jhiTranslate="supplyMeApp.deliveryNote.creationDate" for="field_creationDate">Creation
                         Date</label>
                     <div class="d-flex">
-                        <input id="field_creationDate" type="text" class="form-control" name="creationDate"
-                            [(ngModel)]="creationDate" required />
+                        <input id="field_creationDate" type="text" class="form-control" name="creationDate" [(ngModel)]="creationDate"
+                            required />
                     </div>
                 </div>
             </div>
             <div>
-                <jhi-purchase-order-line-selector [supplier]="deliveryNote.supplier"></jhi-purchase-order-line-selector>
+                <label style="float:left; margin:10px" jhiTranslate="supplyMeApp.purchaseOrder.demand.add">Demand to
+                    add :</label>
+                <jhi-purchase-order-line-selector name="purchaseOrder" [(ngModel)]="selectedPurchaseOrderLine" style="float:left; width:70%"
+                    [supplier]="deliveryNote.supplier"></jhi-purchase-order-line-selector>
+                <button type="button" style="float:left" (click)="addDeliveryNoteLine()" class="btn btn-success">
+                    <fa-icon [icon]="'plus'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.add">Add</span>
+                </button>
             </div>
+            <div class="table-responsive" *ngIf="deliveryNote.deliveryNoteLines">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><span>#</span></th>
+                            <th class="text-center"><span jhiTranslate="supplyMeApp.deliveryNote.purchaseOrder">Purchase order code</span></th>
+                            <th class="text-center"><span jhiTranslate="supplyMeApp.material.partNumber">Material Part Number</span></th>
+                            <th class="text-center"><span jhiTranslate="supplyMeApp.material.name">Material Name</span></th>
+                            <th class="text-center"><span jhiTranslate="supplyMeApp.deliveryNoteLine.quantity">Quantity</span></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let deliveryNoteLine of deliveryNote.deliveryNoteLines;">
+                            <td class="text-right">{{ deliveryNoteLine.lineNumber }}</td>
+                            <td class="text-right">
+                                <a [routerLink]="['/purchase-order', deliveryNoteLine.purchaseOrderLine.purchaseOrder.id, 'view']" routerLinkActive="router-link-active" >
+                                    {{ deliveryNoteLine.purchaseOrderLine.purchaseOrder.code }}
+                                </a>
+                            </td>
+                            <td class="text-center">{{ deliveryNoteLine.purchaseOrderLine.demand.material.partNumber }}</td>
+                            <td>{{ deliveryNoteLine.purchaseOrderLine.demand.material.name }}</td>
+                            <td class="text-right">
+                                <input class="numeric" name="{{ 'quantity_' + deliveryNoteLine.lineNumber}}" [(ngModel)]="deliveryNoteLine.quantity">
+                            </td>
+                            <td class="text-center">
+                                <button (click)="deleteDeliveryNoteLine(deliveryNoteLine)" replaceUrl="true"
+                                    queryParamsHandling="merge" class="btn btn-danger btn-sm">
+                                    <fa-icon [icon]="'times'"></fa-icon>
+                                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                </button>
+                                <button [routerLink]="['/demand', deliveryNoteLine.purchaseOrderLine.demand.id, 'view' ]" class="btn btn-info btn-sm">
+                                    <fa-icon [icon]="'eye'"></fa-icon>
+                                    <span class="d-none d-md-inline" jhiTranslate="supplyMeApp.purchaseOrder.demand.view">View</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
                     <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>

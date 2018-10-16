@@ -1,11 +1,12 @@
 package com.baosong.supplyme.service;
 
+import java.util.Optional;
+
 import com.baosong.supplyme.domain.DeliveryNote;
+import com.baosong.supplyme.domain.errors.ServiceException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
 
 /**
  * Service Interface for managing DeliveryNote.
@@ -13,12 +14,21 @@ import java.util.Optional;
 public interface DeliveryNoteService {
 
     /**
-     * Save a deliveryNote.
+     * Save a delivery note.
      *
      * @param deliveryNote the entity to save
      * @return the persisted entity
+     * @exception ServiceException
      */
-    DeliveryNote save(DeliveryNote deliveryNote);
+    DeliveryNote save(DeliveryNote deliveryNote) throws ServiceException;
+
+    /**
+     * Save a delivery note and update indices using it.
+     *
+     * @param deliveryNote
+     * @return
+     */
+    DeliveryNote saveAndCascadeIndex(DeliveryNote deliveryNote);
 
     /**
      * Get all the deliveryNotes.
@@ -48,7 +58,7 @@ public interface DeliveryNoteService {
      * Search for the deliveryNote corresponding to the query.
      *
      * @param query the query of the search
-     * 
+     *
      * @param pageable the pagination information
      * @return the list of entities
      */

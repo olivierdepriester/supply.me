@@ -32,7 +32,7 @@ export class PurchaseOrderLineSelectorComponent extends AbstractSelectorComponen
     @Input('supplier')
     set supplier(value: Supplier) {
         this._supplier = value;
-        console.log('force refresh to true');
+        // Supplier change : the list content must be refreshed
         this.forceRefresh = true;
     }
 

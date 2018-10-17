@@ -1,18 +1,29 @@
 package com.baosong.supplyme.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiModel;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+import io.swagger.annotations.ApiModel;
 
 /**
  * Supplier
@@ -40,6 +51,26 @@ public class Supplier implements Serializable {
     @Size(max = 255)
     @Column(name = "name", length = 255, nullable = false)
     private String name;
+
+    @ManyToOne(optional = false)
+    @JsonIgnoreProperties("")
+    private User creationUser;
+
+	public User getCreationUser()
+	{
+		return this.creationUser;
+	}
+
+    public Supplier creationUser(User creationUser) {
+        this.setCreationUser(creationUser);
+        return this;
+    }
+
+	public void setCreationUser(User creationUser)
+	{
+		this.creationUser = creationUser;
+	}
+
 
     @OneToMany(mappedBy = "supplier")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

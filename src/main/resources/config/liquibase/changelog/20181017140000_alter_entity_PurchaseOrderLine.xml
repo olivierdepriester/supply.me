@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Alter the entity PurchaseOrderLine.
+    -->
+    <changeSet id="20181017140000-1" author="olivier">
+        <addColumn tableName="purchase_order_line">
+            <column name="quantity_delivered" type="double"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20181017140000-2" author="olivier">
+        <addNotNullConstraint
+            columnDataType="double"
+            columnName="quantity_delivered"
+            defaultNullValue="0"
+            tableName="purchase_order_line"/>
+        <addNotNullConstraint
+            columnDataType="double"
+            columnName="quantity_delivered"
+            defaultNullValue="0"
+            tableName="demand"/>
+        <addNotNullConstraint
+            columnDataType="double"
+            columnName="quantity_ordered"
+            defaultNullValue="0"
+            tableName="demand"/>
+    </changeSet>
+
+    <changeSet id="20181017140000-3" author="olivier">
+        <addNotNullConstraint tableName="purchase_order_line" columnName="purchase_order_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="purchase_order_line" columnName="demand_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="purchase_order" columnName="supplier_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="purchase_order" columnName="creation_user_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="delivery_note_line" columnName="delivery_note_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="delivery_note_line" columnName="purchase_order_line_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="delivery_note" columnName="supplier_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="delivery_note" columnName="creation_user_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="demand" columnName="material_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="demand" columnName="project_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="demand" columnName="creation_user_id" columnDataType="bigint" />
+        <addNotNullConstraint tableName="material" columnName="creation_user_id" columnDataType="bigint" />
+
+        <addColumn tableName="supplier">
+            <column name="creation_user_id" type="bigint">
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="creation_user_id"
+                            baseTableName="supplier"
+                            constraintName="fk_supplier_creation_user_id"
+                            referencedColumnNames="id"
+                            referencedTableName="jhi_user"/>
+
+        <addNotNullConstraint tableName="supplier" defaultNullValue="3" columnName="creation_user_id" columnDataType="bigint" />
+        <addColumn tableName="project">
+            <column name="creation_user_id" type="bigint">
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="creation_user_id"
+                            baseTableName="project"
+                            constraintName="fk_project_creation_user_id"
+                            referencedColumnNames="id"
+                            referencedTableName="jhi_user"/>
+        <addNotNullConstraint tableName="project" defaultNullValue="3" columnName="creation_user_id" columnDataType="bigint" />
+    </changeSet>
+</databaseChangeLog>

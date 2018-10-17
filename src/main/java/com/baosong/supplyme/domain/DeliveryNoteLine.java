@@ -37,17 +37,13 @@ public class DeliveryNoteLine implements Serializable {
     @Column(name = "quantity", nullable = false)
     private Double quantity;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties("deliveryNoteLines")
     private DeliveryNote deliveryNote;
 
     @ManyToOne
     @JsonIgnoreProperties("")
     private PurchaseOrderLine purchaseOrderLine;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private Material material;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -110,18 +106,6 @@ public class DeliveryNoteLine implements Serializable {
         this.purchaseOrderLine = purchaseOrderLine;
     }
 
-    public Material getMaterial() {
-        return material;
-    }
-
-    public DeliveryNoteLine material(Material material) {
-        this.material = material;
-        return this;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

@@ -1,6 +1,8 @@
 package com.baosong.supplyme.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -37,10 +39,10 @@ public class Demand implements Serializable {
     @Column(name = "quantity", nullable = false)
     private Double quantity;
 
-    @Column(name = "quantity_ordered")
+    @Column(name = "quantity_ordered", nullable = false)
     private Double quantityOrdered;
 
-    @Column(name = "quantity_delivered")
+    @Column(name = "quantity_delivered", nullable = false)
     private Double quantityDelivered;
 
     @NotNull
@@ -55,12 +57,10 @@ public class Demand implements Serializable {
     @Column(name = "creation_date", nullable = false)
     private Instant creationDate;
 
-    @ManyToOne
-    @JsonIgnoreProperties("demands")
+    @ManyToOne(optional = false)
     private Material material;
 
-    @ManyToOne
-    @JsonIgnoreProperties("demands")
+    @ManyToOne(optional = false)
     private Project project;
 
     @ManyToOne
@@ -72,17 +72,16 @@ public class Demand implements Serializable {
     @JsonIgnoreProperties("demand")
     private List<DemandStatusChange> demandStatusChanges;
 
-	public List<DemandStatusChange> getDemandStatusChanges()
-	{
-		return this.demandStatusChanges;
-	}
+    public List<DemandStatusChange> getDemandStatusChanges() {
+        return this.demandStatusChanges;
+    }
 
-	public void setDemandStatusChanges(List<DemandStatusChange> demandStatusChanges)
-	{
-		this.demandStatusChanges = demandStatusChanges;
-	}
+    public void setDemandStatusChanges(List<DemandStatusChange> demandStatusChanges) {
+        this.demandStatusChanges = demandStatusChanges;
+    }
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not
+    // remove
     public Long getId() {
         return id;
     }
@@ -204,12 +203,27 @@ public class Demand implements Serializable {
     }
 
     /**
-     * @param quantityDelivered the quantityDelivered to set
+     * @param quantityDelivered the delivered quantity to set
      */
     public void setQuantityDelivered(Double quantityDelivered) {
         this.quantityDelivered = quantityDelivered;
     }
 
+    /**
+     *
+     * @param quantityDelivered the delivered quantity to set
+     * @return the demand
+     */
+    public Demand quantityDelivered(Double quantityDelivered) {
+        this.setQuantityDelivered(quantityDelivered);
+        return this;
+    }
+
+    /**
+     *
+     * @param quantityOrdered the ordered quantity to set
+     * @return the demand
+     */
     public Demand quantityOrdered(Double quantityOrdered) {
         this.setQuantityOrdered(quantityOrdered);
         return this;
@@ -217,15 +231,18 @@ public class Demand implements Serializable {
 
     /**
      * Gets if the demand can be added to a purchase order
+     *
      * @return
      */
     public boolean getCanBePurchased() {
-        // The demand must be approved or ordered and not fully fulfilled by an existing order
-        return (this.getQuantityOrdered() == null || this.getQuantityOrdered() < this.getQuantity() )
-            && (DemandStatus.APPROVED.equals(this.status) || DemandStatus.ORDERED.equals(this.status));
+        // The demand must be approved or ordered and not fully fulfilled by an existing
+        // order
+        return (this.getQuantityOrdered() == null || this.getQuantityOrdered() < this.getQuantity())
+                && (DemandStatus.APPROVED.equals(this.status) || DemandStatus.ORDERED.equals(this.status));
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and
+    // setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -249,12 +266,7 @@ public class Demand implements Serializable {
 
     @Override
     public String toString() {
-        return "Demand{" +
-            "id=" + getId() +
-            ", quantity=" + getQuantity() +
-            ", status='" + getStatus() + "'" +
-            ", expectedDate='" + getExpectedDate() + "'" +
-            ", creationDate='" + getCreationDate() + "'" +
-            "}";
+        return "Demand{" + "id=" + getId() + ", quantity=" + getQuantity() + ", status='" + getStatus() + "'"
+                + ", expectedDate='" + getExpectedDate() + "'" + ", creationDate='" + getCreationDate() + "'" + "}";
     }
 }

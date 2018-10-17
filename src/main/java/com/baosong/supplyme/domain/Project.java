@@ -11,11 +11,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -49,9 +52,24 @@ public class Project implements Serializable {
     @Column(name = "creation_date")
     private Instant creationDate;
 
-    @OneToMany(mappedBy = "project")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Demand> demands = new HashSet<>();
+    @ManyToOne(optional = false)
+    @JsonIgnoreProperties("")
+    private User creationUser;
+
+	public User getCreationUser()
+	{
+		return this.creationUser;
+	}
+
+    public Project creationUser(User creationUser) {
+        this.setCreationUser(creationUser);
+        return this;
+    }
+
+	public void setCreationUser(User creationUser)
+	{
+		this.creationUser = creationUser;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -106,30 +124,6 @@ public class Project implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Set<Demand> getDemands() {
-        return demands;
-    }
-
-    public Project demands(Set<Demand> demands) {
-        this.demands = demands;
-        return this;
-    }
-
-    public Project addDemand(Demand demand) {
-        this.demands.add(demand);
-        demand.setProject(this);
-        return this;
-    }
-
-    public Project removeDemand(Demand demand) {
-        this.demands.remove(demand);
-        demand.setProject(null);
-        return this;
-    }
-
-    public void setDemands(Set<Demand> demands) {
-        this.demands = demands;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

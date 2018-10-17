@@ -53,17 +53,13 @@ public class Material implements Serializable {
     @Column(name = "temporary", nullable = false)
     private Boolean temporary;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties("")
     private User creationUser;
 
     @OneToMany(mappedBy = "material")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<MaterialAvailability> codes = new HashSet<>();
-
-    @OneToMany(mappedBy = "material")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Demand> demands = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not
     // remove
@@ -177,31 +173,6 @@ public class Material implements Serializable {
 
     public void setTemporary(Boolean temporary) {
         this.temporary = temporary;
-    }
-
-    public Set<Demand> getDemands() {
-        return demands;
-    }
-
-    public Material demands(Set<Demand> demands) {
-        this.demands = demands;
-        return this;
-    }
-
-    public Material addDemand(Demand demand) {
-        this.demands.add(demand);
-        demand.setMaterial(this);
-        return this;
-    }
-
-    public Material removeDemand(Demand demand) {
-        this.demands.remove(demand);
-        demand.setMaterial(null);
-        return this;
-    }
-
-    public void setDemands(Set<Demand> demands) {
-        this.demands = demands;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and

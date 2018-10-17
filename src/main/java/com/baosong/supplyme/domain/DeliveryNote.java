@@ -47,7 +47,7 @@ public class DeliveryNote implements Serializable {
     @Column(name = "creation_date", nullable = false)
     private Instant creationDate;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties("")
     private Supplier supplier;
 

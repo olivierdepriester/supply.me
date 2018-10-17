@@ -45,17 +45,20 @@ public class PurchaseOrderLine implements Serializable {
     @Column(name = "quantity", nullable = false)
     private Double quantity;
 
+    @Column(name = "quantity_delivered", nullable = false)
+    private Double quantityDelivered;
+
     @NotNull
     @DecimalMin(value = "0")
     @Column(name = "order_price", nullable = false)
     private Double orderPrice;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties("purchaseOrderLines")
     private PurchaseOrder purchaseOrder;
 
-    @ManyToOne
-    @JsonIgnoreProperties("")
+    @ManyToOne(optional = false)
+    @JsonIgnoreProperties("demandStatusChanges")
     private Demand demand;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -65,6 +68,11 @@ public class PurchaseOrderLine implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public PurchaseOrderLine id(Long id) {
+        this.setId(id);
+        return this;
     }
 
     public Integer getLineNumber() {
@@ -91,6 +99,19 @@ public class PurchaseOrderLine implements Serializable {
 
     public void setQuantity(Double quantity) {
         this.quantity = quantity;
+    }
+
+    public Double getQuantityDelivered() {
+        return quantityDelivered;
+    }
+
+    public PurchaseOrderLine quantityDelivered(Double quantityDelivered) {
+        this.setQuantityDelivered(quantityDelivered);
+        return this;
+    }
+
+    public void setQuantityDelivered(Double quantityDelivered) {
+        this.quantityDelivered = quantityDelivered;
     }
 
     public Double getOrderPrice() {

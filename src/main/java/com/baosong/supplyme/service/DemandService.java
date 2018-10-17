@@ -120,6 +120,14 @@ public interface DemandService {
     double getQuantityOrderedFromPO(Long id) ;
 
     /**
+     * Get the delivered quantity for a demand based on the purchase order lines
+     *
+     * @param id the demand id
+     * @return sum of the quantity delivered
+     */
+    double getQuantityDeliveredFromPO(Long id);
+
+    /**
      * Get demands that can be purchased
      * @param query filter
      * @param pageable

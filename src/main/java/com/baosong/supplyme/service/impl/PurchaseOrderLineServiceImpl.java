@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import com.baosong.supplyme.domain.DeliveryNoteLine;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.PurchaseOrderLine;
 import com.baosong.supplyme.domain.Supplier;
@@ -13,6 +14,8 @@ import com.baosong.supplyme.domain.enumeration.PurchaseOrderStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.PurchaseOrderLineRepository;
 import com.baosong.supplyme.repository.search.PurchaseOrderLineSearchRepository;
+import com.baosong.supplyme.service.DeliveryNoteLineService;
+import com.baosong.supplyme.service.DeliveryNoteService;
 import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 
@@ -42,7 +45,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     private final PurchaseOrderLineSearchRepository purchaseOrderLineSearchRepository;
 
     @Autowired
-    private DemandService demandService;
+    private DeliveryNoteLineService deliveryNoteLineService;
+
+    @Autowired
+    private DeliveryNoteService deliveryNoteService;
 
     public PurchaseOrderLineServiceImpl(PurchaseOrderLineRepository purchaseOrderLineRepository,
             PurchaseOrderLineSearchRepository purchaseOrderLineSearchRepository) {
@@ -98,19 +104,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     @Override
     public void delete(Long id) throws ServiceException {
         log.debug("Request to delete PurchaseOrderLine : {}", id);
-        try {
-            PurchaseOrderLine purchaseOrderLine = findOne(id).get();
-            if (!PurchaseOrderStatus.NEW.equals(purchaseOrderLine.getPurchaseOrder().getStatus())) {
-                throw new ServiceException("Purchase order status does not allow you to delete a line");
-            }
-            Demand demand = purchaseOrderLine.getDemand();
-            demand.setQuantityOrdered(demand.getQuantityOrdered() - purchaseOrderLine.getQuantity());
-            demandService.save(demand);
-            purchaseOrderLineRepository.deleteById(id);
-            purchaseOrderLineSearchRepository.deleteById(id);
-        } catch (NoSuchElementException e) {
-            throw new ServiceException(new StringBuilder("PurchaseOrderLine not found for id ").append(id).toString());
-        }
+        // purchaseOrderLineRepository.deleteById(id);
+        purchaseOrderLineSearchRepository.deleteById(id);
     }
 
     /**
@@ -152,8 +147,17 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         PurchaseOrderLine result = purchaseOrderLineRepository.save(purchaseOrderLine);
         purchaseOrderLineSearchRepository.save(result);
         if (!isNew) {
-            // TODO Cascade on delivery note lines
+            this.deliveryNoteLineService.getByPurchaseOrderLineId(purchaseOrderLine.getId())
+                .stream().map(DeliveryNoteLine::getDeliveryNote).distinct()
+                .forEach(item -> this.deliveryNoteService.saveAndCascadeIndex(item));;
         }
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public double getQuantityDeliveredFromDeliveryNotes(Long purchaseOrderLineId) {
+        return this.deliveryNoteLineService.getByPurchaseOrderLineId(purchaseOrderLineId)
+                .stream().mapToDouble(DeliveryNoteLine::getQuantity).sum();
     }
 }

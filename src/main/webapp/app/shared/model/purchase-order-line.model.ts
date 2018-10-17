@@ -5,6 +5,7 @@ export interface IPurchaseOrderLine {
     id?: number;
     lineNumber?: number;
     quantity?: number;
+    quantityDelivered?: number;
     orderPrice?: number;
     purchaseOrder?: IPurchaseOrder;
     demand?: IDemand;
@@ -15,6 +16,7 @@ export class PurchaseOrderLine implements IPurchaseOrderLine {
         public id?: number,
         public lineNumber?: number,
         public quantity?: number,
+        public quantityDelivered?: number,
         public orderPrice?: number,
         public purchaseOrder?: IPurchaseOrder,
         public demand?: IDemand

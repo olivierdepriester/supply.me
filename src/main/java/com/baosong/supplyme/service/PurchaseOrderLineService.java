@@ -71,4 +71,12 @@ public interface PurchaseOrderLineService {
      * @return
      */
     List<PurchaseOrderLine> getByDemandId(Long demandId);
+
+    /**
+     * Get the quantity delivered for a purchase order line.
+     *
+     * @param purchaseOrderLineId The purchase order line identifier
+     * @return sum of the quantities filled in the delivery notes related to this purchase order line
+     */
+    double getQuantityDeliveredFromDeliveryNotes(Long purchaseOrderLineId);
 }

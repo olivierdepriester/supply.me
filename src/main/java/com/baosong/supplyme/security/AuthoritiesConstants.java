@@ -37,6 +37,11 @@ public final class AuthoritiesConstants {
      */
     public static final String MATERIAL_MANAGER = "ROLE_MATERIAL_MANAGER";
 
+    /**
+     * Material manager : can create and edit every material
+     */
+    public static final String DELIVERY_MANAGER = "ROLE_DELIVERY_MANAGER";
+
     private AuthoritiesConstants() {
     }
 }

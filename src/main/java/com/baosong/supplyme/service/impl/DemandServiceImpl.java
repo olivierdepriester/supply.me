@@ -101,9 +101,12 @@ public class DemandServiceImpl implements DemandService {
     public Demand save(Demand demand) throws ServiceException {
         log.debug("Request to save Demand : {}", demand);
         if (demand.getId() == null) {
-            demand.setStatus(DemandStatus.NEW);
-            demand.setCreationDate(Instant.now());
-            demand.setCreationUser(userService.getCurrentUser().get());
+            // New demand
+            demand.status(DemandStatus.NEW)
+                .quantityDelivered(0d)
+                .quantityOrdered(0d)
+                .creationDate(Instant.now())
+                .setCreationUser(userService.getCurrentUser().get());
         }
         return this.saveAndCascadeIndex(demand);
     }
@@ -217,6 +220,13 @@ public class DemandServiceImpl implements DemandService {
     public double getQuantityOrderedFromPO(Long id) {
         return purchaseOrderLineService.getByDemandId(id).stream().mapToDouble(PurchaseOrderLine::getQuantity).sum();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public double getQuantityDeliveredFromPO(Long id) {
+        return purchaseOrderLineService.getByDemandId(id).stream().mapToDouble(PurchaseOrderLine::getQuantityDelivered).sum();
+    }
+
 
     /**
      * Set a demand to the given status. The wanted <b>status</b> may be modified

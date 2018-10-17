@@ -4,6 +4,8 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.baosong.supplyme.domain.DeliveryNote;
 import com.baosong.supplyme.domain.DeliveryNoteLine;
@@ -11,11 +13,16 @@ import com.baosong.supplyme.domain.enumeration.DeliveryNoteStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.DeliveryNoteRepository;
 import com.baosong.supplyme.repository.search.DeliveryNoteSearchRepository;
+import com.baosong.supplyme.security.AuthoritiesConstants;
+import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.DeliveryNoteService;
+import com.baosong.supplyme.service.DemandService;
+import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,10 +41,14 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
 
     private final DeliveryNoteSearchRepository deliveryNoteSearchRepository;
 
-    /**
-     *
-     */
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private PurchaseOrderLineService purchaseOrderLineService;
+
+    @Autowired
+    private DemandService demandService;
 
     public DeliveryNoteServiceImpl(DeliveryNoteRepository deliveryNoteRepository,
             DeliveryNoteSearchRepository deliveryNoteSearchRepository) {
@@ -65,8 +76,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             persistedDeliveryNote = findOne(deliveryNote.getId()).get().deliveryDate(deliveryNote.getDeliveryDate())
                     .supplier(deliveryNote.getSupplier());
         }
-        // If not a status change, properties of the purchase order may have to be
-        // updated
+        // Check if the note can be edited
         if (!isEditable(persistedDeliveryNote)) {
             throw new ServiceException(String.format("deliveryNote.not.editable", persistedDeliveryNote.getId()));
         }
@@ -79,18 +89,22 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             throws ServiceException {
         if (persistedDeliveryNote.getId() != null) {
             // Gets the line ids remaining in the delivery to save
+            final Set<Long> lineIdsPresent = sourceDeliveryNote.getDeliveryNoteLines().stream()
+                    .filter(line -> line.getId() != null).map(DeliveryNoteLine::getId).collect(Collectors.toSet());
+            // Identify the lines to remove from the PO
+            Set<DeliveryNoteLine> linesToDelete = persistedDeliveryNote.getDeliveryNoteLines().stream()
+                    .filter(pol -> !lineIdsPresent.contains(pol.getId())).collect(Collectors.toSet());
             // Remove these lines
-            persistedDeliveryNote.getDeliveryNoteLines()
-                    .removeIf(pol -> !sourceDeliveryNote.getDeliveryNoteLines().contains(pol));
+            persistedDeliveryNote.getDeliveryNoteLines().removeIf(pol -> linesToDelete.contains(pol));
         }
 
         // Lines are updated if the call does not remain from a status change
         for (DeliveryNoteLine line : sourceDeliveryNote.getDeliveryNoteLines()) {
+            line.setDeliveryNote(persistedDeliveryNote);
             if (sourceDeliveryNote.getId() != null) {
                 // If PO update : add new lines or update existing lines
                 if (line.getId() == null) {
                     // New line
-                    line.setDeliveryNote(persistedDeliveryNote);
                     persistedDeliveryNote.getDeliveryNoteLines().add(line);
                 } else {
                     // Get the line
@@ -99,12 +113,33 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                     persistedLine.quantity(line.getQuantity());
                 }
             }
+
+            if (line.getPurchaseOrderLine() != null) {
+                // Set demand status to ORDERED
+                line.setPurchaseOrderLine(
+                        this.purchaseOrderLineService.findOne(line.getPurchaseOrderLine().getId()).get());
+                /// Calculate et set the delivered quantity for the purchase order line
+                this.purchaseOrderLineService.save(line.getPurchaseOrderLine().quantityDelivered(this.purchaseOrderLineService
+                        .getQuantityDeliveredFromDeliveryNotes(line.getPurchaseOrderLine().getId())));
+                /// Calculate et set the delivered quantity for the demand
+                this.demandService.save(
+                    line.getPurchaseOrderLine().getDemand().quantityDelivered(
+                        this.demandService.getQuantityDeliveredFromPO(line.getPurchaseOrderLine().getDemand().getId())
+                    )
+                );
+            }
         }
     }
 
+    /**
+     * Check if a delivery note can be edited.
+     *
+     * @param deliveryNote the delivery note to check
+     * @return
+     */
     private boolean isEditable(DeliveryNote deliveryNote) {
-        // TODO Implement rules to control delivery note access
-        return true;
+        return DeliveryNoteStatus.NEW.equals(deliveryNote.getStatus())
+                && SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.DELIVERY_MANAGER);
     }
 
     /**

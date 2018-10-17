@@ -5,6 +5,7 @@ import com.baosong.supplyme.domain.DeliveryNoteLine;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -48,9 +49,16 @@ public interface DeliveryNoteLineService {
      * Search for the deliveryNoteLine corresponding to the query.
      *
      * @param query the query of the search
-     * 
+     *
      * @param pageable the pagination information
      * @return the list of entities
      */
     Page<DeliveryNoteLine> search(String query, Pageable pageable);
+
+    /**
+     * Get the delivery note lines related to a purchase order line
+     * @param purchaseOrderLineId The purchase order line identifier
+     * @return
+     */
+    List<DeliveryNoteLine> getByPurchaseOrderLineId(Long purchaseOrderLineId);
 }

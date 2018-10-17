@@ -29,30 +29,39 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="code"><span jhiTranslate="supplyMeApp.deliveryNote.code">Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="deliveryDate"><span jhiTranslate="supplyMeApp.deliveryNote.deliveryDate">Delivery Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="status"><span jhiTranslate="supplyMeApp.deliveryNote.status">Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.deliveryNote.creationDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="supplier.id"><span jhiTranslate="supplyMeApp.deliveryNote.supplier">Supplier</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creationUser.id"><span jhiTranslate="supplyMeApp.deliveryNote.creationUser">Creation User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th></th>
+                <th jhiSortBy="supplier.id"><span jhiTranslate="supplyMeApp.deliveryNote.supplier">Supplier</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <th jhiSortBy="code"><span jhiTranslate="supplyMeApp.deliveryNote.code">Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <th jhiSortBy="deliveryDate"><span jhiTranslate="supplyMeApp.deliveryNote.deliveryDate">Delivery Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <th jhiSortBy="status"><span jhiTranslate="supplyMeApp.deliveryNote.status">Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <th> <span jhiTranslate="supplyMeApp.deliveryNote.content">Content</span> </th>
+                <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.deliveryNote.creationDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <th jhiSortBy="creationUser.id"><span jhiTranslate="supplyMeApp.deliveryNote.creationUser">Creation User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <th></th>
             </tr>
             </thead>
             <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let deliveryNote of deliveryNotes ;trackBy: trackId">
-                <td><a [routerLink]="['/delivery-note', deliveryNote.id, 'view' ]">{{deliveryNote.id}}</a></td>
-                <td>{{deliveryNote.code}}</td>
-                <td>{{deliveryNote.deliveryDate | date:'medium'}}</td>
-                <td jhiTranslate="{{'supplyMeApp.DeliveryNoteStatus.' + deliveryNote.status}}">{{deliveryNote.status}}</td>
-                <td>{{deliveryNote.creationDate | date:'medium'}}</td>
                 <td>
                     <div *ngIf="deliveryNote.supplier">
-                        <a [routerLink]="['../supplier', deliveryNote.supplier?.id, 'view' ]" >{{deliveryNote.supplier?.id}}</a>
+                        <a [routerLink]="['../supplier', deliveryNote.supplier?.id, 'view' ]"
+                        title="{{deliveryNote.supplier?.referenceNumber + ' - ' + deliveryNote.supplier?.name }}" >
+                        {{deliveryNote.supplier?.referenceNumber}}
+                    </a>
                     </div>
                 </td>
+                <td><a [routerLink]="['/delivery-note', deliveryNote.id, 'view' ]">{{deliveryNote.code}}</a></td>
+                <td>{{deliveryNote.deliveryDate | dateFormat }}</td>
+                <td jhiTranslate="{{'supplyMeApp.DeliveryNoteStatus.' + deliveryNote.status}}">{{deliveryNote.status}}</td>
                 <td>
-                    {{deliveryNote.creationUser?.id}}
+                    <ul>
+                        <li *ngFor="let line of deliveryNote.deliveryNoteLines">
+                            {{ line.quantity | number }} x [{{ line.purchaseOrderLine?.demand?.material?.partNumber }} - {{ line.purchaseOrderLine?.demand?.material?.name }}]
+                        </li>
+                    </ul>
+                </td>
+                <td>{{deliveryNote.creationDate | datetimeFormat }}</td>
+                <td>
+                    {{deliveryNote.creationUser?.lastName }} {{ deliveryNote.creationUser?.firstName}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
@@ -62,20 +71,22 @@
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
-                        <button type="submit"
-                                [routerLink]="['/delivery-note', deliveryNote.id, 'edit']"
-                                class="btn btn-primary btn-sm">
-                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'delivery-note/'+ deliveryNote.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                        </button>
+                        <ng-container *jhiHasAnyAuthority="'ROLE_DELIVERY_MANAGER'">
+                            <button type="submit"
+                                    [routerLink]="['/delivery-note', deliveryNote.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+                            <button type="submit"
+                                    [routerLink]="['/', { outlets: { popup: 'delivery-note/'+ deliveryNote.id + '/delete'} }]"
+                                    replaceUrl="true"
+                                    queryParamsHandling="merge"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon [icon]="'times'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </ng-container>
                     </div>
                 </td>
             </tr>

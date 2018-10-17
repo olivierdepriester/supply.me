@@ -151,12 +151,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         // Lines are updated if the call does not remain from a status change
         for (PurchaseOrderLine line : sourcePurchaseOrder.getPurchaseOrderLines()) {
+            // PO must be assigned to the line for new lines and can be done harmless for existing lines
+            line.purchaseOrder(persistedPurchaseOrder);
             if (sourcePurchaseOrder.getId() != null) {
                 // If PO update : add new lines or update existing lines
                 if (line.getId() == null) {
                     // New line
-                    line.purchaseOrder(persistedPurchaseOrder);
-                    persistedPurchaseOrder.getPurchaseOrderLines().add(line);
+                    persistedPurchaseOrder.getPurchaseOrderLines().add(line.quantityDelivered(0d));
                     //  No need to index lines now : it is required to be done when the PO is sent
                     // purchaseOrderLineService.save(line);
                 } else {

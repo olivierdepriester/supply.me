@@ -1,16 +1,17 @@
 package com.baosong.supplyme.service.impl;
 
 import com.baosong.supplyme.service.ProjectService;
+import com.baosong.supplyme.service.UserService;
 import com.baosong.supplyme.domain.Project;
 import com.baosong.supplyme.repository.ProjectRepository;
 import com.baosong.supplyme.repository.search.ProjectSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,6 +32,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectSearchRepository projectSearchRepository;
 
+    @Autowired
+    private UserService userService;
+
     public ProjectServiceImpl(ProjectRepository projectRepository, ProjectSearchRepository projectSearchRepository) {
         this.projectRepository = projectRepository;
         this.projectSearchRepository = projectSearchRepository;
@@ -44,7 +48,12 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public Project save(Project project) {
-        log.debug("Request to save Project : {}", project);        Project result = projectRepository.save(project);
+        log.debug("Request to save Project : {}", project);
+        if (project.getId() == null) {
+            project.setCreationDate(Instant.now());
+            project.setCreationUser(userService.getCurrentUser().get());
+        }
+        Project result = projectRepository.save(project);
         projectSearchRepository.save(result);
         return result;
     }

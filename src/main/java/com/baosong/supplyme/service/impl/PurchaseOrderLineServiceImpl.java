@@ -3,23 +3,17 @@ package com.baosong.supplyme.service.impl;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.baosong.supplyme.domain.DeliveryNoteLine;
-import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.PurchaseOrderLine;
-import com.baosong.supplyme.domain.Supplier;
-import com.baosong.supplyme.domain.enumeration.PurchaseOrderStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.PurchaseOrderLineRepository;
 import com.baosong.supplyme.repository.search.PurchaseOrderLineSearchRepository;
 import com.baosong.supplyme.service.DeliveryNoteLineService;
 import com.baosong.supplyme.service.DeliveryNoteService;
-import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 
-import org.apache.lucene.queryparser.flexible.core.builders.QueryBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;

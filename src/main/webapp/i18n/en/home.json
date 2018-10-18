@@ -1,12 +1,17 @@
 {
     "home": {
-        "title": "Welcome, Java Hipster!",
-        "subtitle": "This is your homepage",
+        "title": "Welcome in SupplyMe !",
+        "subtitle": "SupplyMe helps you to send requests for materials.",
         "logged": {
             "message": "You are logged in as user \"{{username}}\"."
         },
-        "question": "If you have any question on JHipster:",
+        "question": "Do you want to :",
         "link": {
+            "demand": {
+                "my": "See your requests",
+                "new": "Create a new request",
+                "search": "Search for any request"
+            },
             "homepage": "JHipster homepage",
             "stackoverflow": "JHipster on Stack Overflow",
             "bugtracker": "JHipster bug tracker",

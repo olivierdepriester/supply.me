@@ -49,11 +49,9 @@ export class DemandService {
 
     find(id: number, loadChanges?: boolean): Observable<EntityResponseType> {
         let options: HttpParams;
-        console.log(loadChanges);
         if (loadChanges != null) {
             options = new HttpParams().append('loadChanges', `${loadChanges}`);
         }
-        console.log(options);
         return this.http
             .get<IDemand>(`${this.resourceUrl}/${id}`, { params: options, observe: 'response' })
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));

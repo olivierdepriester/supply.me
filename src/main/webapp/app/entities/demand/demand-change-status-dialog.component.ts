@@ -52,7 +52,6 @@ export class DemandChangeStatusPopupComponent implements OnInit, OnDestroy {
                     backdrop: 'static'
                 });
                 this.ngbModalRef.componentInstance.demand = demand;
-                console.log(status);
                 this.ngbModalRef.componentInstance.status = status;
                 this.ngbModalRef.result.then(
                     result => {

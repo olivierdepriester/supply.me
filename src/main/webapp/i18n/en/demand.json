@@ -2,19 +2,19 @@
     "supplyMeApp": {
         "demand" : {
             "home": {
-                "title": "Demands",
-                "createLabel": "Create a new Demand",
-                "createOrEditLabel": "Create or edit a Demand",
-                "search": "Search for Demand"
+                "title": "Requests",
+                "createLabel": "Create a new request",
+                "createOrEditLabel": "Create or edit a request",
+                "search": "Search for existing requests"
             },
-            "created": "A new demand has been created with identifier {{ param }}",
-            "updated": "A demand has been updated with identifier {{ param }}",
-            "deleted": "A demand has been deleted with identifier {{ param }}",
+            "created": "A new request has been created with identifier {{ param }}",
+            "updated": "A request has been updated with identifier {{ param }}",
+            "deleted": "A request has been deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Demand {{ id }}?"
+                "question": "Are you sure you want to delete request {{ id }}?"
             },
             "detail": {
-                "title": "Demand"
+                "title": "Request"
             },
             "quantity": "Quantity",
             "status": "Status",
@@ -22,20 +22,20 @@
             "creationDate": "Creation Date",
             "material": "Material",
             "project": "Project",
-            "creationUser": "Creation User",
+            "creationUser": "Author",
             "statusChange": {
                 "title": "Events",
                 "comment": "Comment"
             },
             "commentPopup": {
-                "title": "Demand {{ id }} status change comment",
+                "title": "Request {{ id }} status change comment",
                 "placeholder": "Please fill your comment here."
             },
             "button" : {
-                "sendToApproval": "Send the demand to approval",
-                "reject": "Reject the demand",
-                "approve": "Approve the demand",
-                "createMaterial": "Create a new material for this demand"
+                "sendToApproval": "Send the request to approval",
+                "reject": "Reject the request",
+                "approve": "Approve the request",
+                "createMaterial": "Create a new material for this request"
             }
         }
     }

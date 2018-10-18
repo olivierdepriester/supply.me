@@ -6,6 +6,7 @@ import { DemandSearchCriteria, DemandStatus, IDemand } from 'app/shared/model/de
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
+import { SessionStorageService } from 'ngx-webstorage';
 
 @Component({
     selector: 'jhi-demand',
@@ -16,42 +17,58 @@ export class DemandComponent implements OnInit, OnDestroy {
     demands: IDemand[];
     currentAccount: any;
     eventSubscriber: Subscription;
-    searchCriteria: DemandSearchCriteria = new DemandSearchCriteria();
+    searchCriteria: DemandSearchCriteria;
+    isAdvancedFilterDisplayed = false;
 
     constructor(
         private demandService: DemandService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
         private activatedRoute: ActivatedRoute,
-        private principal: Principal
+        private principal: Principal,
+        private sessionStorageService: SessionStorageService
     ) {
-        this.searchCriteria.query =
-            this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
-                ? this.activatedRoute.snapshot.params['search']
-                : '';
+        // this.searchCriteria.query =
+        //     this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
+        //         ? this.activatedRoute.snapshot.params['search']
+        //         : '';
     }
 
-    loadAll() {
-        this.demandService.query().subscribe(
-            (res: HttpResponse<IDemand[]>) => {
-                this.demands = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+    ngOnInit() {
+        this.activatedRoute.data.subscribe(({ criteria }) => {
+            if (criteria !== undefined) {
+                this.searchCriteria = criteria;
+                this.search();
+            } else {
+                console.log('session criteria');
+                console.log(this.sessionStorageService.retrieve('demandCriteria'));
+                this.searchCriteria = DemandSearchCriteria.of(this.sessionStorageService.retrieve('demandCriteria'));
+                console.log('copy of criteria');
+                console.log(this.searchCriteria);
+                if (!this.searchCriteria) {
+                    this.searchCriteria = new DemandSearchCriteria();
+                } else {
+                    this.search();
+                }
+                this.isAdvancedFilterDisplayed = true;
+            }
+        });
+        // Current user
+        this.principal.identity().then(account => {
+            this.currentAccount = account;
+        });
+        this.registerChangeInDemands();
     }
 
     search() {
+        this.sessionStorageService.store('demandCriteria', this.searchCriteria);
         this.demandService
             .search(this.searchCriteria.getQuery())
             .subscribe((res: HttpResponse<IDemand[]>) => (this.demands = res.body), (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
-        this.searchCriteria.query = '';
-        this.searchCriteria.status = null;
-        this.searchCriteria.material = null;
-        this.searchCriteria.project = null;
-        this.searchCriteria.creationUser = null;
+        this.searchCriteria.clear();
     }
 
     sendToApproval(demand: IDemand) {
@@ -82,16 +99,6 @@ export class DemandComponent implements OnInit, OnDestroy {
         );
     }
 
-    ngOnInit() {
-        // Current user
-        this.principal.identity().then(account => {
-            this.currentAccount = account;
-            this.searchCriteria.creationUser = this.currentAccount;
-            this.search();
-        });
-        this.registerChangeInDemands();
-    }
-
     isPurchaseOrderAllowed(demand: IDemand): boolean {
         return (
             ((demand.status === DemandStatus.ORDERED &&
@@ -118,7 +125,7 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     registerChangeInDemands() {
-        this.eventSubscriber = this.eventManager.subscribe('demandListModification', () => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('demandListModification', () => this.search());
         this.eventSubscriber = this.eventManager.subscribe('demandComment', response =>
             this.changeStatus(response.content.demand, response.content.status, response.content.comment)
         );
@@ -126,5 +133,9 @@ export class DemandComponent implements OnInit, OnDestroy {
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
+    }
+
+    expandCollapse(): void {
+        this.isAdvancedFilterDisplayed = !this.isAdvancedFilterDisplayed;
     }
 }

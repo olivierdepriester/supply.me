@@ -1,8 +1,8 @@
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
-import { UserRouteAccessService } from 'app/core';
-import { Demand, IDemand, DemandStatus } from 'app/shared/model/demand.model';
+import { UserRouteAccessService, Principal } from 'app/core';
+import { Demand, IDemand, DemandStatus, DemandSearchCriteria } from 'app/shared/model/demand.model';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DemandDeletePopupComponent } from './demand-delete-dialog.component';
@@ -46,11 +46,35 @@ export class StatusResolve implements Resolve<DemandStatus> {
         return status as DemandStatus;
     }
 }
+@Injectable({ providedIn: 'root' })
+export class MySearchCriteriaResolve implements Resolve<DemandSearchCriteria> {
+    constructor(private principal: Principal) {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        const criteria = new DemandSearchCriteria();
+        this.principal.identity().then(account => {
+            criteria.creationUser = account;
+        });
+        return criteria;
+    }
+}
 
 export const demandRoute: Routes = [
     {
         path: 'demand',
         component: DemandComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'supplyMeApp.demand.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'demand/my',
+        component: DemandComponent,
+        resolve: {
+            criteria: MySearchCriteriaResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'supplyMeApp.demand.home.title'

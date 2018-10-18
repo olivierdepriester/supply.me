@@ -62,6 +62,29 @@ export class Demand implements IDemand {
 }
 
 export class DemandSearchCriteria {
+    /**
+     * Initialize a criteria by cloning the parameter.
+     * Method used to retrieve a criteria stored in session.
+     *
+     * @static
+     * @param {DemandSearchCriteria} sessionCriteria Criteria retrieved from the session
+     * @returns {DemandSearchCriteria} null if sessionCriteria is null. Otherwise a copy of sessionCriteria.
+     * @memberof DemandSearchCriteria
+     */
+    public static of(sessionCriteria: DemandSearchCriteria): DemandSearchCriteria {
+        if (sessionCriteria) {
+            return new DemandSearchCriteria(
+                sessionCriteria.query,
+                sessionCriteria.status,
+                sessionCriteria.material,
+                sessionCriteria.project,
+                sessionCriteria.creationUser
+            );
+        } else {
+            return null;
+        }
+    }
+
     constructor(
         public query?: string,
         public status?: DemandStatus,
@@ -70,6 +93,12 @@ export class DemandSearchCriteria {
         public creationUser?: IUser
     ) {}
 
+    /**
+     * Get the search parameters as query object.
+     *
+     * @returns
+     * @memberof DemandSearchCriteria
+     */
     getQuery() {
         return {
             query: this.query,
@@ -78,5 +107,25 @@ export class DemandSearchCriteria {
             projectId: this.project != null ? this.project.id : null,
             creationUserId: this.creationUser != null ? this.creationUser.id : null
         };
+    }
+    /**
+     * Clear the search parameters.
+     *
+     * @memberof DemandSearchCriteria
+     */
+    clear() {
+        this.query = '';
+        this.status = null;
+        this.material = null;
+        this.project = null;
+        this.creationUser = null;
+    }
+
+    isEmpty(): boolean {
+        let result = true;
+        Object.keys(this).forEach(key => {
+            result = result && (this[key] == null || this[key] === '');
+        });
+        return result;
     }
 }

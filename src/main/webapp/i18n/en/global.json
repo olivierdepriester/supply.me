@@ -97,7 +97,7 @@
                 "material": "Material",
                 "supplier": "Supplier",
                 "materialAvailability": "Material Availability",
-                "demand": "Demand",
+                "demand": "Requests",
                 "purchaseOrder": "Purchase Order",
                 "purchaseOrderLine": "Purchase Order Line",
                 "deliveryNote": "Delivery Note",
@@ -146,9 +146,9 @@
         "messages": {
             "info": {
                 "authenticated": {
-                    "prefix": "If you want to ",
+                    "prefix": "Please click here to ",
                     "link": "sign in",
-                    "suffix": ", you can try the default accounts:<br/>- Administrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\")."
+                    "suffix": "."
                 },
                 "register": {
                     "noaccount": "You don't have an account yet?",
@@ -233,10 +233,10 @@
         "idexists": "A new {{ entityName }} cannot already have an ID",
         "idnull": "Invalid ID"
     },
-    "footer": "This is your footer",
+    "footer": "Copyright Baosong Robotics 2018",
     "selector": {
         "demand": {
-            "placeholder": "Type here to select a demand"
+            "placeholder": "Type here to select a request"
         },
         "material": {
             "placeholder": "Type here to select a material"
@@ -253,5 +253,9 @@
         "purchaseorderline": {
             "placeholder": "Type here to select a material in a purchase order"
         }
+    },
+    "search": {
+        "showAdvancedFilters": "Display advanced criteria",
+        "hideAdvancedFilters": "Hide advanced criteria"
     }
 }

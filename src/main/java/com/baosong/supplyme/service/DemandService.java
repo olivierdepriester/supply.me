@@ -94,7 +94,7 @@ public interface DemandService {
 	 * @param criteria Bean with the search parameters
 	 * @return
 	 */
-    List<Demand> search(DemandSearchCriteria criteria);
+    List<Demand> search(DemandSearchCriteria criteria, Pageable pageable);
 
     /**
      * Change the status of a demand

@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { SupplyMeSharedModule } from 'app/shared';
 import { SupplyMeAdminModule } from 'app/admin/admin.module';
 import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
+import { MultiSelectModule } from 'primeng/components/multiselect/multiselect';
 import { MaterialSelectorModule } from 'app/entities/component/material-selector';
 import { ProjectSelectorModule } from 'app/entities/component/project-selector';
 import { UserSelectorModule } from 'app/entities/component/user-selector';
@@ -28,6 +29,7 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         SupplyMeSharedModule,
         SupplyMeAdminModule,
         AutoCompleteModule,
+        MultiSelectModule,
         MaterialSelectorModule,
         ProjectSelectorModule,
         UserSelectorModule,

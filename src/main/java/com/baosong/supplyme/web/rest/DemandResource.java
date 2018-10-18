@@ -179,11 +179,12 @@ public class DemandResource {
     @Timed
     public List<Demand> searchDemands(@RequestParam Optional<String> query, @RequestParam Optional<Long> materialId,
             @RequestParam Optional<Long> projectId, @RequestParam Optional<Long> creationUserId,
-            @RequestParam Optional<DemandStatus> status) {
-        log.debug("REST request to search Demands for query");
+            @RequestParam Optional<List<DemandStatus>> status, Pageable pageable) {
+        log.debug(String.format("REST request to search Demands for query : [%s, %s, %s, %s, %s]",
+        query, materialId, projectId, creationUserId, status));
         return demandService.search(new DemandSearchCriteria().query(query.orElse(null))
                 .materialId(materialId.orElse(null)).projectId(projectId.orElse(null))
-                .creationUserId(creationUserId.orElse(null)).demandStatus(status.orElse(null)));
+                .creationUserId(creationUserId.orElse(null)).demandStatus(status.orElse(null)), pageable);
     }
 
     @PostMapping("/_search/demands/rebuild")

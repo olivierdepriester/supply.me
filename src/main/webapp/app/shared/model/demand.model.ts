@@ -2,8 +2,9 @@ import { Moment } from 'moment';
 import { IMaterial } from 'app/shared/model//material.model';
 import { IProject } from 'app/shared/model//project.model';
 import { IUser } from 'app/core/user/user.model';
+import { SelectItem } from 'primeng/primeng';
 
-export const enum DemandStatus {
+export enum DemandStatus {
     NEW = 'NEW',
     WAITING_FOR_APPROVAL = 'WAITING_FOR_APPROVAL',
     APPROVED = 'APPROVED',
@@ -87,11 +88,13 @@ export class DemandSearchCriteria {
 
     constructor(
         public query?: string,
-        public status?: DemandStatus,
+        public status?: string[],
         public material?: IMaterial,
         public project?: IProject,
         public creationUser?: IUser
-    ) {}
+    ) {
+        this.status = [];
+    }
 
     /**
      * Get the search parameters as query object.
@@ -115,7 +118,7 @@ export class DemandSearchCriteria {
      */
     clear() {
         this.query = '';
-        this.status = null;
+        this.status = [];
         this.material = null;
         this.project = null;
         this.creationUser = null;
@@ -124,7 +127,7 @@ export class DemandSearchCriteria {
     isEmpty(): boolean {
         let result = true;
         Object.keys(this).forEach(key => {
-            result = result && (this[key] == null || this[key] === '');
+            result = result && (this[key] == null || this[key] === '' || this[key].length === 0);
         });
         return result;
     }

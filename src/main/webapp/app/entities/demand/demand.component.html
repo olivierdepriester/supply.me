@@ -42,18 +42,16 @@
                 </div>
                 <div class="input-group w-100 mt-3" [ngClass]="{'collapsed': !isAdvancedFilterDisplayed }">
                     <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>
-                    <select class="form-control w35" name="status" [(ngModel)]="searchCriteria.status" id="field_status">
-                        <option value=""></option>
-                        <option value="NEW">{{'supplyMeApp.DemandStatus.NEW' | translate}}</option>
-                        <option value="WAITING_FOR_APPROVAL">{{'supplyMeApp.DemandStatus.WAITING_FOR_APPROVAL' | translate}}</option>
-                        <option value="APPROVED">{{'supplyMeApp.DemandStatus.APPROVED' | translate}}</option>
-                        <option value="ORDERED">{{'supplyMeApp.DemandStatus.ORDERED' | translate}}</option>
-                        <option value="PARTIALLY_DELIVERED">{{'supplyMeApp.DemandStatus.PARTIALLY_DELIVERED' | translate}}</option>
-                        <option value="FULLY_DELIVERED">{{'supplyMeApp.DemandStatus.FULLY_DELIVERED' | translate}}</option>
-                        <option value="REJECTED">{{'supplyMeApp.DemandStatus.REJECTED' | translate}}</option>
-                    </select>
-                    <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.creationUser" for="field_creationUser">Creation
-                        User</label>
+                    <p-multiSelect class="w35" name="status" [defaultLabel]="'selector.status.placeholder' | translate"
+                        [inputStyle]="{'width':'100%'}" [showHeader]="false" [style]="{'width':'100%', 'padding': '0.1em 0.5em'}"
+                        [selectedItemsLabel]="'selector.status.selectedItemsLabel' | translate" [scrollHeight]="'230px'"
+                        [maxSelectedLabels]="0"
+                        [options]="availableStatus" [(ngModel)]="searchCriteria.status" id="field_status">
+                        <ng-template let-statusItem pTemplate="item">
+                            <span jhiTranslate="{{ 'supplyMeApp.DemandStatus.' + statusItem.value }}"></span>
+                        </ng-template>
+                    </p-multiSelect>
+                    <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.creationUser" for="field_creationUser">Creation User</label>
                     <jhi-user-selector class="w35" id="field_creationUser" name="creationUser" [(ngModel)]="searchCriteria.creationUser"></jhi-user-selector>
                 </div>
             </form>
@@ -64,14 +62,14 @@
         <form name="listForm" class="form-inline">
             <table class="table table-striped">
                 <thead>
-                    <tr>
-                        <th class="text-center"><span jhiTranslate="global.field.id">ID</span></th>
-                        <th class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span></th>
-                        <th class="text-center"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></th>
-                        <th class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span></th>
-                        <th class="text-center"><span jhiTranslate="supplyMeApp.demand.status">Status</span></th>
-                        <th class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></th>
-                        <th class="text-center"><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span></th>
+                    <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+                        <th jhiSortBy="id" class="text-center"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                        <th jhiSortBy="material.partNumber.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                        <th jhiSortBy="quantity" class="text-center"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                        <th jhiSortBy="project.code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                        <th jhiSortBy="status.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.status">Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                        <th jhiSortBy="expectedDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                        <th jhiSortBy="creationDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -94,8 +92,7 @@
                         </td>
                         <td jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</td>
                         <td class="text-center">{{demand.expectedDate | dateFormat }}</td>
-                        <td class="text-center" title="{{demand.creationDate | datetimeFormat }}">{{demand.creationDate
-                            | dateFormat }}</td>
+                        <td class="text-center" title="{{demand.creationDate | datetimeFormat }}">{{demand.creationDate | dateFormat }}</td>
                         <td class="text-left">
                             <div class="btn-group flex-btn-group-container">
                                 <button type="submit" [routerLink]="['/demand', demand.id, 'view' ]" class="btn btn-info btn-sm">

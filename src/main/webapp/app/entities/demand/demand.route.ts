@@ -52,6 +52,14 @@ export class MySearchCriteriaResolve implements Resolve<DemandSearchCriteria> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         const criteria = new DemandSearchCriteria();
+        criteria.status.push(
+            DemandStatus.NEW,
+            DemandStatus.WAITING_FOR_APPROVAL,
+            DemandStatus.REJECTED,
+            DemandStatus.APPROVED,
+            DemandStatus.ORDERED,
+            DemandStatus.PARTIALLY_DELIVERED
+        );
         this.principal.identity().then(account => {
             criteria.creationUser = account;
         });

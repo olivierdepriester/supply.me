@@ -97,7 +97,12 @@
                 "material": "Material",
                 "supplier": "Supplier",
                 "materialAvailability": "Material Availability",
-                "demand": "Requests",
+                "demand": {
+                    "title": "Requests",
+                    "search": "Search for requests",
+                    "my": "My open requests",
+                    "new": "New request"
+                },
                 "purchaseOrder": "Purchase Order",
                 "purchaseOrderLine": "Purchase Order Line",
                 "deliveryNote": "Delivery Note",
@@ -237,6 +242,10 @@
     "selector": {
         "demand": {
             "placeholder": "Type here to select a request"
+        },
+        "status": {
+            "placeholder": "Select one or more status here",
+            "selectedItemsLabel": "{0} status selected"
         },
         "material": {
             "placeholder": "Type here to select a material"

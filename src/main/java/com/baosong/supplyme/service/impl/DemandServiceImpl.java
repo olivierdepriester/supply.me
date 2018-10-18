@@ -193,7 +193,7 @@ public class DemandServiceImpl implements DemandService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Demand> search(DemandSearchCriteria criteria) {
+    public List<Demand> search(DemandSearchCriteria criteria, Pageable pageable) {
         log.debug("Request to search Demands for query {}", criteria);
         BoolQueryBuilder booleanQueryBuilder = QueryBuilders.boolQuery();
         if (!StringUtils.isEmpty(criteria.getQuery())) {
@@ -209,9 +209,11 @@ public class DemandServiceImpl implements DemandService {
             booleanQueryBuilder.must(QueryBuilders.termQuery("creationUser.id", criteria.getCreationUserId()));
         }
         if (criteria.getDemandStatus() != null) {
-            booleanQueryBuilder.must(QueryBuilders.matchQuery("status", criteria.getDemandStatus().toString()));
+            BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
+            criteria.getDemandStatus().forEach(status -> statusQueryBuilder.should(QueryBuilders.matchQuery("status", status.toString())));
+            booleanQueryBuilder.must(statusQueryBuilder);
         }
-        return StreamSupport.stream(demandSearchRepository.search(booleanQueryBuilder).spliterator(), false)
+        return StreamSupport.stream(demandSearchRepository.search(booleanQueryBuilder, pageable).spliterator(), false)
                 .collect(Collectors.toList());
     }
 

@@ -7,6 +7,7 @@ import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
 import { SessionStorageService } from 'ngx-webstorage';
+import { SelectItem } from 'primeng/primeng';
 
 @Component({
     selector: 'jhi-demand',
@@ -19,6 +20,9 @@ export class DemandComponent implements OnInit, OnDestroy {
     eventSubscriber: Subscription;
     searchCriteria: DemandSearchCriteria;
     isAdvancedFilterDisplayed = false;
+    availableStatus: SelectItem[] = [];
+    predicate: any;
+    reverse: boolean;
 
     constructor(
         private demandService: DemandService,
@@ -28,27 +32,32 @@ export class DemandComponent implements OnInit, OnDestroy {
         private principal: Principal,
         private sessionStorageService: SessionStorageService
     ) {
+        this.predicate = 'id';
+        this.reverse = false;
         // this.searchCriteria.query =
         //     this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
         //         ? this.activatedRoute.snapshot.params['search']
         //         : '';
+        Object.keys(DemandStatus).forEach(status =>
+            this.availableStatus.push({ label: status, value: DemandStatus[status], title: 'xxx' })
+        );
     }
 
     ngOnInit() {
         this.activatedRoute.data.subscribe(({ criteria }) => {
             if (criteria !== undefined) {
+                // Criteria initialzed from route
                 this.searchCriteria = criteria;
                 this.search();
             } else {
-                console.log('session criteria');
-                console.log(this.sessionStorageService.retrieve('demandCriteria'));
+                // Try to find existsing criteria in session
                 this.searchCriteria = DemandSearchCriteria.of(this.sessionStorageService.retrieve('demandCriteria'));
-                console.log('copy of criteria');
-                console.log(this.searchCriteria);
-                if (!this.searchCriteria) {
-                    this.searchCriteria = new DemandSearchCriteria();
-                } else {
+                if (this.searchCriteria) {
+                    // If criteria are in session : search
                     this.search();
+                } else {
+                    // No criteria : intialize new block
+                    this.searchCriteria = new DemandSearchCriteria();
                 }
                 this.isAdvancedFilterDisplayed = true;
             }
@@ -63,7 +72,10 @@ export class DemandComponent implements OnInit, OnDestroy {
     search() {
         this.sessionStorageService.store('demandCriteria', this.searchCriteria);
         this.demandService
-            .search(this.searchCriteria.getQuery())
+            .search({
+                query: this.searchCriteria.getQuery(),
+                sort: this.sort()
+            })
             .subscribe((res: HttpResponse<IDemand[]>) => (this.demands = res.body), (res: HttpErrorResponse) => this.onError(res.message));
     }
 
@@ -137,5 +149,18 @@ export class DemandComponent implements OnInit, OnDestroy {
 
     expandCollapse(): void {
         this.isAdvancedFilterDisplayed = !this.isAdvancedFilterDisplayed;
+    }
+
+    reset() {
+        this.demands = [];
+        this.search();
+    }
+
+    sort() {
+        const result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
+        if (this.predicate !== 'id') {
+            result.push('id');
+        }
+        return result;
     }
 }

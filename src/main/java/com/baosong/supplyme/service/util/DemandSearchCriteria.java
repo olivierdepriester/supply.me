@@ -1,5 +1,7 @@
 package com.baosong.supplyme.service.util;
 
+import java.util.List;
+
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 
 public class DemandSearchCriteria {
@@ -7,7 +9,7 @@ public class DemandSearchCriteria {
 
     private Long projectId;
 
-    private DemandStatus demandStatus;
+    private List<DemandStatus> demandStatus;
 
     private Long creationUserId;
 
@@ -52,14 +54,14 @@ public class DemandSearchCriteria {
     /**
      * @return the demandStatus
      */
-    public DemandStatus getDemandStatus() {
+    public List<DemandStatus> getDemandStatus() {
         return demandStatus;
     }
 
     /**
      * @param demandStatus the demandStatus to set
      */
-    public void setDemandStatus(DemandStatus demandStatus) {
+    public void setDemandStatus(List<DemandStatus> demandStatus) {
         this.demandStatus = demandStatus;
     }
 
@@ -99,7 +101,7 @@ public class DemandSearchCriteria {
         return this;
     }
 
-    public DemandSearchCriteria demandStatus(DemandStatus demandStatus) {
+    public DemandSearchCriteria demandStatus(List<DemandStatus> demandStatus) {
         this.setDemandStatus(demandStatus);
         return this;
     }
@@ -107,6 +109,17 @@ public class DemandSearchCriteria {
     public DemandSearchCriteria query(String query) {
         this.setQuery(query);
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("DemandSearchCriteria{")
+        .append("query:").append(this.query)
+        .append(", materialId:").append(this.materialId)
+        .append(", projectId:").append(this.projectId)
+        .append(", creationUserId:").append(this.creationUserId)
+        .append(", status:").append(this.demandStatus == null ? "": this.demandStatus.toString())
+        .append("}").toString();
     }
 
 }

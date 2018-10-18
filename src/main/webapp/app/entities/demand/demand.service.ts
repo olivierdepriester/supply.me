@@ -69,7 +69,12 @@ export class DemandService {
     }
 
     search(req?: any): Observable<EntityArrayResponseType> {
-        const options = createRequestOption(req);
+        let options = createRequestOption(req.query);
+        if (req.sort) {
+            req.sort.forEach(val => {
+                options = options.append('sort', val);
+            });
+        }
         return this.http
             .get<IDemand[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));

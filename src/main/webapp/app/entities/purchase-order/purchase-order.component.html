@@ -106,6 +106,14 @@
                                     <fa-icon [icon]="'times'"></fa-icon>
                                 </button>
                             </ng-template>
+                            <!-- <ng-container *jhiHasAnyAuthority="'ROLE_DELIVERY_MANAGER'"></ng-container> -->
+                            <!-- <ng-template > -->
+                                <button type="button" [routerLink]="['/delivery-note/new/', purchaseOrder.id ]"
+                                    class="btn btn-primary btn-sm" title="{{ 'entity.action.edit' | translate }}">
+                                    <fa-icon [icon]="'shipping-fast'"></fa-icon>
+                                </button>
+                            <!-- </ng-template> -->
+
                         </div>
                     </td>
                 </tr>

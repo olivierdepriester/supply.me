@@ -10,6 +10,12 @@ export interface IDeliveryNoteLine {
 }
 
 export class DeliveryNoteLine implements IDeliveryNoteLine {
+    static of(purchaseOrderLine: IPurchaseOrderLine): DeliveryNoteLine {
+        const deliveryNoteLine = new DeliveryNoteLine();
+        deliveryNoteLine.purchaseOrderLine = purchaseOrderLine;
+        deliveryNoteLine.quantity = purchaseOrderLine.quantity;
+        return deliveryNoteLine;
+    }
     constructor(
         public id?: number,
         public lineNumber?: number,

@@ -19,7 +19,7 @@ export class PurchaseOrderResolve implements Resolve<IPurchaseOrder> {
     constructor(private service: PurchaseOrderService) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const id = route.params['id'] ? route.params['id'] : null;
+        const id = route.params['purchaseOrderId'] ? route.params['purchaseOrderId'] : route.params['id'] ? route.params['id'] : null;
         if (id) {
             return this.service.find(id).pipe(map((purchaseOrder: HttpResponse<PurchaseOrder>) => purchaseOrder.body));
         }

@@ -11,6 +11,8 @@ import { DeliveryNoteDetailComponent } from './delivery-note-detail.component';
 import { DeliveryNoteUpdateComponent } from './delivery-note-update.component';
 import { DeliveryNoteDeletePopupComponent } from './delivery-note-delete-dialog.component';
 import { IDeliveryNote } from 'app/shared/model/delivery-note.model';
+import { PurchaseOrder } from 'app/shared/model/purchase-order.model';
+import { PurchaseOrderResolve } from '../purchase-order';
 
 @Injectable({ providedIn: 'root' })
 export class DeliveryNoteResolve implements Resolve<IDeliveryNote> {
@@ -54,7 +56,20 @@ export const deliveryNoteRoute: Routes = [
             deliveryNote: DeliveryNoteResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_DELIVERY_MANAGER'],
+            pageTitle: 'supplyMeApp.deliveryNote.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'delivery-note/new/:purchaseOrderId',
+        component: DeliveryNoteUpdateComponent,
+        resolve: {
+            deliveryNote: DeliveryNoteResolve,
+            purchaseOrder: PurchaseOrderResolve
+        },
+        data: {
+            authorities: ['ROLE_DELIVERY_MANAGER'],
             pageTitle: 'supplyMeApp.deliveryNote.home.title'
         },
         canActivate: [UserRouteAccessService]
@@ -66,7 +81,7 @@ export const deliveryNoteRoute: Routes = [
             deliveryNote: DeliveryNoteResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_DELIVERY_MANAGER'],
             pageTitle: 'supplyMeApp.deliveryNote.home.title'
         },
         canActivate: [UserRouteAccessService]

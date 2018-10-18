@@ -11,6 +11,7 @@ import { JhiAlertService } from 'ng-jhipster';
 import { Observable } from 'rxjs';
 import { DeliveryNoteService } from './delivery-note.service';
 import { DeliveryNoteLine, IDeliveryNoteLine } from 'app/shared/model/delivery-note-line.model';
+import { IPurchaseOrder } from 'app/shared/model/purchase-order.model';
 
 @Component({
     selector: 'jhi-delivery-note-update',
@@ -33,7 +34,7 @@ export class DeliveryNoteUpdateComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ deliveryNote }) => {
+        this.activatedRoute.data.subscribe(({ deliveryNote, purchaseOrder }) => {
             this.deliveryNote = deliveryNote;
             // If new purchase order, initialize default values to make the object consistent
             if (!deliveryNote.id) {
@@ -41,6 +42,12 @@ export class DeliveryNoteUpdateComponent implements OnInit {
                 this.deliveryNote.status = DeliveryNoteStatus.NEW;
                 if (this.deliveryNote.deliveryNoteLines == null) {
                     this.deliveryNote.deliveryNoteLines = new Array();
+                }
+                if (purchaseOrder != null) {
+                    this.deliveryNote.supplier = purchaseOrder.supplier;
+                    (purchaseOrder as IPurchaseOrder).purchaseOrderLines.forEach(line => {
+                        this.addDeliveryNoteLineFromPurchaseOrderLine(line);
+                    });
                 }
             }
             // Check if the purchase order can be edited
@@ -112,11 +119,13 @@ export class DeliveryNoteUpdateComponent implements OnInit {
      * @memberof DeliveryNoteUpdateComponent
      */
     addDeliveryNoteLine() {
-        if (this.selectedPurchaseOrderLine !== null) {
-            const deliveryNoteLine = new DeliveryNoteLine();
-            deliveryNoteLine.purchaseOrderLine = this.selectedPurchaseOrderLine;
+        this.addDeliveryNoteLineFromPurchaseOrderLine(this.selectedPurchaseOrderLine);
+    }
+
+    private addDeliveryNoteLineFromPurchaseOrderLine(purchaseOrderLine: IPurchaseOrderLine) {
+        if (purchaseOrderLine !== null) {
+            const deliveryNoteLine = DeliveryNoteLine.of(purchaseOrderLine);
             deliveryNoteLine.lineNumber = this.getNewDeliveryNoteLineNumber();
-            deliveryNoteLine.quantity = deliveryNoteLine.purchaseOrderLine.quantity;
             this.deliveryNote.deliveryNoteLines.push(deliveryNoteLine);
         }
     }

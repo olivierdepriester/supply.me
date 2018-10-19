@@ -92,17 +92,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             }
         }
         if (!statusChange) {
-            // If not a status change, properties of the purchase order may have to be updated
-            if(!isEditable(persistedPurchaseOrder)) {
-                throw new ServiceException(String.format("The purchase order %d can not be edited by the current user", persistedPurchaseOrder.getId()));
+            // If not a status change, properties of the purchase order may have to be
+            // updated
+            if (!isEditable(persistedPurchaseOrder)) {
+                throw new ServiceException(String.format("The purchase order %d can not be edited by the current user",
+                        persistedPurchaseOrder.getId()));
             }
             // Update lines
             this.updatePurchaseOrderLines(purchaseOrder, persistedPurchaseOrder);
             // Update agregated values
             persistedPurchaseOrder
-                .quantity(persistedPurchaseOrder.getPurchaseOrderLines().stream().mapToDouble(PurchaseOrderLine::getQuantity).sum())
-                .amount(persistedPurchaseOrder.getPurchaseOrderLines().stream().mapToDouble(pol -> pol.getQuantity() * pol.getOrderPrice()).sum())
-                .numberOfMaterials(persistedPurchaseOrder.getPurchaseOrderLines().stream().mapToLong(pol -> pol.getDemand().getMaterial().getId()).distinct().count());
+                    .quantity(persistedPurchaseOrder.getPurchaseOrderLines().stream()
+                            .mapToDouble(PurchaseOrderLine::getQuantity).sum())
+                    .amount(persistedPurchaseOrder.getPurchaseOrderLines().stream()
+                            .mapToDouble(pol -> pol.getQuantity() * pol.getOrderPrice()).sum())
+                    .numberOfMaterials(persistedPurchaseOrder.getPurchaseOrderLines().stream()
+                            .mapToLong(pol -> pol.getDemand().getMaterial().getId()).distinct().count());
         } else {
             // To update lines index
             persistedPurchaseOrder.getPurchaseOrderLines().forEach(pol -> this.purchaseOrderLineService.save(pol));
@@ -116,8 +121,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      * Update the lines of a purchase order
      *
      * @param sourcePurchaseOrder    : source purchase order (bean with user data
-     * @param persistedPurchaseOrder : persisted version of the purchase order.
-     *                                  If the purchase order is new, persistedPurchaseOrder and sourcePurchaseOrder are the same
+     * @param persistedPurchaseOrder : persisted version of the purchase order. If
+     *                               the purchase order is new,
+     *                               persistedPurchaseOrder and sourcePurchaseOrder
+     *                               are the same
      * @throws ServiceException
      */
     private void updatePurchaseOrderLines(PurchaseOrder sourcePurchaseOrder, PurchaseOrder persistedPurchaseOrder)
@@ -151,23 +158,25 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         // Lines are updated if the call does not remain from a status change
         for (PurchaseOrderLine line : sourcePurchaseOrder.getPurchaseOrderLines()) {
-            // PO must be assigned to the line for new lines and can be done harmless for existing lines
+            // PO must be assigned to the line for new lines and can be done harmless for
+            // existing lines
             line.purchaseOrder(persistedPurchaseOrder);
-            if (sourcePurchaseOrder.getId() != null) {
-                // If PO update : add new lines or update existing lines
-                if (line.getId() == null) {
-                    // New line
-                    persistedPurchaseOrder.getPurchaseOrderLines().add(line.quantityDelivered(0d));
-                    //  No need to index lines now : it is required to be done when the PO is sent
-                    // purchaseOrderLineService.save(line);
-                } else {
-                    // Get the line
-                    PurchaseOrderLine persistedLine = persistedPurchaseOrder.getPurchaseOrderLines().stream()
-                            .filter(l -> l.getId().equals(line.getId())).findAny().get();
-                    persistedLine.quantity(line.getQuantity()).orderPrice(line.getOrderPrice());
-                    //  No need to index lines now : it is required to be done when the PO is sent
-                    // purchaseOrderLineService.save(persistedLine);
+            // If PO update : add new lines or update existing lines
+            if (line.getId() == null) {
+                // New line
+                line.setQuantityDelivered(0d);
+                if (sourcePurchaseOrder.getId() != null) {
+                    persistedPurchaseOrder.getPurchaseOrderLines().add(line);
                 }
+                // No need to index lines now : it is required to be done when the PO is sent
+                // purchaseOrderLineService.save(line);
+            } else {
+                // Get the line
+                PurchaseOrderLine persistedLine = persistedPurchaseOrder.getPurchaseOrderLines().stream()
+                        .filter(l -> l.getId().equals(line.getId())).findAny().get();
+                persistedLine.quantity(line.getQuantity()).orderPrice(line.getOrderPrice());
+                // No need to index lines now : it is required to be done when the PO is sent
+                // purchaseOrderLineService.save(persistedLine);
             }
 
             if (line.getDemand() != null) {

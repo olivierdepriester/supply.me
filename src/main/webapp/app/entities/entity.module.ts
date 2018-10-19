@@ -12,6 +12,7 @@ import { SupplyMeDeliveryNoteLineModule } from './delivery-note-line/delivery-no
 import { SupplyMeInvoiceModule } from './invoice/invoice.module';
 import { SupplyMeInvoiceLineModule } from './invoice-line/invoice-line.module';
 import { SupplyMeMutablePropertiesModule } from './mutable-properties/mutable-properties.module';
+import { SupplyMeMaterialCategoryModule } from './material-category/material-category.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -29,6 +30,7 @@ import { SupplyMeMutablePropertiesModule } from './mutable-properties/mutable-pr
         SupplyMeInvoiceModule,
         SupplyMeInvoiceLineModule,
         SupplyMeMutablePropertiesModule,
+        SupplyMeMaterialCategoryModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     providers: [],

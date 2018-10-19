@@ -1,0 +1,27 @@
+
+{
+    "supplyMeApp": {
+        "materialCategory" : {
+            "home": {
+                "title": "Material Categories",
+                "createLabel": "创建新 Material Category",
+                "createOrEditLabel": "创建或编辑 Material Category",
+                "search": "查找 Material Category"
+            },
+            "created": "Material Category {{ param }} 创建成功",
+            "updated": "Material Category {{ param }} 更新成功",
+            "deleted": "Material Category {{ param }} 删除成功",
+            "delete": {
+                "question": "你确定要删除 Material Category {{ id }} 吗？"
+            },
+            "detail": {
+                "title": "Material Category"
+            },
+            "name": "Name",
+            "description": "Description",
+            "creationDate": "Creation Date",
+            "parentMaterialCategory": "Parent Material Category",
+            "creationUser": "Creation User"
+        }
+    }
+}

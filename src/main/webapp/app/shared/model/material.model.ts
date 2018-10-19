@@ -2,6 +2,7 @@ import { Moment } from 'moment';
 import { IMaterialAvailability } from 'app/shared/model//material-availability.model';
 import { IDemand } from 'app/shared/model//demand.model';
 import { IUser } from 'app/core';
+import { IMaterialCategory } from './material-category.model';
 
 export interface IMaterial {
     id?: number;
@@ -13,6 +14,7 @@ export interface IMaterial {
     temporary?: boolean;
     codes?: IMaterialAvailability[];
     demands?: IDemand[];
+    materialCategory?: IMaterialCategory;
 }
 
 export class Material implements IMaterial {
@@ -25,6 +27,7 @@ export class Material implements IMaterial {
         public creationUser?: IUser,
         public temporary?: boolean,
         public codes?: IMaterialAvailability[],
-        public demands?: IDemand[]
+        public demands?: IDemand[],
+        public materialCategory?: IMaterialCategory
     ) {}
 }

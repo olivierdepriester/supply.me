@@ -1,0 +1,45 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="materialCategory">
+            <h2><span jhiTranslate="supplyMeApp.materialCategory.detail.title">Material Category</span> {{materialCategory.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.materialCategory.name">Name</span></dt>
+                <dd>
+                    <span>{{materialCategory.name}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.materialCategory.description">Description</span></dt>
+                <dd>
+                    <span>{{materialCategory.description}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.materialCategory.creationDate">Creation Date</span></dt>
+                <dd>
+                    <span>{{materialCategory.creationDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.materialCategory.parentMaterialCategory">Parent Material Category</span></dt>
+                <dd>
+                    <div *ngIf="materialCategory.parentMaterialCategory">
+                        <a [routerLink]="['/material-category', materialCategory.parentMaterialCategory?.id, 'view']">{{materialCategory.parentMaterialCategory?.name}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.materialCategory.creationUser">Creation User</span></dt>
+                <dd>
+                    {{materialCategory.creationUser?.login}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/material-category', materialCategory.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

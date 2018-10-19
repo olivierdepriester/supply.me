@@ -105,6 +105,7 @@
                 "invoice": "Invoice",
                 "invoiceLine": "Invoice Line",
                 "mutableProperties": "Mutable Properties",
+                "materialCategory": "Material Category",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

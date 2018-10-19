@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Locale.Category;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -63,6 +64,10 @@ public class Material implements Serializable {
     @ManyToOne(optional = false)
     @JsonIgnoreProperties("")
     private User creationUser;
+
+    @ManyToOne(optional = false)
+    @JsonIgnoreProperties("")
+    private MaterialCategory materialCategory;
 
     @OneToMany(mappedBy = "material")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -180,6 +185,16 @@ public class Material implements Serializable {
 
     public void setTemporary(Boolean temporary) {
         this.temporary = temporary;
+    }
+
+	public MaterialCategory getMaterialCategory()
+	{
+		return this.materialCategory;
+	}
+
+	public void setMaterialCategory(MaterialCategory materialCategory)
+	{
+		this.materialCategory = materialCategory;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and

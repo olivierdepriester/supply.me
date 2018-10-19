@@ -1,0 +1,27 @@
+
+{
+    "supplyMeApp": {
+        "materialCategory" : {
+            "home": {
+                "title": "MaterialCategories",
+                "createLabel": "Créer un nouveau Material Category",
+                "createOrEditLabel": "Créer ou éditer un Material Category",
+                "search": "Recherche pour Material Category"
+            },
+            "created": "Un nouveau Material Category a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Material Category avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Material Category avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Material Category {{ id }} ?"
+            },
+            "detail": {
+                "title": "Material Category"
+            },
+            "name": "Name",
+            "description": "Description",
+            "creationDate": "Creation Date",
+            "parentMaterialCategory": "Parent Material Category",
+            "creationUser": "Creation User"
+        }
+    }
+}

@@ -19,6 +19,7 @@
     <include file="config/liquibase/changelog/20180912014625_added_entity_MutableProperties.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181014180000_added_entity_DemandStatusChange.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181017140000_alter_entity_PurchaseOrderLine.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181019081701_added_entity_MaterialCategory.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20180912014617_added_entity_constraints_MaterialAvailability.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180912014618_added_entity_constraints_Demand.xml" relativeToChangelogFile="false"/>
@@ -29,5 +30,6 @@
     <include file="config/liquibase/changelog/20180912014623_added_entity_constraints_Invoice.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180912014624_added_entity_constraints_InvoiceLine.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181014180000_added_entity_constraints_DemandStatusChange.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181019081701_added_entity_constraints_MaterialCategory.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

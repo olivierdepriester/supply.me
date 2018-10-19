@@ -1,15 +1,14 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IUser, Principal } from 'app/core';
-import { DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { IDemand } from 'app/shared/model/demand.model';
 import { IMaterial } from 'app/shared/model/material.model';
 import { IProject } from 'app/shared/model/project.model';
 import * as moment from 'moment';
+import { JhiEventManager } from 'ng-jhipster';
 import { Observable, Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
-import { JhiEventManager } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-demand-update',
@@ -18,10 +17,10 @@ import { JhiEventManager } from 'ng-jhipster';
 export class DemandUpdateComponent implements OnInit, OnDestroy {
     private _demand: IDemand;
     isSaving: boolean;
-    expectedDate: string;
-    creationDate: string;
+    expectedDate: Date;
     @ViewChild('editForm') editForm: HTMLFormElement;
     eventSubscriber: Subscription;
+    locale: string;
 
     constructor(
         private demandService: DemandService,
@@ -40,9 +39,11 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
                     if (!this.demandService.isEditAllowed(this.demand, account)) {
                         this.router.navigate(['accessdenied']);
                     }
+                    this.locale = 'en';
                 });
             }
         });
+        // Callback on new material creation
         this.eventSubscriber = this.eventManager.subscribe(
             'temporaryMaterialCreated',
             response => (this.demand.material = response.content)
@@ -63,7 +64,7 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
 
     save() {
         this.isSaving = true;
-        this.demand.expectedDate = moment(this.expectedDate, DATE_FORMAT);
+        this.demand.expectedDate = moment(this.expectedDate);
         if (this.demand.id !== undefined) {
             this.subscribeToSaveResponse(this.demandService.update(this.demand));
         } else {
@@ -101,7 +102,10 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
 
     set demand(demand: IDemand) {
         this._demand = demand;
-        this.expectedDate = moment(demand.expectedDate).format(DATE_FORMAT);
-        this.creationDate = moment(demand.creationDate).format(DATE_FORMAT);
+        if (demand.expectedDate != null) {
+            this.expectedDate = demand.expectedDate.toDate();
+        } else {
+            this.expectedDate = null;
+        }
     }
 }

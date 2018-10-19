@@ -42,7 +42,7 @@ export class StatusResolve implements Resolve<DemandStatus> {
     constructor() {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const status = route.queryParams['status'] ? route.queryParams['status'] : null;
+        const status = route.params['status'] ? route.params['status'] : null;
         return status as DemandStatus;
     }
 }
@@ -66,6 +66,16 @@ export class MySearchCriteriaResolve implements Resolve<DemandSearchCriteria> {
         return criteria;
     }
 }
+@Injectable({ providedIn: 'root' })
+export class WaitingForApprovalSearchCriteriaResolve implements Resolve<DemandSearchCriteria> {
+    constructor() {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        const criteria = new DemandSearchCriteria();
+        criteria.status.push(DemandStatus.WAITING_FOR_APPROVAL);
+        return criteria;
+    }
+}
 
 export const demandRoute: Routes = [
     {
@@ -82,6 +92,18 @@ export const demandRoute: Routes = [
         component: DemandComponent,
         resolve: {
             criteria: MySearchCriteriaResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'supplyMeApp.demand.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'demand/waitingapproval',
+        component: DemandComponent,
+        resolve: {
+            criteria: WaitingForApprovalSearchCriteriaResolve
         },
         data: {
             authorities: ['ROLE_USER'],
@@ -142,7 +164,7 @@ export const demandPopupRoute: Routes = [
         outlet: 'popup'
     },
     {
-        path: 'demand/:id/comment',
+        path: 'demand/:id/:status/comment',
         component: DemandChangeStatusPopupComponent,
         resolve: {
             demand: DemandResolve,

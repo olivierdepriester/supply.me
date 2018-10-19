@@ -109,6 +109,15 @@ export class DemandService {
         return result;
     }
 
+    isDeleteAllowed(demand: IDemand, account: any): boolean {
+        const result =
+            demand.status !== DemandStatus.FULLY_DELIVERED &&
+            demand.status !== DemandStatus.PARTIALLY_DELIVERED &&
+            demand.status !== DemandStatus.ORDERED &&
+            ((account.authorities && account.authorities.includes('ROLE_ADMIN')) || demand.creationUser.id === account.id);
+        return result;
+    }
+
     isApprovalAllowed(demand: IDemand, account: any): boolean {
         const result =
             demand.status === DemandStatus.WAITING_FOR_APPROVAL &&

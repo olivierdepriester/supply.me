@@ -34,19 +34,14 @@ export class DemandComponent implements OnInit, OnDestroy {
     ) {
         this.predicate = 'id';
         this.reverse = false;
-        // this.searchCriteria.query =
-        //     this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
-        //         ? this.activatedRoute.snapshot.params['search']
-        //         : '';
-        Object.keys(DemandStatus).forEach(status =>
-            this.availableStatus.push({ label: status, value: DemandStatus[status], title: 'xxx' })
-        );
+        // Init the status selector
+        Object.keys(DemandStatus).forEach(status => this.availableStatus.push({ label: status, value: DemandStatus[status] }));
     }
 
     ngOnInit() {
         this.activatedRoute.data.subscribe(({ criteria }) => {
             if (criteria !== undefined) {
-                // Criteria initialzed from route
+                // Criteria initialized from route
                 this.searchCriteria = criteria;
                 this.search();
             } else {
@@ -69,8 +64,12 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.registerChangeInDemands();
     }
 
-    search() {
+    searchClick() {
         this.sessionStorageService.store('demandCriteria', this.searchCriteria);
+        this.search();
+    }
+
+    private search() {
         this.demandService
             .search({
                 query: this.searchCriteria.getQuery(),
@@ -126,6 +125,10 @@ export class DemandComponent implements OnInit, OnDestroy {
 
     isEditAllowed(demand: IDemand): boolean {
         return this.demandService.isEditAllowed(demand, this.currentAccount);
+    }
+
+    isDeleteAllowed(demand: IDemand): boolean {
+        return this.demandService.isDeleteAllowed(demand, this.currentAccount);
     }
 
     ngOnDestroy() {

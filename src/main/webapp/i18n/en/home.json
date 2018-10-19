@@ -10,7 +10,8 @@
             "demand": {
                 "my": "See your requests",
                 "new": "Create a new request",
-                "search": "Search for any request"
+                "search": "Search for any request",
+                "waitingapproval": "See requests to validate"
             },
             "homepage": "JHipster homepage",
             "stackoverflow": "JHipster on Stack Overflow",

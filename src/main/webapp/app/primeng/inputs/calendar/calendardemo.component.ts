@@ -37,6 +37,10 @@ export class CalendarDemoComponent implements OnInit {
         this.msgs.push({ severity: 'info', summary: 'Calendar lost the focus' });
     }
 
+    onClose() {
+        this.msgs.push({ severity: 'info', summary: 'Calendar got closed())' });
+    }
+
     onFocus() {
         this.msgs.push({ severity: 'info', summary: 'Calendar got the focus' });
     }

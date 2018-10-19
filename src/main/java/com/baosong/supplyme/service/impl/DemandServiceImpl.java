@@ -342,7 +342,8 @@ public class DemandServiceImpl implements DemandService {
         Demand result = demandRepository.save(demand);
         demandSearchRepository.save(result);
         if (!isNew) {
-            this.purchaseOrderLineService.getByDemandId(demand.getId()).forEach(pol -> this.purchaseOrderLineService.saveAndCascaseIndex(pol));
+            List<PurchaseOrderLine> lines = this.purchaseOrderLineService.getByDemandId(demand.getId());
+            lines.forEach(pol -> this.purchaseOrderLineService.saveAndCascaseIndex(pol));
         }
         return result;
     }

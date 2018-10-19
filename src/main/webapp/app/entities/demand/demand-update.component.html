@@ -52,7 +52,9 @@
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.expectedDate" for="field_expectedDate">Expected Date</label>
                     <div class="d-flex">
-                        <input id="field_expectedDate" type="text" class="form-control" name="expectedDate" [(ngModel)]="expectedDate" />
+                        <p-calendar id="field_expectedDate" style="width:100%" [inputStyleClass]="'form-control'"
+                        [monthNavigator]="true" [yearNavigator]="true" yearRange="2018:2030" [style]="{'width': '100%'}"
+                        [(ngModel)]="expectedDate" name="expectedDate" dateFormat="yy-mm-dd"></p-calendar>
                     </div>
                 </div>
             </div>

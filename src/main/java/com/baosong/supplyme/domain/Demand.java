@@ -76,7 +76,7 @@ public class Demand implements Serializable {
     @JsonIgnoreProperties("")
     private User creationUser;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "demand", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "demand", cascade = CascadeType.ALL)
     @OrderBy("creationDate desc")
     @JsonIgnoreProperties("demand")
     private List<DemandStatusChange> demandStatusChanges;

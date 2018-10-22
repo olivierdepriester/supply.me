@@ -9,6 +9,7 @@ import { Principal } from 'app/core';
 
 import { ITEMS_PER_PAGE } from 'app/shared';
 import { MaterialService } from './material.service';
+import { IMaterialCategory } from 'app/shared/model/material-category.model';
 
 @Component({
     selector: 'jhi-material',
@@ -27,6 +28,8 @@ export class MaterialComponent implements OnInit, OnDestroy {
     reverse: any;
     totalItems: number;
     currentSearch: string;
+
+    selectedCategory: IMaterialCategory = { name: '' };
 
     constructor(
         private materialService: MaterialService,

@@ -1,5 +1,6 @@
 
 Todo:
   ☐ Email translations in French and Chinese
-  ☐ Administrator must be able to delete a demand in a status <= APPROVED
+  ☐ Add a "category" field on "Material"
+
 

@@ -43,7 +43,10 @@ export class TreeDemoComponent implements OnInit {
 
     ngOnInit() {
         this.nodeService.getTouristPlaces().subscribe((places: any) => (this.basicTree = places.data));
-        this.nodeService.getTouristPlaces().subscribe((places: any) => (this.singleSelectionTree = places.data));
+        this.nodeService.getTouristPlaces().subscribe((places: any) => {
+            this.singleSelectionTree = places.data;
+            console.log(this.singleSelectionTree);
+        });
         this.nodeService.getTouristPlaces().subscribe((places: any) => (this.multipleSelectionTree = places.data));
         this.nodeService.getTouristPlaces().subscribe((places: any) => (this.checkboxSelectionTree = places.data));
         this.nodeService.getTouristPlaces().subscribe((places: any) => (this.templateTree = places.data));

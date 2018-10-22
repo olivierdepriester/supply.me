@@ -11,11 +11,12 @@ import {
     materialRoute,
     materialPopupRoute
 } from './';
+import { CategorySelectorModule } from '../component/category-selector';
 
 const ENTITY_STATES = [...materialRoute, ...materialPopupRoute];
 
 @NgModule({
-    imports: [SupplyMeSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [SupplyMeSharedModule, CategorySelectorModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         MaterialComponent,
         MaterialDetailComponent,

@@ -65,11 +65,11 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     searchClick() {
-        this.sessionStorageService.store('demandCriteria', this.searchCriteria);
         this.search();
     }
 
     private search() {
+        this.sessionStorageService.store('demandCriteria', this.searchCriteria);
         this.demandService
             .search({
                 query: this.searchCriteria.getQuery(),

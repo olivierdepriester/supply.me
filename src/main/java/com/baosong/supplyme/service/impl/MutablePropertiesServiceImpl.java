@@ -43,9 +43,6 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
         this.mutablePropertiesSearchRepository = mutablePropertiesSearchRepository;
         PURCHASE_ORDER_CODE = getPropertyAsLong(PropertiesKey.PURCHASE_ORDER_CODE_GENERATOR);
         MATERIAL_PART_NUMBER = getPropertyAsLong(PropertiesKey.MATERIAL_PART_NUMBER_GENERATOR);
-        if (MATERIAL_PART_NUMBER == 0L) {
-            MATERIAL_PART_NUMBER = 8000000000L; // Counter start : 80G
-        }
     }
 
     /**
@@ -170,6 +167,6 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
     @Override
     public String getNewPartNumber() throws ServiceException {
         save(PropertiesKey.MATERIAL_PART_NUMBER_GENERATOR, ++MATERIAL_PART_NUMBER);
-        return String.format("%010d", MATERIAL_PART_NUMBER);
+        return String.format("M%09d", MATERIAL_PART_NUMBER);
     }
 }

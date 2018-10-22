@@ -41,8 +41,6 @@ public class Material implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Size(max = 10)
     @Column(name = "part_number", length = 10, nullable = false)
     private String partNumber;
 
@@ -51,7 +49,7 @@ public class Material implements Serializable {
     @Column(name = "name", length = 255, nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "CLOB")
     private String description;
 
     @Column(name = "creation_date")
@@ -187,6 +185,11 @@ public class Material implements Serializable {
         this.temporary = temporary;
     }
 
+    public Material temporary(Boolean temporary) {
+        this.setTemporary(temporary);
+        return this;
+    }
+
 	public MaterialCategory getMaterialCategory()
 	{
 		return this.materialCategory;
@@ -195,6 +198,11 @@ public class Material implements Serializable {
 	public void setMaterialCategory(MaterialCategory materialCategory)
 	{
 		this.materialCategory = materialCategory;
+    }
+
+    public Material materialCategory(MaterialCategory materialCategory) {
+        this.setMaterialCategory(materialCategory);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and

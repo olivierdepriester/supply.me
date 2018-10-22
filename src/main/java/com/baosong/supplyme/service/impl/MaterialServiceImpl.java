@@ -3,12 +3,8 @@ package com.baosong.supplyme.service.impl;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
-import javax.management.Query;
-
-import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.Material;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.MaterialRepository;
@@ -21,18 +17,11 @@ import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.UserService;
 
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,8 +38,8 @@ public class MaterialServiceImpl implements MaterialService {
 
     private final MaterialSearchRepository materialSearchRepository;
 
-    @Autowired
-    private ElasticsearchTemplate template;
+    // @Autowired(required = false)
+    // private ElasticsearchTemplate template;
 
     @Autowired
     private UserService userService;
@@ -80,29 +69,33 @@ public class MaterialServiceImpl implements MaterialService {
     public Material save(Material material) throws ServiceException {
         log.debug("Request to save Material : {}", material);
         Material persistedMaterial = null;
-        if (!isMaterialEditable(material)) {
-            // Check the input material content allow it to be edited
-            throw new ServiceException("material.not.editable");
-        }
         if (material.getId() == null) {
-            material.setCreationDate(Instant.now());
-            material.setCreationUser(userService.getCurrentUser().get());
+            persistedMaterial = new Material()
+                .creationDate(Instant.now())
+                .creationUser(userService.getCurrentUser().get())
+                .partNumber(mutablePropertiesService.getNewPartNumber())
+                .temporary(material.isTemporary());
         } else {
             // Get the persisted version of the material
             persistedMaterial = findOne(material.getId()).get();
-            if (!isMaterialEditable(persistedMaterial)) {
-                // Check the persisted version in case of the
-                throw new ServiceException("material.not.editable");
-            }
+
         }
+        if (!isMaterialEditable(persistedMaterial)) {
+            // Check the persisted version in case of the
+            throw new ServiceException("material.not.editable");
+        }
+        persistedMaterial = persistedMaterial
+            .name(material.getName())
+            .description(material.getDescription())
+            .materialCategory(material.getMaterialCategory());
         if (!material.isTemporary().booleanValue()
-                && (material.getId() == null || persistedMaterial.isTemporary().booleanValue())) {
+                && SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MATERIAL_MANAGER)
+                && persistedMaterial.isTemporary().booleanValue()) {
             // If the material switch from temporary to definitive or if it is a new definitive material
             // we generate a new part number for it
-            material.setPartNumber(mutablePropertiesService.getNewPartNumber());
-            material.setTemporary(Boolean.FALSE);
+            persistedMaterial.setTemporary(Boolean.FALSE);
         }
-        return this.saveAndCascadeIndex(material);
+        return this.saveAndCascadeIndex(persistedMaterial);
     }
 
     private boolean isMaterialEditable(Material material) {
@@ -167,9 +160,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void rebuildIndex() {
-        template.deleteIndex(Material.class);
-        List<Material> items = materialRepository.findAll();
-        items.stream().forEach(d -> materialSearchRepository.save(d));
+        // template.deleteIndex(Material.class);
+        // List<Material> items = materialRepository.findAll();
+        // items.stream().forEach(d -> materialSearchRepository.save(d));
     }
 
     @Override

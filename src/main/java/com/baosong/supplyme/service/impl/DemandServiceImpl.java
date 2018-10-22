@@ -39,7 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -59,8 +58,8 @@ public class DemandServiceImpl implements DemandService {
 
     private final static Map<DemandStatus, Set<DemandStatus>> demandWorkflowRules;
 
-    @Autowired
-    private ElasticsearchTemplate template;
+    // @Autowired(required = false)
+    // private ElasticsearchTemplate template;
 
     @Autowired
     private UserService userService;
@@ -318,9 +317,9 @@ public class DemandServiceImpl implements DemandService {
 
     @Override
     public void rebuildIndex() {
-        template.deleteIndex(Demand.class);
-        List<Demand> demands = findAll();
-        demands.stream().forEach(d -> demandSearchRepository.save(d));
+        // template.deleteIndex(Demand.class);
+        // List<Demand> demands = findAll();
+        // demands.stream().forEach(d -> demandSearchRepository.save(d));
     }
 
     /**

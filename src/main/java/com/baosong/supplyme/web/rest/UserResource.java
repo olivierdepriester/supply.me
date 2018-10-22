@@ -220,7 +220,7 @@ public class UserResource {
      */
     @GetMapping("/_search/users")
     @Timed
-    public ResponseEntity<List<UserDTO>> searchSuppliers(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<UserDTO>> searchUsers(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Suppliers for query {}", query);
         Page<UserDTO> page = userService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/suppliers");

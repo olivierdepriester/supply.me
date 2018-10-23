@@ -54,6 +54,19 @@ public class Material implements Serializable {
     @Column(name = "estimated_price")
     private Double estimatedPrice;
 
+    public Double getEstimatedPrice() {
+        return this.estimatedPrice;
+    }
+
+    public Material estimatedPrice(Double estimatedPrice) {
+        this.setEstimatedPrice(estimatedPrice);
+        return this;
+    }
+
+    public void setEstimatedPrice(Double estimatedPrice) {
+        this.estimatedPrice = estimatedPrice;
+    }
+
     @Column(name = "creation_date")
     private Instant creationDate;
 
@@ -153,7 +166,6 @@ public class Material implements Serializable {
         this.creationUser = creationUser;
     }
 
-
     public Set<MaterialAvailability> getCodes() {
         return codes;
     }
@@ -192,14 +204,12 @@ public class Material implements Serializable {
         return this;
     }
 
-	public MaterialCategory getMaterialCategory()
-	{
-		return this.materialCategory;
-	}
+    public MaterialCategory getMaterialCategory() {
+        return this.materialCategory;
+    }
 
-	public void setMaterialCategory(MaterialCategory materialCategory)
-	{
-		this.materialCategory = materialCategory;
+    public void setMaterialCategory(MaterialCategory materialCategory) {
+        this.materialCategory = materialCategory;
     }
 
     public Material materialCategory(MaterialCategory materialCategory) {

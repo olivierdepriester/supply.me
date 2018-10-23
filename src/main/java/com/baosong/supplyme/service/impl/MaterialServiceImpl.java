@@ -71,27 +71,25 @@ public class MaterialServiceImpl implements MaterialService {
         Material persistedMaterial = null;
         if (material.getId() == null) {
             persistedMaterial = new Material()
+                .partNumber(mutablePropertiesService.getNewPartNumber())
                 .creationDate(Instant.now())
                 .creationUser(userService.getCurrentUser().get())
-                .partNumber(mutablePropertiesService.getNewPartNumber())
                 .temporary(material.isTemporary());
         } else {
             // Get the persisted version of the material
             persistedMaterial = findOne(material.getId()).get();
-
         }
         if (!isMaterialEditable(persistedMaterial)) {
             // Check the persisted version in case of the
             throw new ServiceException("material.not.editable");
         }
-        persistedMaterial = persistedMaterial
-            .name(material.getName())
-            .description(material.getDescription())
-            .materialCategory(material.getMaterialCategory());
+        persistedMaterial = persistedMaterial.name(material.getName()).description(material.getDescription())
+                .estimatedPrice(material.getEstimatedPrice()).materialCategory(material.getMaterialCategory());
         if (!material.isTemporary().booleanValue()
                 && SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MATERIAL_MANAGER)
                 && persistedMaterial.isTemporary().booleanValue()) {
-            // If the material switch from temporary to definitive or if it is a new definitive material
+            // If the material switch from temporary to definitive or if it is a new
+            // definitive material
             // we generate a new part number for it
             persistedMaterial.setTemporary(Boolean.FALSE);
         }
@@ -171,7 +169,8 @@ public class MaterialServiceImpl implements MaterialService {
         Material result = materialRepository.save(material);
         materialSearchRepository.save(result);
         if (!isNew) {
-            this.demandService.findByMaterialId(material.getId()).forEach(demand -> this.demandService.saveAndCascadeIndex(demand));
+            this.demandService.findByMaterialId(material.getId())
+                    .forEach(demand -> this.demandService.saveAndCascadeIndex(demand));
         }
         return result;
     }

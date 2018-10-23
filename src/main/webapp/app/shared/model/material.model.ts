@@ -15,6 +15,7 @@ export interface IMaterial {
     codes?: IMaterialAvailability[];
     demands?: IDemand[];
     materialCategory?: IMaterialCategory;
+    estimatedPrice?: number;
 }
 
 export class Material implements IMaterial {
@@ -28,6 +29,7 @@ export class Material implements IMaterial {
         public temporary?: boolean,
         public codes?: IMaterialAvailability[],
         public demands?: IDemand[],
-        public materialCategory?: IMaterialCategory
+        public materialCategory?: IMaterialCategory,
+        public estimatedPrice?: number
     ) {}
 }

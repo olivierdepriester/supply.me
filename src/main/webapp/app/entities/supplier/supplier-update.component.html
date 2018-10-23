@@ -4,11 +4,6 @@
             <h2 id="jhi-supplier-heading" jhiTranslate="supplyMeApp.supplier.home.createOrEditLabel">Create or edit a Supplier</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!supplier.id">
-                    <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="supplier.id" readonly />
-                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.supplier.referenceNumber" for="field_referenceNumber">Reference Number</label>
                     <input type="text" class="form-control" name="referenceNumber" id="field_referenceNumber"

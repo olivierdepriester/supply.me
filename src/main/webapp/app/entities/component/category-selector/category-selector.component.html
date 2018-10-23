@@ -1,5 +1,5 @@
 <span #container [ngClass]="{'ui-autocomplete ui-widget':true}" style="width: 100%" >
-    <input  [ngClass]="'ui-tree-input ui-widget ui-state-default ui-corner-all'" style="width: 100%" (focus)="onFocus($event)" type="text" name="filterQuery" [(ngModel)]="filterQuery" (keydown)="onInputKeyDown($event)" style="width:100%">
+    <input  [ngClass]="'ui-tree-input ui-widget ui-state-default ui-corner-all'" autocomplete="off" style="width: 100%" (focus)="onFocus($event)" type="text" name="filterQuery" [(ngModel)]="filterQuery" (keydown)="onInputKeyDown($event)" style="width:100%">
     <div *ngIf="displayTree" class="ui-tree-panel ui-shadow"
         style="max-height:200px;opacity:1;z-index:1010;width: 100%">
         <p-tree #tree [ngClass]="'ui-helper-reset'" [value]="categoriesTree" selectionMode="single" [style]="{'width': '100%'}"

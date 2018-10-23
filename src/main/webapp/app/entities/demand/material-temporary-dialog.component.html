@@ -24,12 +24,17 @@
             <input class="form-control" id="field_description" name="description" type="text" [(ngModel)]="material.description" />
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="supplyMeApp.material.category" for="field_category">Category</label>
-            <select class="form-control" id="field_category" name="category" [(ngModel)]="material.materialCategory">
-                <option *ngFor="let category of categories" [ngValue]="category.id === material.materialCategory?.id ? material.materialCategory : category" >
-                    {{ category.name }}
-                </option>
-            </select>
+            <label class="form-control-label" jhiTranslate="supplyMeApp.material.category" for="field_materialCategory">Category</label>
+            <jhi-category-selector class="form-control" required name="materialCategory" id="field_materialCategory" [(ngModel)]="material.materialCategory"></jhi-category-selector>
+            <div [hidden]="!(newMaterialForm.controls.materialCategory?.dirty && newMaterialForm.controls.materialCategory?.invalid)">
+                <small class="form-text text-danger" [hidden]="!newMaterialForm.controls.materialCategory?.errors?.required" jhiTranslate="entity.validation.required">
+                    This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="supplyMeApp.material.estimatedPrice" for="field_description">estimatedPrice</label>
+            <input type="number" class="form-control" name="estimatedPrice" id="field_estimatedPrice" [(ngModel)]="material.estimatedPrice" >
         </div>
     </div>
     <div class="modal-footer">

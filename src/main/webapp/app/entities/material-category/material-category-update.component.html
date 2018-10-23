@@ -22,40 +22,11 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.materialCategory.description" for="field_description">Description</label>
-                    <input type="text" class="form-control" name="description" id="field_description"
-                        [(ngModel)]="materialCategory.description" />
+                    <textarea rows="4" cols="80" class="form-control" name="description" id="field_description" [(ngModel)]="materialCategory.description" ></textarea>
                 </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.materialCategory.creationDate" for="field_creationDate">Creation Date</label>
-                    <div class="d-flex">
-                        <input id="field_creationDate" type="datetime-local" class="form-control" name="creationDate" [(ngModel)]="creationDate"
-                        required/>
-                    </div>
-                    <div [hidden]="!(editForm.controls.creationDate?.dirty && editForm.controls.creationDate?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.creationDate?.errors?.required" jhiTranslate="entity.validation.required">
-                        This field is required.
-                        </small>
-                        <small class="form-text text-danger"
-                            [hidden]="!editForm.controls.creationDate?.errors?.ZonedDateTimelocal" jhiTranslate="entity.validation.ZonedDateTimelocal">
-                            This field should be a date and time.
-                        </small>
-                    </div>
-                </div>
-
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.materialCategory.parentMaterialCategory" for="field_parentMaterialCategory">Parent Material Category</label>
-                    <select class="form-control" id="field_parentMaterialCategory" name="parentMaterialCategory" [(ngModel)]="materialCategory.parentMaterialCategory" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="materialCategoryOption.id === materialCategory.parentMaterialCategory?.id ? materialCategory.parentMaterialCategory : materialCategoryOption" *ngFor="let materialCategoryOption of materialcategories; trackBy: trackMaterialCategoryById">{{materialCategoryOption.name}}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.materialCategory.creationUser" for="field_creationUser">Creation User</label>
-                    <select class="form-control" id="field_creationUser" name="creationUser" [(ngModel)]="materialCategory.creationUser" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="userOption.id === materialCategory.creationUser?.id ? materialCategory.creationUser : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
-                    </select>
+                    <jhi-category-selector class="form-control" id="field_parentMaterialCategory" name="parentMaterialCategory" [(ngModel)]="materialCategory.parentMaterialCategory"></jhi-category-selector>
                 </div>
             </div>
             <div>

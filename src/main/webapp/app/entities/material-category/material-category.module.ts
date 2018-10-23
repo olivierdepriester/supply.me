@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { SupplyMeSharedModule } from 'app/shared';
 import { SupplyMeAdminModule } from 'app/admin/admin.module';
+import { CategorySelectorModule } from 'app/entities/component/category-selector';
 import {
     MaterialCategoryComponent,
     MaterialCategoryDetailComponent,
@@ -16,7 +17,7 @@ import {
 const ENTITY_STATES = [...materialCategoryRoute, ...materialCategoryPopupRoute];
 
 @NgModule({
-    imports: [SupplyMeSharedModule, SupplyMeAdminModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [SupplyMeSharedModule, SupplyMeAdminModule, CategorySelectorModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         MaterialCategoryComponent,
         MaterialCategoryDetailComponent,

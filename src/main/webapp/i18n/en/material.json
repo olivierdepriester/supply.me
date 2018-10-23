@@ -23,7 +23,8 @@
             "creationDate": "Creation Date",
             "code": "Code",
             "demand": "Demand",
-            "category": "Category"
+            "category": "Category",
+            "estimatedPrice": "Estimated price"
         }
     }
 }

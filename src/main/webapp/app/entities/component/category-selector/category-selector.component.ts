@@ -162,7 +162,7 @@ export class CategorySelectorComponent implements OnInit, ControlValueAccessor {
             const searchTerm = this.filterQuery.toLocaleLowerCase();
             const rootTree: TreeNode[] = [];
             this.internalCategoriesTree.forEach(node => {
-                this.expandRecursive(node, searchTerm, null, rootTree);
+                this.findRecursive(node, searchTerm, null, rootTree);
             });
             this.categoriesTree = rootTree;
         } else {
@@ -170,13 +170,13 @@ export class CategorySelectorComponent implements OnInit, ControlValueAccessor {
         }
     }
 
-    expandRecursive(node: TreeNode, query: string, nodeParent: TreeNode, rootTree: TreeNode[]): boolean {
+    findRecursive(node: TreeNode, query: string, nodeParent: TreeNode, rootTree: TreeNode[]): boolean {
         let result = false;
         const newNode: TreeNode = { label: node.label, data: node.data, selectable: node.selectable, children: [] };
         result = this.queryMatchTreeNode(query, node);
         if (node.children) {
             node.children.forEach(childNode => {
-                result = this.expandRecursive(childNode, query, newNode, rootTree) || result;
+                result = this.findRecursive(childNode, query, newNode, rootTree) || result;
             });
         }
         if (result) {
@@ -209,7 +209,6 @@ export class CategorySelectorComponent implements OnInit, ControlValueAccessor {
                 this.internalCategoriesTree.push(node);
             }
         });
-        console.log(this.treeNodeList);
         this.categoriesTree = this.internalCategoriesTree;
     }
 
@@ -239,6 +238,7 @@ export class CategorySelectorComponent implements OnInit, ControlValueAccessor {
     writeValue(value: any): void {
         if (value !== undefined && value != null) {
             this.value = value;
+            this.filterQuery = value.name;
         } else {
             this.value = null;
         }

@@ -1,18 +1,19 @@
 package com.baosong.supplyme.service.impl;
 
 import com.baosong.supplyme.service.MaterialCategoryService;
+import com.baosong.supplyme.service.UserService;
 import com.baosong.supplyme.domain.MaterialCategory;
 import com.baosong.supplyme.repository.MaterialCategoryRepository;
 import com.baosong.supplyme.repository.search.MaterialCategorySearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -30,6 +31,9 @@ public class MaterialCategoryServiceImpl implements MaterialCategoryService {
 
     private final MaterialCategorySearchRepository materialCategorySearchRepository;
 
+    @Autowired
+    private UserService userService;
+
     public MaterialCategoryServiceImpl(MaterialCategoryRepository materialCategoryRepository, MaterialCategorySearchRepository materialCategorySearchRepository) {
         this.materialCategoryRepository = materialCategoryRepository;
         this.materialCategorySearchRepository = materialCategorySearchRepository;
@@ -43,7 +47,11 @@ public class MaterialCategoryServiceImpl implements MaterialCategoryService {
      */
     @Override
     public MaterialCategory save(MaterialCategory materialCategory) {
-        log.debug("Request to save MaterialCategory : {}", materialCategory);        MaterialCategory result = materialCategoryRepository.save(materialCategory);
+        log.debug("Request to save MaterialCategory : {}", materialCategory);
+        if (materialCategory.getId() == null) {
+            materialCategory.creationDate(Instant.now()).setCreationUser(userService.getCurrentUser().get());
+        }
+        MaterialCategory result = materialCategoryRepository.save(materialCategory);
         materialCategorySearchRepository.save(result);
         return result;
     }

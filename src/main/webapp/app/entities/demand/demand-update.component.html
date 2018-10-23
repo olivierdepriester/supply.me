@@ -11,12 +11,11 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
-                    <jhi-material-selector required id="field_material" name="material" [(ngModel)]="demand.material" style="display: block"></jhi-material-selector>
+                    <jhi-material-selector required id="field_material" name="material" [(ngModel)]="demand.material"></jhi-material-selector>
                     <a [routerLink]="['/', { outlets: { popup: 'demand/material/new'} }]"
                             replaceUrl="true"
                             queryParamsHandling="merge"
-                            jhiTranslate="supplyMeApp.demand.button.createMaterial"
-                            >
+                            jhiTranslate="supplyMeApp.demand.button.createMaterial">
                     </a>
                     <div [hidden]="!(editForm.controls.material?.dirty && editForm.controls.material?.invalid)">
                         <small class="form-text text-danger" jhiTranslate="entity.validation.required">
@@ -26,7 +25,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
-                    <jhi-project-selector required id="field_project" name="project" [(ngModel)]="demand.project" style="display: block"></jhi-project-selector>
+                    <jhi-project-selector required id="field_project" name="project" [(ngModel)]="demand.project" ></jhi-project-selector>
                     <div [hidden]="!(editForm.controls.project?.dirty && editForm.controls.project?.invalid)">
                         <small class="form-text text-danger" jhiTranslate="entity.validation.required">
                         This field is required.

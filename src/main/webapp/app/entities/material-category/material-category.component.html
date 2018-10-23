@@ -28,13 +28,11 @@
     <div class="table-responsive" *ngIf="materialCategories">
         <table class="table table-striped">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="name"><span jhiTranslate="supplyMeApp.materialCategory.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="description"><span jhiTranslate="supplyMeApp.materialCategory.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.materialCategory.creationDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="parentMaterialCategory.name"><span jhiTranslate="supplyMeApp.materialCategory.parentMaterialCategory">Parent Material Category</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creationUser.login"><span jhiTranslate="supplyMeApp.materialCategory.creationUser">Creation User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+                <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="name"><span jhiTranslate="supplyMeApp.materialCategory.name">Name</span><span class="fa fa-sort"></span></th>
+                <th jhiSortBy="description"><span jhiTranslate="supplyMeApp.materialCategory.description">Description</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="parentMaterialCategory.name"><span jhiTranslate="supplyMeApp.materialCategory.parentMaterialCategory">Parent Material Category</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
@@ -43,14 +41,10 @@
                 <td><a [routerLink]="['/material-category', materialCategory.id, 'view' ]">{{materialCategory.id}}</a></td>
                 <td>{{materialCategory.name}}</td>
                 <td>{{materialCategory.description}}</td>
-                <td>{{materialCategory.creationDate | date:'medium'}}</td>
                 <td>
                     <div *ngIf="materialCategory.parentMaterialCategory">
                         <a [routerLink]="['../material-category', materialCategory.parentMaterialCategory?.id, 'view' ]" >{{materialCategory.parentMaterialCategory?.name}}</a>
                     </div>
-                </td>
-                <td>
-                    {{materialCategory.creationUser?.login}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

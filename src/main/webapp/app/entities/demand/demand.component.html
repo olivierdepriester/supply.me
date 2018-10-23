@@ -63,13 +63,13 @@
             <table class="table table-striped">
                 <thead>
                     <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-                        <th jhiSortBy="id" class="text-center"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                        <th jhiSortBy="material.partNumber.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                        <th jhiSortBy="quantity" class="text-center"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                        <th jhiSortBy="project.code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                        <th jhiSortBy="status.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.status">Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                        <th jhiSortBy="expectedDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                        <th jhiSortBy="creationDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                        <th jhiSortBy="id" class="text-center"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="material.partNumber.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span><span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="quantity" class="text-center"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="project.code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="status.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.status">Status</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="expectedDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span> </th>
+                        <th jhiSortBy="creationDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span> <span class="fa fa-sort"></span></th>
                         <th></th>
                     </tr>
                 </thead>

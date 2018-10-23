@@ -117,6 +117,19 @@ public class Demand implements Serializable {
         this.id = id;
     }
 
+    public String getCode() {
+        return this.code;
+    }
+
+    public Demand code(String code) {
+        this.setCode(code);
+        return this;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public Double getQuantity() {
         return quantity;
     }

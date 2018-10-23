@@ -26,6 +26,7 @@ import com.baosong.supplyme.security.AuthoritiesConstants;
 import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.MailService;
+import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.UserService;
 import com.baosong.supplyme.service.util.DemandSearchCriteria;
@@ -70,6 +71,9 @@ public class DemandServiceImpl implements DemandService {
     @Autowired
     private PurchaseOrderLineService purchaseOrderLineService;
 
+    @Autowired
+    private MutablePropertiesService mutablePropertiesService;
+
     static {
         demandWorkflowRules = new HashMap<>();
         demandWorkflowRules.put(DemandStatus.WAITING_FOR_APPROVAL,
@@ -103,6 +107,7 @@ public class DemandServiceImpl implements DemandService {
                 .quantityDelivered(0d)
                 .quantityOrdered(0d)
                 .creationDate(Instant.now())
+                .code(mutablePropertiesService.getNewDemandCode())
                 .setCreationUser(userService.getCurrentUser().get());
         }
         return this.saveAndCascadeIndex(demand);

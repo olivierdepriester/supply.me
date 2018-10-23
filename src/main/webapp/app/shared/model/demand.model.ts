@@ -43,6 +43,7 @@ export interface IDemand {
     creationUser?: IUser;
     quantityOrdered?: number;
     quantityDelivered?: number;
+    estimatedPrice?: number;
     demandStatusChanges?: IDemandStatusChange[];
 }
 
@@ -58,6 +59,7 @@ export class Demand implements IDemand {
         public creationUser?: IUser,
         public quantityOrdered?: number,
         public quantityDelivered?: number,
+        public estimatedPrice?: number,
         public demandStatusChanges?: IDemandStatusChange[]
     ) {}
 }

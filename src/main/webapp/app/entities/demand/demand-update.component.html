@@ -49,6 +49,17 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.estimatedPrice" for="field_estimatedPrice">Estimated price</label>
+                    <input type="number" class="form-control" name="estimatedPrice" id="field_estimatedPrice" [(ngModel)]="demand.estimatedPrice" />
+                    <div [hidden]="!(editForm.controls.quantity?.dirty && editForm.controls.quantity?.invalid)">
+                        <small class="form-text text-danger"
+                            [hidden]="!editForm.controls.quantity?.errors?.number" jhiTranslate="entity.validation.number">
+                            This field should be a number.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.expectedDate" for="field_expectedDate">Expected Date</label>
                     <div class="d-flex">
                         <p-calendar id="field_expectedDate" style="width:100%" [inputStyleClass]="'form-control'"

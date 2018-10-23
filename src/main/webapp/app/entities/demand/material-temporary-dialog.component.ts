@@ -5,9 +5,6 @@ import { MaterialService } from 'app/entities/material';
 import { IDemand } from 'app/shared/model/demand.model';
 import { IMaterial, Material } from 'app/shared/model/material.model';
 import { JhiEventManager } from 'ng-jhipster';
-import * as moment from 'moment';
-import { IMaterialCategory } from 'app/shared/model/material-category.model';
-import { MaterialCategoryService } from '../material-category';
 
 @Component({
     selector: 'jhi-material-temporary-dialog',
@@ -17,23 +14,13 @@ import { MaterialCategoryService } from '../material-category';
 export class MaterialTemporaryDialogComponent implements OnInit {
     demand: IDemand;
     material: IMaterial = new Material();
-    categories: IMaterialCategory[];
 
-    constructor(
-        private materialService: MaterialService,
-        private materialCategoryService: MaterialCategoryService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {}
+    constructor(private materialService: MaterialService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
 
-    ngOnInit() {
-        this.materialCategoryService.query().subscribe(res => (this.categories = res.body));
-    }
+    ngOnInit() {}
 
     save() {
-        this.material.partNumber = 'TMP0000000';
         this.material.temporary = true;
-        this.material.creationDate = moment();
         this.materialService.create(this.material).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'temporaryMaterialCreated',

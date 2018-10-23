@@ -44,10 +44,10 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
             }
         });
         // Callback on new material creation
-        this.eventSubscriber = this.eventManager.subscribe(
-            'temporaryMaterialCreated',
-            response => (this.demand.material = response.content)
-        );
+        this.eventSubscriber = this.eventManager.subscribe('temporaryMaterialCreated', response => {
+            this.demand.material = response.content;
+            this.demand.estimatedPrice = this.demand.material.estimatedPrice;
+        });
     }
 
     ngOnDestroy() {

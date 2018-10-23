@@ -21,7 +21,8 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="part_number" type="varchar(10)">
+
+            <column name="part_number" type="varchar(12)">
                 <constraints nullable="false" />
             </column>
 
@@ -33,12 +34,22 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="estimated_price" type="double">
+                <constraints nullable="true" />
+            </column>
+
             <column name="temporary" type="boolean">
                 <constraints nullable="false" />
             </column>
+
+            <column name="material_category_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
             <column name="creation_date" type="datetime">
                 <constraints nullable="false" />
             </column>
+
             <column name="creation_user_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -48,7 +59,6 @@
 
     </changeSet>
 
-
     <changeSet id="20181012180000-1" author="olivier">
         <addForeignKeyConstraint
             baseColumnNames="creation_user_id"
@@ -56,6 +66,13 @@
             constraintName="fk_material_creation_user_id"
             referencedColumnNames="id"
             referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint
+            baseColumnNames="material_category_id"
+            baseTableName="material"
+            constraintName="fk_material_material_category_id"
+            referencedColumnNames="id"
+            referencedTableName="material_category"/>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

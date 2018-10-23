@@ -7,7 +7,7 @@
         Added the constraints for entity Demand.
     -->
     <changeSet id="20180912014618-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="material_id"
                                  baseTableName="demand"
                                  constraintName="fk_demand_material_id"
@@ -26,5 +26,16 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
+        <addForeignKeyConstraint baseColumnNames="supplier_id"
+                                 baseTableName="demand"
+                                 constraintName="fk_demand_supplier_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="supplier"/>
+
+        <addForeignKeyConstraint baseColumnNames="validation_authority_name"
+                                 baseTableName="demand"
+                                 constraintName="fk_demand_validation_authority_name"
+                                 referencedColumnNames="name"
+                                 referencedTableName="jhi_authority"/>
     </changeSet>
 </databaseChangeLog>

@@ -22,7 +22,8 @@
             "description": "Description",
             "creationDate": "Creation Date",
             "code": "Code",
-            "demand": "Demand"
+            "demand": "Demand",
+            "category": "Category"
         }
     }
 }

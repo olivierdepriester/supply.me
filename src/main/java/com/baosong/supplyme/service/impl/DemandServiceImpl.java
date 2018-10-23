@@ -310,8 +310,8 @@ public class DemandServiceImpl implements DemandService {
      */
     private boolean canBeSetToApproved(Demand demand) {
         // TODO Rules about demand estimated amount and recurrency
-        return (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL1)
-                || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.APPROVAL_LVL2))
+        return (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.VALIDATION_LVL1)
+                || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.VALIDATION_LVL2))
                 && !demand.getMaterial().isTemporary().booleanValue();
     }
 

@@ -22,11 +22,19 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
+            <column name="code" type="varchar(12)" >
+                <constraints nullable="false" />
+            </column>
+
             <column name="material_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
             <column name="project_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="supplier_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 
@@ -38,15 +46,27 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="description" type="text">
+                <constraints nullable="true" />
+            </column>
+
             <column name="expected_date" type="datetime">
                 <constraints nullable="true" />
             </column>
 
             <column name="quantity_ordered" type="double">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
             <column name="quantity_delivered" type="double">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="estimated_price" type="double">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="validation_authority_name" type="varchar(50)">
                 <constraints nullable="true" />
             </column>
 

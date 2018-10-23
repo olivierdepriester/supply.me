@@ -37,12 +37,15 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
 
     private static Long MATERIAL_PART_NUMBER;
 
+    private static Long DEMAND_CODE;
+
     public MutablePropertiesServiceImpl(MutablePropertiesRepository mutablePropertiesRepository,
             MutablePropertiesSearchRepository mutablePropertiesSearchRepository) {
         this.mutablePropertiesRepository = mutablePropertiesRepository;
         this.mutablePropertiesSearchRepository = mutablePropertiesSearchRepository;
         PURCHASE_ORDER_CODE = getPropertyAsLong(PropertiesKey.PURCHASE_ORDER_CODE_GENERATOR);
         MATERIAL_PART_NUMBER = getPropertyAsLong(PropertiesKey.MATERIAL_PART_NUMBER_GENERATOR);
+        DEMAND_CODE = getPropertyAsLong(PropertiesKey.DEMAND_CODE_GENERATOR);
     }
 
     /**
@@ -59,14 +62,27 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
     /**
      * Get a new purchase order code and increments the counter
      *
-     * @return a new formatted purchase order code
+     * @return a new formatted purchase order code : PO00000000000
      * @throws ServiceException if the property could not be saved
      */
     @Override
     public String getNewPurchaseCode() throws ServiceException {
         save(PropertiesKey.PURCHASE_ORDER_CODE_GENERATOR, ++PURCHASE_ORDER_CODE);
-        return String.format("%010d", PURCHASE_ORDER_CODE);
+        return String.format("PO%010d", PURCHASE_ORDER_CODE);
     }
+
+    /**
+     * Get a new purchase order code and increments the counter
+     *
+     * @return a new formatted purchase request code : PR00000000000
+     * @throws ServiceException if the property could not be saved
+     */
+    @Override
+    public String getNewDemandCode() throws ServiceException {
+        save(PropertiesKey.DEMAND_CODE_GENERATOR, ++DEMAND_CODE);
+        return String.format("PR%010d", DEMAND_CODE);
+    }
+
 
     private Long getPropertyAsLong(PropertiesKey key) {
         MutableProperties property = null;
@@ -167,6 +183,6 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
     @Override
     public String getNewPartNumber() throws ServiceException {
         save(PropertiesKey.MATERIAL_PART_NUMBER_GENERATOR, ++MATERIAL_PART_NUMBER);
-        return String.format("M%09d", MATERIAL_PART_NUMBER);
+        return String.format("MA%010d", MATERIAL_PART_NUMBER);
     }
 }

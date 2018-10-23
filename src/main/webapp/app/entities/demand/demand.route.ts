@@ -171,7 +171,7 @@ export const demandPopupRoute: Routes = [
             status: StatusResolve
         },
         data: {
-            authorities: ['ROLE_APPROVAL_LVL1', 'ROLE_APPROVAL_LVL2'],
+            authorities: ['ROLE_VALIDATION_LVL1', 'ROLE_VALIDATION_LVL2'],
             pageTitle: 'supplyMeApp.demand.home.title'
         },
         canActivate: [UserRouteAccessService],

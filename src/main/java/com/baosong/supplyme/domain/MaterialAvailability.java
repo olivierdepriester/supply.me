@@ -30,22 +30,23 @@ public class MaterialAvailability implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Column(name = "start_date", nullable = false)
-    private Instant startDate;
+    @Column(name = "creation_date", nullable = false)
+    private Instant creationDate;
 
-    @Column(name = "end_date")
-    private Instant endDate;
+    @Column(name = "update_date")
+    private Instant updateDate;
 
     @DecimalMin(value = "0")
     @Column(name = "purchase_price")
     private Double purchasePrice;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties("codes")
     private Material material;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties("names")
     private Supplier supplier;
 
@@ -58,30 +59,30 @@ public class MaterialAvailability implements Serializable {
         this.id = id;
     }
 
-    public Instant getStartDate() {
-        return startDate;
+    public Instant getCreationDate() {
+        return creationDate;
     }
 
-    public MaterialAvailability startDate(Instant startDate) {
-        this.startDate = startDate;
+    public MaterialAvailability creationDate(Instant creationDate) {
+        this.creationDate = creationDate;
         return this;
     }
 
-    public void setStartDate(Instant startDate) {
-        this.startDate = startDate;
+    public void setCreationDate(Instant creationDate) {
+        this.creationDate = creationDate;
     }
 
-    public Instant getEndDate() {
-        return endDate;
+    public Instant getUpdateDate() {
+        return this.updateDate;
     }
 
-    public MaterialAvailability endDate(Instant endDate) {
-        this.endDate = endDate;
+    public MaterialAvailability updateDate(Instant updateDate) {
+        this.updateDate = updateDate;
         return this;
     }
 
-    public void setEndDate(Instant endDate) {
-        this.endDate = endDate;
+    public void setUpdateDate(Instant updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Double getPurchasePrice() {
@@ -148,8 +149,8 @@ public class MaterialAvailability implements Serializable {
     public String toString() {
         return "MaterialAvailability{" +
             "id=" + getId() +
-            ", startDate='" + getStartDate() + "'" +
-            ", endDate='" + getEndDate() + "'" +
+            ", startDate='" + getCreationDate() + "'" +
+            ", endDate='" + getUpdateDate() + "'" +
             ", purchasePrice=" + getPurchasePrice() +
             "}";
     }

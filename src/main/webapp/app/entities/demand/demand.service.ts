@@ -123,7 +123,7 @@ export class DemandService {
             demand.status === DemandStatus.WAITING_FOR_APPROVAL &&
             // && !demand.material.temporary
             account.authorities &&
-            (account.authorities.includes('ROLE_APPROVAL_LVL1') || account.authorities.includes('ROLE_APPROVAL_LVL2'));
+            (account.authorities.includes('ROLE_VALIDATION_LVL1') || account.authorities.includes('ROLE_VALIDATION_LVL2'));
         return result;
     }
 }

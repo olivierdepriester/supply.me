@@ -6,8 +6,8 @@
     <!--
         Added the constraints for entity MaterialCategory.
     -->
-    <changeSet id="20181019081701-2" author="jhipster">
-        
+    <changeSet id="20180912014613-2" author="jhipster">
+
         <addForeignKeyConstraint baseColumnNames="parent_material_category_id"
                                  baseTableName="material_category"
                                  constraintName="fk_material_category_parent_material_category_id"

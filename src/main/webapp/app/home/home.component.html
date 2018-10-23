@@ -29,7 +29,7 @@
                     <li><a [routerLink]="'/demand/my'"  rel="noopener" jhiTranslate="home.link.demand.my">See your requests</a></li>
                     <li><a [routerLink]="'/demand/new'" target="_blank" rel="noopener" jhiTranslate="home.link.demand.new">Create a new request</a></li>
                     <li><a [routerLink]="'/demand/'"  rel="noopener" jhiTranslate="home.link.demand.search">Search for any requests</a></li>
-                    <li *jhiHasAnyAuthority="['ROLE_APPROVAL_LVL1', 'ROLE_APPROVAL_LVL2']">
+                    <li *jhiHasAnyAuthority="['ROLE_VALIDATION_LVL1', 'ROLE_VALIDATION_LVL2']">
                         <a [routerLink]="'/demand/waitingapproval'" rel="noopener" jhiTranslate="home.link.demand.waitingapproval">Requests to validate</a>
                     </li>
                 </ul>

@@ -77,9 +77,9 @@
                     <tr *ngFor="let demand of demands ;trackBy: trackId">
                         <!-- <td><input type="checkbox" attr.data-rowid="{{demand.id}}" /></td> -->
                         <td><a [routerLink]="['/demand', demand.id, 'view' ]">{{demand.id}}</a></td>
-                        <td class="text-center">
+                        <td class="text-left">
                             <div *ngIf="demand.material" title="{{ demand.material?.partNumber + ' - ' + demand.material?.name + '\n' + demand.material?.description }}">
-                                <a [routerLink]="['../material', demand.material?.id, 'view' ]">{{demand.material?.partNumber}}</a>
+                                <a [routerLink]="['../material', demand.material?.id, 'view' ]">{{ demand.material?.name }}</a>
                             </div>
                         </td>
                         <td class="text-right">

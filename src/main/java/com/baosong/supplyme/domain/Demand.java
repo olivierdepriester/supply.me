@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -44,15 +45,28 @@ public class Demand implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @Column(name = "code", length = 12, nullable = false)
+    private String code;
+
     @NotNull
     @Column(name = "quantity", nullable = false)
     private Double quantity;
+
+    @Column(name = "estimated_price", nullable = true)
+    private Double estimatedPrice;
 
     @Column(name = "quantity_ordered", nullable = false)
     private Double quantityOrdered;
 
     @Column(name = "quantity_delivered", nullable = false)
     private Double quantityDelivered;
+
+    @Column(name = "description", nullable = true, columnDefinition = "CLOB")
+    private String description;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name="validation_authority_name", nullable = true, columnDefinition="VARCHAR(50)")
+    private Authority validationAuthority;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -62,17 +76,21 @@ public class Demand implements Serializable {
     @Column(name = "expected_date")
     private Instant expectedDate;
 
-    @NotNull
     @Column(name = "creation_date", nullable = false)
     private Instant creationDate;
 
+    @NotNull
     @ManyToOne(optional = false)
     private Material material;
 
+    @NotNull
     @ManyToOne(optional = false)
     private Project project;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
+    private Supplier supplier;
+
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties("")
     private User creationUser;
 
@@ -177,6 +195,21 @@ public class Demand implements Serializable {
         this.project = project;
     }
 
+	public Supplier getSupplier()
+	{
+		return this.supplier;
+	}
+
+	public void setSupplier(Supplier supplier)
+	{
+		this.supplier = supplier;
+	}
+
+    public Demand supplier(Supplier supplier) {
+        this.setSupplier(supplier);
+        return this;
+    }
+
     public User getCreationUser() {
         return creationUser;
     }
@@ -188,6 +221,21 @@ public class Demand implements Serializable {
 
     public void setCreationUser(User user) {
         this.creationUser = user;
+    }
+
+	public String getDescription()
+	{
+		return this.description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+    }
+
+    public Demand description(String description) {
+        this.setDescription(description);
+        return this;
     }
 
     /**
@@ -235,6 +283,37 @@ public class Demand implements Serializable {
      */
     public Demand quantityOrdered(Double quantityOrdered) {
         this.setQuantityOrdered(quantityOrdered);
+        return this;
+    }
+
+    /**
+     * Get the estimated price of the material for this demand.
+     *
+     * @return
+     */
+	public Double getEstimatedPrice()
+	{
+		return this.estimatedPrice;
+	}
+
+    /**
+     * Set the estimated price of the material for this demand.
+     *
+     * @param estimatedPrice
+     */
+	public void setEstimatedPrice(Double estimatedPrice)
+	{
+		this.estimatedPrice = estimatedPrice;
+    }
+
+    /**
+     * Set the estimated price of the material for this demand.
+     *
+     * @param estimatedPrice
+     * @return the demand.
+     */
+    public Demand estimatedPrice(Double estimatedPrice) {
+        this.setEstimatedPrice(estimatedPrice);
         return this;
     }
 

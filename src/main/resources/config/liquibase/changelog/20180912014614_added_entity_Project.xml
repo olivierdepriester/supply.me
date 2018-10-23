@@ -30,13 +30,24 @@
             </column>
 
             <column name="creation_date" type="datetime">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
+            <column name="creation_user_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="project" columnName="creation_date" columnDataType="datetime"/>
-        
+
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+    <changeSet id="20180912014614-2" author="jhipster">
+        <addForeignKeyConstraint baseColumnNames="creation_user_id"
+                            baseTableName="project"
+                            constraintName="fk_project_creation_user_id"
+                            referencedColumnNames="id"
+                            referencedTableName="jhi_user"/>
+
+    </changeSet>
 </databaseChangeLog>

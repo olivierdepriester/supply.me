@@ -60,7 +60,7 @@ public class MaterialAvailabilityResourceIntTest {
     @Autowired
     private MaterialAvailabilityRepository materialAvailabilityRepository;
 
-    
+
 
     @Autowired
     private MaterialAvailabilityService materialAvailabilityService;
@@ -108,8 +108,8 @@ public class MaterialAvailabilityResourceIntTest {
      */
     public static MaterialAvailability createEntity(EntityManager em) {
         MaterialAvailability materialAvailability = new MaterialAvailability()
-            .startDate(DEFAULT_START_DATE)
-            .endDate(DEFAULT_END_DATE)
+            .creationDate(DEFAULT_START_DATE)
+            .updateDate(DEFAULT_END_DATE)
             .purchasePrice(DEFAULT_PURCHASE_PRICE);
         return materialAvailability;
     }
@@ -134,8 +134,8 @@ public class MaterialAvailabilityResourceIntTest {
         List<MaterialAvailability> materialAvailabilityList = materialAvailabilityRepository.findAll();
         assertThat(materialAvailabilityList).hasSize(databaseSizeBeforeCreate + 1);
         MaterialAvailability testMaterialAvailability = materialAvailabilityList.get(materialAvailabilityList.size() - 1);
-        assertThat(testMaterialAvailability.getStartDate()).isEqualTo(DEFAULT_START_DATE);
-        assertThat(testMaterialAvailability.getEndDate()).isEqualTo(DEFAULT_END_DATE);
+        assertThat(testMaterialAvailability.getCreationDate()).isEqualTo(DEFAULT_START_DATE);
+        assertThat(testMaterialAvailability.getUpdateDate()).isEqualTo(DEFAULT_END_DATE);
         assertThat(testMaterialAvailability.getPurchasePrice()).isEqualTo(DEFAULT_PURCHASE_PRICE);
 
         // Validate the MaterialAvailability in Elasticsearch
@@ -169,7 +169,7 @@ public class MaterialAvailabilityResourceIntTest {
     public void checkStartDateIsRequired() throws Exception {
         int databaseSizeBeforeTest = materialAvailabilityRepository.findAll().size();
         // set the field null
-        materialAvailability.setStartDate(null);
+        materialAvailability.setCreationDate(null);
 
         // Create the MaterialAvailability, which fails.
 
@@ -193,11 +193,11 @@ public class MaterialAvailabilityResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(materialAvailability.getId().intValue())))
-            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
-            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
+            .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].updateDate").value(hasItem(DEFAULT_END_DATE.toString())))
             .andExpect(jsonPath("$.[*].purchasePrice").value(hasItem(DEFAULT_PURCHASE_PRICE.doubleValue())));
     }
-    
+
 
     @Test
     @Transactional
@@ -210,8 +210,8 @@ public class MaterialAvailabilityResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(materialAvailability.getId().intValue()))
-            .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
-            .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
+            .andExpect(jsonPath("$.creationDate").value(DEFAULT_START_DATE.toString()))
+            .andExpect(jsonPath("$.updateDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.purchasePrice").value(DEFAULT_PURCHASE_PRICE.doubleValue()));
     }
     @Test
@@ -237,8 +237,8 @@ public class MaterialAvailabilityResourceIntTest {
         // Disconnect from session so that the updates on updatedMaterialAvailability are not directly saved in db
         em.detach(updatedMaterialAvailability);
         updatedMaterialAvailability
-            .startDate(UPDATED_START_DATE)
-            .endDate(UPDATED_END_DATE)
+            .creationDate(UPDATED_START_DATE)
+            .updateDate(UPDATED_END_DATE)
             .purchasePrice(UPDATED_PURCHASE_PRICE);
 
         restMaterialAvailabilityMockMvc.perform(put("/api/material-availabilities")
@@ -250,8 +250,8 @@ public class MaterialAvailabilityResourceIntTest {
         List<MaterialAvailability> materialAvailabilityList = materialAvailabilityRepository.findAll();
         assertThat(materialAvailabilityList).hasSize(databaseSizeBeforeUpdate);
         MaterialAvailability testMaterialAvailability = materialAvailabilityList.get(materialAvailabilityList.size() - 1);
-        assertThat(testMaterialAvailability.getStartDate()).isEqualTo(UPDATED_START_DATE);
-        assertThat(testMaterialAvailability.getEndDate()).isEqualTo(UPDATED_END_DATE);
+        assertThat(testMaterialAvailability.getCreationDate()).isEqualTo(UPDATED_START_DATE);
+        assertThat(testMaterialAvailability.getUpdateDate()).isEqualTo(UPDATED_END_DATE);
         assertThat(testMaterialAvailability.getPurchasePrice()).isEqualTo(UPDATED_PURCHASE_PRICE);
 
         // Validate the MaterialAvailability in Elasticsearch
@@ -265,7 +265,7 @@ public class MaterialAvailabilityResourceIntTest {
 
         // Create the MaterialAvailability
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restMaterialAvailabilityMockMvc.perform(put("/api/material-availabilities")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(materialAvailability)))
@@ -312,8 +312,8 @@ public class MaterialAvailabilityResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(materialAvailability.getId().intValue())))
-            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
-            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
+            .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].updateDate").value(hasItem(DEFAULT_END_DATE.toString())))
             .andExpect(jsonPath("$.[*].purchasePrice").value(hasItem(DEFAULT_PURCHASE_PRICE.doubleValue())));
     }
 

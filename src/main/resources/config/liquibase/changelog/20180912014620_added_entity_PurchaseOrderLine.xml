@@ -33,17 +33,21 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="quantity_delivered" type="double">
+                <constraints nullable="false" />
+            </column>
+
             <column name="purchase_order_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
             <column name="demand_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

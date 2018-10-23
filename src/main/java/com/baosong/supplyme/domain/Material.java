@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Locale.Category;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,7 +40,7 @@ public class Material implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "part_number", length = 10, nullable = false)
+    @Column(name = "part_number", length = 12, nullable = false)
     private String partNumber;
 
     @NotNull
@@ -51,6 +50,9 @@ public class Material implements Serializable {
 
     @Column(name = "description", columnDefinition = "CLOB")
     private String description;
+
+    @Column(name = "estimated_price")
+    private Double estimatedPrice;
 
     @Column(name = "creation_date")
     private Instant creationDate;

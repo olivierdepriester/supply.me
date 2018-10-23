@@ -29,9 +29,20 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="creation_user_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
+    </changeSet>
+    <changeSet id="20180912014616-2" author="jhispster">
+        <addForeignKeyConstraint baseColumnNames="creation_user_id"
+                            baseTableName="supplier"
+                            constraintName="fk_supplier_creation_user_id"
+                            referencedColumnNames="id"
+                            referencedTableName="jhi_user"/>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

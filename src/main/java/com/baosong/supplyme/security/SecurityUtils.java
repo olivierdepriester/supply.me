@@ -4,6 +4,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -72,6 +73,23 @@ public final class SecurityUtils {
         return Optional.ofNullable(securityContext.getAuthentication())
             .map(authentication -> authentication.getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority)))
+            .orElse(false);
+    }
+
+    /**
+     * If the current user has a specific authority (security role).
+     * <p>
+     * The name of this method comes from the isUserInRole() method in the Servlet API
+     *
+     * @param authority the authority to check
+     * @return true if the current user has the authority, false otherwise
+     * @see AuthoritiesConstants
+     */
+    public static boolean isCurrentUserInRole(Collection<String> authorities) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return Optional.ofNullable(securityContext.getAuthentication())
+            .map(authentication -> authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> authorities.contains(grantedAuthority.getAuthority())))
             .orElse(false);
     }
 }

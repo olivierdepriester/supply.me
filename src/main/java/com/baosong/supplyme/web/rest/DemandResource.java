@@ -2,6 +2,8 @@ package com.baosong.supplyme.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,10 +11,12 @@ import javax.validation.Valid;
 
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
+import com.baosong.supplyme.domain.errors.ParameterizedServiceException;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.util.DemandSearchCriteria;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
+import com.baosong.supplyme.web.rest.errors.BadRequestServiceException;
 import com.baosong.supplyme.web.rest.util.HeaderUtil;
 import com.baosong.supplyme.web.rest.util.PaginationUtil;
 import com.baosong.supplyme.web.rest.vm.DemandStatusChangeVM;
@@ -22,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.jhipster.web.util.ResponseUtil;
+import joptsimple.util.KeyValuePair;
 
 /**
  * REST controller for managing Demand.
@@ -110,12 +116,14 @@ public class DemandResource {
     public ResponseEntity<Demand> changeDemandStatus(@RequestBody DemandStatusChangeVM demandStatusChange)
             throws URISyntaxException {
         log.debug("REST request to update Demand : {}", demandStatusChange.getId());
-        Demand result;
+        Demand result = null;
         try {
             result = demandService.changeStatus(demandStatusChange.getId(), demandStatusChange.getStatus(), demandStatusChange.getComment());
             return ResponseEntity.ok()
                     .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, demandStatusChange.getId().toString()))
                     .body(result);
+        } catch (ParameterizedServiceException e) {
+            throw new BadRequestServiceException(e, "demand");
         } catch (ServiceException e) {
             throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "changeStatus");
         }

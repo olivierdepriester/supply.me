@@ -16,6 +16,8 @@
             "detail": {
                 "title": "Request"
             },
+            "code": "Code",
+            "supplier": "Supplier",
             "quantity": "Quantity",
             "status": "Status",
             "expectedDate": "Expected Date",
@@ -29,7 +31,7 @@
                 "comment": "Comment"
             },
             "commentPopup": {
-                "title": "Request {{ id }} status change comment",
+                "title": "Request {{ id }} status change",
                 "placeholder": "Please fill your comment here."
             },
             "button" : {

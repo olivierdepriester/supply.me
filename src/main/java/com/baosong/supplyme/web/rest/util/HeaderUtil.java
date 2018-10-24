@@ -1,8 +1,14 @@
 package com.baosong.supplyme.web.rest.util;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
+
+import joptsimple.util.KeyValuePair;
 
 /**
  * Utility class for HTTP headers creation.
@@ -40,6 +46,14 @@ public final class HeaderUtil {
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-" + APPLICATION_NAME + "-error", "error." + errorKey);
         headers.add("X-" + APPLICATION_NAME + "-params", entityName);
+        return headers;
+    }
+
+    public static  HttpHeaders createFailureAlert(Collection<Pair<String, String>> messages, String defaultMessage) {
+        log.error("Entity processing failed, {}", defaultMessage);
+        HttpHeaders headers = new HttpHeaders();
+        headers.addAll("X-" + APPLICATION_NAME + "-error", messages.stream().map( m -> "error." + m.getFirst()).collect(Collectors.toList()));
+        headers.addAll("X-" + APPLICATION_NAME + "-params", messages.stream().map( m -> "error." + m.getSecond()).collect(Collectors.toList()));
         return headers;
     }
 }

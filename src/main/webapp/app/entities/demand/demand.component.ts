@@ -103,10 +103,11 @@ export class DemandComponent implements OnInit, OnDestroy {
                 if (demandInList !== null) {
                     demandInList.status = res.body.status;
                 }
-            },
-            (res: HttpErrorResponse) => {
-                this.onError(res.message);
             }
+            // ,
+            // (res: HttpErrorResponse) => {
+            //     this.onError(res.message);
+            // }
         );
     }
 

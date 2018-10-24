@@ -9,6 +9,7 @@
         </button>
     </h2>
     <jhi-alert></jhi-alert>
+    <jhi-alert-error></jhi-alert-error>
     <div class="row">
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
@@ -63,20 +64,19 @@
             <table class="table table-striped">
                 <thead>
                     <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-                        <th jhiSortBy="id" class="text-center"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-                        <th jhiSortBy="material.partNumber.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span><span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.code">Code</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="material.partNumber.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="quantity" class="text-center"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="project.code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="status.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.status">Status</span> <span class="fa fa-sort"></span></th>
-                        <th jhiSortBy="expectedDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span> </th>
+                        <th jhiSortBy="expectedDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="creationDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span> <span class="fa fa-sort"></span></th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let demand of demands ;trackBy: trackId">
-                        <!-- <td><input type="checkbox" attr.data-rowid="{{demand.id}}" /></td> -->
-                        <td><a [routerLink]="['/demand', demand.id, 'view' ]">{{demand.id}}</a></td>
+                        <td><a [routerLink]="['/demand', demand.id, 'view' ]">{{demand.code}}</a></td>
                         <td class="text-left">
                             <div *ngIf="demand.material" title="{{ demand.material?.partNumber + ' - ' + demand.material?.name + '\n' + demand.material?.description }}">
                                 <a [routerLink]="['../material', demand.material?.id, 'view' ]">{{ demand.material?.name }}</a>

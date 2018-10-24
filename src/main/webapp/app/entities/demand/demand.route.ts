@@ -18,9 +18,13 @@ export class DemandResolve implements Resolve<IDemand> {
     constructor(private service: DemandService) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const id = route.params['id'] ? route.params['id'] : null;
+        const id: string = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((demand: HttpResponse<Demand>) => demand.body));
+            if (id.startsWith('PR')) {
+                // TODO : Implements find by PR code
+            } else {
+                return this.service.find(parseInt(id, 10)).pipe(map((demand: HttpResponse<Demand>) => demand.body));
+            }
         }
         return of(new Demand());
     }
@@ -171,7 +175,13 @@ export const demandPopupRoute: Routes = [
             status: StatusResolve
         },
         data: {
-            authorities: ['ROLE_VALIDATION_LVL1', 'ROLE_VALIDATION_LVL2'],
+            authorities: [
+                'ROLE_VALIDATION_LVL1',
+                'ROLE_VALIDATION_LVL2',
+                'ROLE_VALIDATION_LVL3',
+                'ROLE_VALIDATION_LVL4',
+                'ROLE_VALIDATION_LVL5'
+            ],
             pageTitle: 'supplyMeApp.demand.home.title'
         },
         canActivate: [UserRouteAccessService],

@@ -208,7 +208,20 @@ public class Demand implements Serializable {
         this.project = project;
     }
 
-	public Supplier getSupplier()
+    public Authority getValidationAuthority() {
+        return this.validationAuthority;
+    }
+
+    public Demand validationAuthority(Authority validationAuthority) {
+        this.validationAuthority = validationAuthority;
+        return this;
+    }
+
+    public void setValidationAuthority(Authority validationAuthority) {
+        this.validationAuthority = validationAuthority;
+    }
+
+    public Supplier getSupplier()
 	{
 		return this.supplier;
 	}

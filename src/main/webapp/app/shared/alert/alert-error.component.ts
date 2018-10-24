@@ -57,6 +57,17 @@ export class JhiAlertErrorComponent implements OnDestroy {
                             const fieldName = translateService.instant('supplyMeApp.' + fieldError.objectName + '.' + convertedField);
                             this.addErrorAlert('Error on field "' + fieldName + '"', 'error.' + fieldError.message, { fieldName });
                         }
+                    } else if (httpErrorResponse.error !== '' && httpErrorResponse.error.messages) {
+                        const messages = httpErrorResponse.error.messages;
+                        for (i = 0; i < messages.length; i++) {
+                            const fieldError = messages[i];
+                            if (fieldError.parameters) {
+                                const fieldName = translateService.instant(
+                                    'supplyMeApp.' + fieldError.parameters[0] + '.' + fieldError.parameters[1]
+                                );
+                                this.addErrorAlert('Error on field "' + fieldName + '"', 'error.' + fieldError.message, { fieldName });
+                            }
+                        }
                     } else if (httpErrorResponse.error !== '' && httpErrorResponse.error.message) {
                         this.addErrorAlert(
                             httpErrorResponse.error.message,

@@ -1,8 +1,8 @@
-import { Moment } from 'moment';
+import { IUser } from 'app/core/user/user.model';
 import { IMaterial } from 'app/shared/model//material.model';
 import { IProject } from 'app/shared/model//project.model';
-import { IUser } from 'app/core/user/user.model';
-import { SelectItem } from 'primeng/primeng';
+import { Moment } from 'moment';
+import { ISupplier } from './supplier.model';
 
 export enum DemandStatus {
     NEW = 'NEW',
@@ -34,6 +34,7 @@ export class DemandStatusChange implements IDemandStatusChange {
 
 export interface IDemand {
     id?: number;
+    code?: string;
     quantity?: number;
     status?: DemandStatus;
     expectedDate?: Moment;
@@ -41,6 +42,7 @@ export interface IDemand {
     material?: IMaterial;
     project?: IProject;
     creationUser?: IUser;
+    supplier?: ISupplier;
     quantityOrdered?: number;
     quantityDelivered?: number;
     estimatedPrice?: number;
@@ -50,6 +52,7 @@ export interface IDemand {
 export class Demand implements IDemand {
     constructor(
         public id?: number,
+        public code?: string,
         public quantity?: number,
         public status?: DemandStatus,
         public expectedDate?: Moment,
@@ -57,6 +60,7 @@ export class Demand implements IDemand {
         public material?: IMaterial,
         public project?: IProject,
         public creationUser?: IUser,
+        public supplier?: ISupplier,
         public quantityOrdered?: number,
         public quantityDelivered?: number,
         public estimatedPrice?: number,

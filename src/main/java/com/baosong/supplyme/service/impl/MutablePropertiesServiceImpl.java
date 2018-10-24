@@ -40,7 +40,7 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
     private static Long DEMAND_CODE;
 
     public MutablePropertiesServiceImpl(MutablePropertiesRepository mutablePropertiesRepository,
-            MutablePropertiesSearchRepository mutablePropertiesSearchRepository) {
+            MutablePropertiesSearchRepository mutablePropertiesSearchRepository) throws ServiceException {
         this.mutablePropertiesRepository = mutablePropertiesRepository;
         this.mutablePropertiesSearchRepository = mutablePropertiesSearchRepository;
         PURCHASE_ORDER_CODE = getPropertyAsLong(PropertiesKey.PURCHASE_ORDER_CODE_GENERATOR);
@@ -84,7 +84,7 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
     }
 
 
-    private Long getPropertyAsLong(PropertiesKey key) {
+    private Long getPropertyAsLong(PropertiesKey key) throws ServiceException {
         MutableProperties property = null;
         property = this.getByKey(key);
         if (property == null) {
@@ -93,8 +93,27 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
             property.setValue("0");
             property.setValueType(Long.class.getCanonicalName());
             save(property);
+        } else if (!property.getValueType().equals(Long.class.getCanonicalName())) {
+            throw new ServiceException(
+                    String.format("Mutable property %s is expected to be %s", key, Double.class.getCanonicalName()));
         }
         return Long.parseLong(property.getValue());
+    }
+
+    private Double getPropertyAsDouble(PropertiesKey key, Double defaultValue) throws ServiceException {
+        MutableProperties property = null;
+        property = this.getByKey(key);
+        if (property == null) {
+            property = new MutableProperties();
+            property.setKey(key);
+            property.setValue(Double.toString(defaultValue));
+            property.setValueType(defaultValue.getClass().getCanonicalName());
+            save(property);
+        } else if (!property.getValueType().equals(defaultValue.getClass().getCanonicalName())) {
+            throw new ServiceException(
+                    String.format("Mutable property %s is expected to be %s", key, defaultValue.getClass().getCanonicalName()));
+        }
+        return Double.parseDouble(property.getValue());
     }
 
     private <T> MutableProperties save(PropertiesKey key, T value) throws ServiceException {
@@ -184,5 +203,11 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
     public String getNewPartNumber() throws ServiceException {
         save(PropertiesKey.MATERIAL_PART_NUMBER_GENERATOR, ++MATERIAL_PART_NUMBER);
         return String.format("MA%010d", MATERIAL_PART_NUMBER);
+    }
+
+    @Override
+    public Optional<Double> getSecondValidationThresholdAmount() throws ServiceException {
+        Double value = this.getPropertyAsDouble(PropertiesKey.THRESHOLD_SECOND_LEVEL_APPROVAL, Double.POSITIVE_INFINITY);
+        return Optional.of(value);
     }
 }

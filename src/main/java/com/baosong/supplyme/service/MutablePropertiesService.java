@@ -72,4 +72,11 @@ public interface MutablePropertiesService {
      */
     String getNewDemandCode() throws ServiceException;
 
+    /**
+     * Get the 1st threshold for which a purchase request need a 2nd level validation
+     * @return
+     * @throws ServiceException
+     */
+    Optional<Double> getSecondValidationThresholdAmount() throws ServiceException;
+
 }

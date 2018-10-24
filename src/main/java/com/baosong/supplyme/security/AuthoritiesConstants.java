@@ -25,27 +25,27 @@ public final class AuthoritiesConstants {
     /**
      * Approval lvl 1 : can approve demand if the estimated amount is low
      */
-    public static final String VALIDATION_LVL1 = "ROLE_VALIDATION_LVL1";
+    public static final String VALIDATION_LVL1 = "ROLE_VALIDATOR_LVL1";
 
     /**
      * Approval lvl 2 : can approve any demand
      */
-    public static final String VALIDATION_LVL2 = "ROLE_VALIDATION_LVL2";
+    public static final String VALIDATION_LVL2 = "ROLE_VALIDATOR_LVL2";
 
         /**
      * Approval lvl 3 : can approve any demand
      */
-    public static final String VALIDATION_LVL3 = "ROLE_VALIDATION_LVL3";
+    public static final String VALIDATION_LVL3 = "ROLE_VALIDATOR_LVL3";
 
         /**
      * Approval lvl 4 : can approve any demand
      */
-    public static final String VALIDATION_LVL4 = "ROLE_VALIDATION_LVL4";
+    public static final String VALIDATION_LVL4 = "ROLE_VALIDATOR_LVL4";
 
         /**
      * Approval lvl 5 : can approve any demand
      */
-    public static final String VALIDATION_LVL5 = "ROLE_VALIDATION_LVL5";
+    public static final String VALIDATION_LVL5 = "ROLE_VALIDATOR_LVL5";
 
     /**
      * Material manager : can create and edit every material

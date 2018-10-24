@@ -10,6 +10,7 @@ import { MaterialSelectorModule } from 'app/entities/component/material-selector
 import { ProjectSelectorModule } from 'app/entities/component/project-selector';
 import { UserSelectorModule } from 'app/entities/component/user-selector';
 import { CategorySelectorModule } from 'app/entities/component/category-selector';
+import { SupplierSelectorModule } from 'app/entities/component/supplier-selector';
 import {
     DemandComponent,
     DemandDetailComponent,
@@ -37,6 +38,7 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         ProjectSelectorModule,
         UserSelectorModule,
         CategorySelectorModule,
+        SupplierSelectorModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [

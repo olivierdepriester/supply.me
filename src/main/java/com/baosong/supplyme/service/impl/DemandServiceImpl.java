@@ -3,6 +3,7 @@ package com.baosong.supplyme.service.impl;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.baosong.supplyme.domain.Authority;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.DemandStatusChange;
 import com.baosong.supplyme.domain.Material;
@@ -19,7 +21,10 @@ import com.baosong.supplyme.domain.Project;
 import com.baosong.supplyme.domain.PurchaseOrderLine;
 import com.baosong.supplyme.domain.User;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
+import com.baosong.supplyme.domain.errors.MessageParameterBean;
+import com.baosong.supplyme.domain.errors.ParameterizedServiceException;
 import com.baosong.supplyme.domain.errors.ServiceException;
+import com.baosong.supplyme.repository.AuthorityRepository;
 import com.baosong.supplyme.repository.DemandRepository;
 import com.baosong.supplyme.repository.search.DemandSearchRepository;
 import com.baosong.supplyme.security.AuthoritiesConstants;
@@ -40,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -57,7 +63,16 @@ public class DemandServiceImpl implements DemandService {
 
     private final DemandSearchRepository demandSearchRepository;
 
-    private final static Map<DemandStatus, Set<DemandStatus>> demandWorkflowRules;
+    private final static Map<DemandStatus, Set<DemandStatus>> DEMAND_WORKFLOW_RULES;
+
+    /**
+     * Define which authority can validate for a demand validation authority level
+     * Key : Authority level
+     * Value : List of allowed authority
+     *
+     * Example :
+     */
+    private final static Map<String, Set<String>> VALIDATION_AUTHORITIES;
 
     // @Autowired(required = false)
     // private ElasticsearchTemplate template;
@@ -74,21 +89,42 @@ public class DemandServiceImpl implements DemandService {
     @Autowired
     private MutablePropertiesService mutablePropertiesService;
 
+    private AuthorityRepository authorityRepository;
+
     static {
-        demandWorkflowRules = new HashMap<>();
-        demandWorkflowRules.put(DemandStatus.WAITING_FOR_APPROVAL,
+        DEMAND_WORKFLOW_RULES = new HashMap<>();
+        DEMAND_WORKFLOW_RULES.put(DemandStatus.WAITING_FOR_APPROVAL,
                 Sets.newHashSet(DemandStatus.NEW, DemandStatus.REJECTED));
-        demandWorkflowRules.put(DemandStatus.APPROVED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
-        demandWorkflowRules.put(DemandStatus.REJECTED, Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL));
-        demandWorkflowRules.put(DemandStatus.ORDERED, Sets.newHashSet(DemandStatus.APPROVED));
-        demandWorkflowRules.put(DemandStatus.PARTIALLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED));
-        demandWorkflowRules.put(DemandStatus.FULLY_DELIVERED,
+        DEMAND_WORKFLOW_RULES.put(DemandStatus.APPROVED,
+                Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL, DemandStatus.APPROVED));
+        DEMAND_WORKFLOW_RULES.put(DemandStatus.REJECTED,
+                Sets.newHashSet(DemandStatus.WAITING_FOR_APPROVAL, DemandStatus.APPROVED));
+        DEMAND_WORKFLOW_RULES.put(DemandStatus.ORDERED, Sets.newHashSet(DemandStatus.APPROVED));
+        DEMAND_WORKFLOW_RULES.put(DemandStatus.PARTIALLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED));
+        DEMAND_WORKFLOW_RULES.put(DemandStatus.FULLY_DELIVERED,
                 Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
+
+        VALIDATION_AUTHORITIES = new HashMap<>();
+        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL1,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL1, AuthoritiesConstants.VALIDATION_LVL2,
+                        AuthoritiesConstants.VALIDATION_LVL3, AuthoritiesConstants.VALIDATION_LVL4,
+                        AuthoritiesConstants.VALIDATION_LVL5));
+        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL2,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL2, AuthoritiesConstants.VALIDATION_LVL3,
+                        AuthoritiesConstants.VALIDATION_LVL4, AuthoritiesConstants.VALIDATION_LVL5));
+        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL3,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL3, AuthoritiesConstants.VALIDATION_LVL4,
+                        AuthoritiesConstants.VALIDATION_LVL5));
+        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL4,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL4, AuthoritiesConstants.VALIDATION_LVL5));
+                VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL5,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL5));
     }
 
-    public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository) {
+    public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository, AuthorityRepository authorityRepository) {
         this.demandRepository = demandRepository;
         this.demandSearchRepository = demandSearchRepository;
+        this.authorityRepository = authorityRepository;
     }
 
     /**
@@ -103,12 +139,9 @@ public class DemandServiceImpl implements DemandService {
         log.debug("Request to save Demand : {}", demand);
         if (demand.getId() == null) {
             // New demand
-            demand.status(DemandStatus.NEW)
-                .quantityDelivered(0d)
-                .quantityOrdered(0d)
-                .creationDate(Instant.now())
-                .code(mutablePropertiesService.getNewDemandCode())
-                .setCreationUser(userService.getCurrentUser().get());
+            demand.status(DemandStatus.NEW).quantityDelivered(0d).quantityOrdered(0d).creationDate(Instant.now())
+                    .code(mutablePropertiesService.getNewDemandCode())
+                    .setCreationUser(userService.getCurrentUser().get());
         }
         return this.saveAndCascadeIndex(demand);
     }
@@ -212,7 +245,8 @@ public class DemandServiceImpl implements DemandService {
         }
         if (criteria.getDemandStatus() != null) {
             BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
-            criteria.getDemandStatus().forEach(status -> statusQueryBuilder.should(QueryBuilders.matchQuery("status", status.toString())));
+            criteria.getDemandStatus().forEach(
+                    status -> statusQueryBuilder.should(QueryBuilders.matchQuery("status", status.toString())));
             booleanQueryBuilder.must(statusQueryBuilder);
         }
         return StreamSupport.stream(demandSearchRepository.search(booleanQueryBuilder, pageable).spliterator(), false)
@@ -228,9 +262,9 @@ public class DemandServiceImpl implements DemandService {
     @Override
     @Transactional(readOnly = true)
     public double getQuantityDeliveredFromPO(Long id) {
-        return purchaseOrderLineService.getByDemandId(id).stream().mapToDouble(PurchaseOrderLine::getQuantityDelivered).sum();
+        return purchaseOrderLineService.getByDemandId(id).stream().mapToDouble(PurchaseOrderLine::getQuantityDelivered)
+                .sum();
     }
-
 
     /**
      * Set a demand to the given status. The wanted <b>status</b> may be modified
@@ -257,10 +291,10 @@ public class DemandServiceImpl implements DemandService {
             return demand;
         }
 
-        if (!demandWorkflowRules.containsKey(status)) {
+        if (!DEMAND_WORKFLOW_RULES.containsKey(status)) {
             // The wanted status can never be set
             throw new ServiceException(String.format("The status %s can never be directly set", status));
-        } else if (!demandWorkflowRules.get(status).contains(demand.getStatus())) {
+        } else if (!DEMAND_WORKFLOW_RULES.get(status).contains(demand.getStatus())) {
             // The current status prevent the new status of being set
             throw new ServiceException(String.format("The status %s can not be set on demand %d (current is %s)",
                     status, id, demand.getStatus()));
@@ -272,12 +306,24 @@ public class DemandServiceImpl implements DemandService {
 
         switch (status) {
         case WAITING_FOR_APPROVAL:
+
+            checkRequiredFields(demand);
+
             if (!isDemandEditable(demand)) {
                 // Can not be edited -> Error
                 throw new ServiceException(
                         String.format("The current user can not edit nor send it to approval the demand %d", id));
             }
             demand.setStatus(targetStatus);
+            Authority validationAuthority = null;
+            Double demandAmount = demand.getEstimatedPrice() * demand.getQuantity();
+            if (demandAmount.compareTo(mutablePropertiesService.getSecondValidationThresholdAmount().get()) >= 0 ) {
+                validationAuthority = authorityRepository.getOne(AuthoritiesConstants.VALIDATION_LVL5);
+            } else {
+                validationAuthority = authorityRepository.getOne(AuthoritiesConstants.VALIDATION_LVL1);
+            }
+            demand.setValidationAuthority(validationAuthority);
+
             if (canBeSetToApproved(demand)) {
                 // Automatic approval if possible
                 this.changeStatus(demand.getId(), DemandStatus.APPROVED, "Auto");
@@ -307,6 +353,20 @@ public class DemandServiceImpl implements DemandService {
         return this.save(demand);
     }
 
+    private boolean checkRequiredFields(Demand demand) throws ServiceException {
+        List<MessageParameterBean> missingFields = new ArrayList<>();
+        if (demand.getEstimatedPrice() == null) {
+            missingFields.add(MessageParameterBean.of("NotNull", "demand", "estimatedPrice"));
+        }
+        if (demand.getSupplier() == null) {
+            missingFields.add(MessageParameterBean.of("NotNull", "supplier", "detail.title"));
+        }
+        if (!missingFields.isEmpty()) {
+            throw new ParameterizedServiceException(missingFields);
+        }
+        return missingFields.isEmpty();
+    }
+
     /**
      * Check if a demand can be set to the APPROVED status
      *
@@ -314,10 +374,7 @@ public class DemandServiceImpl implements DemandService {
      * @return true if the demand can be approved
      */
     private boolean canBeSetToApproved(Demand demand) {
-        // TODO Rules about demand estimated amount and recurrency
-        return (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.VALIDATION_LVL1)
-                || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.VALIDATION_LVL2))
-                && !demand.getMaterial().isTemporary().booleanValue();
+        return SecurityUtils.isCurrentUserInRole(VALIDATION_AUTHORITIES.get(demand.getValidationAuthority().getName()));
     }
 
     @Override

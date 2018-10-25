@@ -306,23 +306,16 @@ public class DemandServiceImpl implements DemandService {
 
         switch (status) {
         case WAITING_FOR_APPROVAL:
+            // Check if all the required fields are filled
+            this.checkRequiredFields(demand);
 
-            checkRequiredFields(demand);
-
-            if (!isDemandEditable(demand)) {
+            if (!this.isDemandEditable(demand)) {
                 // Can not be edited -> Error
                 throw new ServiceException(
                         String.format("The current user can not edit nor send it to approval the demand %d", id));
             }
             demand.setStatus(targetStatus);
-            Authority validationAuthority = null;
-            Double demandAmount = demand.getEstimatedPrice() * demand.getQuantity();
-            if (demandAmount.compareTo(mutablePropertiesService.getSecondValidationThresholdAmount().get()) >= 0 ) {
-                validationAuthority = authorityRepository.getOne(AuthoritiesConstants.VALIDATION_LVL5);
-            } else {
-                validationAuthority = authorityRepository.getOne(AuthoritiesConstants.VALIDATION_LVL1);
-            }
-            demand.setValidationAuthority(validationAuthority);
+            demand.setValidationAuthority(this.getValidationAuthorityToSet(demand));
 
             if (canBeSetToApproved(demand)) {
                 // Automatic approval if possible
@@ -350,10 +343,34 @@ public class DemandServiceImpl implements DemandService {
             demand.setStatus(targetStatus);
             break;
         }
-        return this.save(demand);
+        return this.saveAndCascadeIndex(demand);
     }
 
-    private boolean checkRequiredFields(Demand demand) throws ServiceException {
+    /**
+     * Calculate the validation authority level required to validate the demand.
+     *
+     * @param demand the demand.
+     * @return the calculated authority level.
+     * @throws ServiceException
+     */
+    private Authority getValidationAuthorityToSet(Demand demand) throws ServiceException {
+        Authority validationAuthority = null;
+        Double demandAmount = demand.getEstimatedPrice() * demand.getQuantity();
+        if (demandAmount.compareTo(mutablePropertiesService.getSecondValidationThresholdAmount().get()) >= 0 ) {
+            validationAuthority = authorityRepository.getOne(AuthoritiesConstants.VALIDATION_LVL5);
+        } else {
+            validationAuthority = authorityRepository.getOne(AuthoritiesConstants.VALIDATION_LVL1);
+        }
+        return validationAuthority;
+    }
+
+    /**
+     * Check if the required fields of a demand to be sent are filled.
+     * @param demand the demand.
+     * @return false if at least 1 field is missing
+     * @throws ParameterizedServiceException If it at least 1 fields is missing
+     */
+    private boolean checkRequiredFields(Demand demand) throws ParameterizedServiceException {
         List<MessageParameterBean> missingFields = new ArrayList<>();
         if (demand.getEstimatedPrice() == null) {
             missingFields.add(MessageParameterBean.of("NotNull", "demand", "estimatedPrice"));

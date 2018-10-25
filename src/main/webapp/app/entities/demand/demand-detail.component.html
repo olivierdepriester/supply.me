@@ -5,6 +5,10 @@
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.demand.code">Code</span></dt>
+                <dd>
+                    <span>{{demand.code }}</span>
+                </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.material">Material</span></dt>
                 <dd>
                     <div *ngIf="demand.material">
@@ -15,13 +19,22 @@
                 <dt><span jhiTranslate="supplyMeApp.demand.project">Project</span></dt>
                 <dd>
                     <div *ngIf="demand.project">
-                        <a [routerLink]="['/project', demand.project?.id, 'view']">{{demand.project?.code + ' - ' +
-                            demand.project?.description }}</a>
+                        <a [routerLink]="['/project', demand.project?.id, 'view']">
+                            {{demand.project?.code + ' - ' + demand.project?.description }}
+                        </a>
                     </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.description">Description</span></dt>
+                <dd>
+                    <span>{{demand.description | nullToDash }}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></dt>
                 <dd>
-                    <span>{{demand.quantity}}</span>
+                    <span>{{demand.quantity | number }}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.estimatedPrice">Estimated price</span></dt>
+                <dd>
+                    <span>{{demand.estimatedPrice | currencyCustom | nullToDash }}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.status">Status</span></dt>
                 <dd>
@@ -29,7 +42,18 @@
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></dt>
                 <dd>
-                    <span>{{demand.expectedDate | dateFormat}}</span>
+                    <span>{{demand.expectedDate | dateFormat | nullToDash }}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.supplier">Supplier</span></dt>
+                <dd>
+                    <ng-container *ngIf="demand.supplier; else elseTemplate">
+                        <a  [routerLink]="['/supplier', demand.supplier?.id, 'view']">
+                            {{demand.supplier.referenceNumber + ' - ' + demand.supplier.name }}
+                        </a>
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                            <span>{{ '' | nullToDash }}</span>
+                    </ng-template>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span></dt>
                 <dd>

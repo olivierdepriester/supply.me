@@ -1,16 +1,34 @@
 import { NgModule } from '@angular/core';
 
-import { SupplyMeSharedLibsModule, FindLanguageFromKeyPipe, JhiAlertComponent, JhiAlertErrorComponent } from './';
-import { DateFormatPipe } from './util/date-format.pipe';
-import { DatetimeFormatPipe } from './util/datetime-format.pipe';
+import {
+    SupplyMeSharedLibsModule,
+    FindLanguageFromKeyPipe,
+    CurrencyCustomPipe,
+    DatetimeFormatPipe,
+    DateFormatPipe,
+    NullToDashPipe,
+    JhiAlertComponent,
+    JhiAlertErrorComponent
+} from './';
+
 @NgModule({
     imports: [SupplyMeSharedLibsModule],
-    declarations: [FindLanguageFromKeyPipe, DateFormatPipe, DatetimeFormatPipe, JhiAlertComponent, JhiAlertErrorComponent],
+    declarations: [
+        FindLanguageFromKeyPipe,
+        CurrencyCustomPipe,
+        DateFormatPipe,
+        DatetimeFormatPipe,
+        NullToDashPipe,
+        JhiAlertComponent,
+        JhiAlertErrorComponent
+    ],
     exports: [
         SupplyMeSharedLibsModule,
         FindLanguageFromKeyPipe,
+        CurrencyCustomPipe,
         DateFormatPipe,
         DatetimeFormatPipe,
+        NullToDashPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]

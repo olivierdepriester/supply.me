@@ -20,6 +20,7 @@
             "supplier": "Supplier",
             "quantity": "Quantity",
             "status": "Status",
+            "description": "Description",
             "expectedDate": "Expected Date",
             "creationDate": "Creation Date",
             "material": "Material",

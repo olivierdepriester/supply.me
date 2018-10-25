@@ -37,6 +37,7 @@ export interface IDemand {
     code?: string;
     quantity?: number;
     status?: DemandStatus;
+    description?: string;
     expectedDate?: Moment;
     creationDate?: Moment;
     material?: IMaterial;
@@ -55,6 +56,7 @@ export class Demand implements IDemand {
         public code?: string,
         public quantity?: number,
         public status?: DemandStatus,
+        public description?: string,
         public expectedDate?: Moment,
         public creationDate?: Moment,
         public material?: IMaterial,

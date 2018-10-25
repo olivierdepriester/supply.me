@@ -276,3 +276,9 @@ jhi-project-selector {
     display: block;
     border-radius: 0.5rem;
 }
+
+dd {
+    & span {
+        white-space: pre-wrap;
+    }
+}

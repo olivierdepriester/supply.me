@@ -79,7 +79,7 @@
                         <td><a [routerLink]="['/demand', demand.id, 'view' ]">{{demand.code}}</a></td>
                         <td class="text-left">
                             <div *ngIf="demand.material" title="{{ demand.material?.partNumber + ' - ' + demand.material?.name + '\n' + demand.material?.description }}">
-                                <a [routerLink]="['../material', demand.material?.id, 'view' ]">{{ demand.material?.name }}</a>
+                                <a [routerLink]="['/material', demand.material?.id, 'view' ]">{{ demand.material?.name }}</a>
                             </div>
                         </td>
                         <td class="text-right">
@@ -87,7 +87,7 @@
                         </td>
                         <td>
                             <div *ngIf="demand.project" title="{{ demand.project?.code + ' - ' + demand.project?.description }}">
-                                <a [routerLink]="['../project', demand.project?.id, 'view' ]">{{demand.project?.code}}</a>
+                                <a [routerLink]="['/project', demand.project?.id, 'view' ]">{{demand.project?.code}}</a>
                             </div>
                         </td>
                         <td jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</td>

@@ -32,7 +32,7 @@
             <th><span jhiTranslate="global.field.id">ID</span></th>
             <th><span jhiTranslate="supplyMeApp.project.code">Code</span></th>
             <th><span jhiTranslate="supplyMeApp.project.description">Description</span></th>
-            <th><span jhiTranslate="supplyMeApp.project.creationDate">Creation Date</span></th>
+            <th><span jhiTranslate="supplyMeApp.project.headUser">Head of department</span></th>
             <th></th>
             </tr>
             </thead>
@@ -41,7 +41,8 @@
                 <td><a [routerLink]="['/project', project.id, 'view' ]">{{project.id}}</a></td>
                 <td>{{project.code}}</td>
                 <td>{{project.description}}</td>
-                <td>{{project.creationDate | date:'medium'}}</td>
+                <td>{{project.headUser?.lastName + ' ' +  project.headUser?.firstName }}</td>
+                <td>{{project.creationDate | datetimeFormat }}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

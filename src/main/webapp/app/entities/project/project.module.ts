@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { SupplyMeSharedModule } from 'app/shared';
+import { UserSelectorModule } from 'app/entities/component/user-selector';
 import {
     ProjectComponent,
     ProjectDetailComponent,
@@ -15,7 +16,7 @@ import {
 const ENTITY_STATES = [...projectRoute, ...projectPopupRoute];
 
 @NgModule({
-    imports: [SupplyMeSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [SupplyMeSharedModule, UserSelectorModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ProjectComponent,
         ProjectDetailComponent,

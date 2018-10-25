@@ -48,6 +48,16 @@
                             constraintName="fk_project_creation_user_id"
                             referencedColumnNames="id"
                             referencedTableName="jhi_user"/>
+    </changeSet>
 
+    <changeSet id="20181025123000-1" author="olivier">
+        <addColumn tableName="project">
+            <column name="head_user_id" type="bigint"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="head_user_id"
+                    baseTableName="project"
+                    constraintName="fk_project_head_user_id"
+                    referencedColumnNames="id"
+                    referencedTableName="jhi_user"/>
     </changeSet>
 </databaseChangeLog>

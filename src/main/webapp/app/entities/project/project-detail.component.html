@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="project">
-            <h2><span jhiTranslate="supplyMeApp.project.detail.title">Project</span> {{project.id}}</h2>
+            <h2><span jhiTranslate="supplyMeApp.project.detail.title">Project</span> {{project.code}}</h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
@@ -13,9 +13,22 @@
                 <dd>
                     <span>{{project.description}}</span>
                 </dd>
+                <dt><span jhiTranslate="supplyMeApp.project.headUser">Head of department</span></dt>
+                <dd>
+                    <ng-container *ngIf="project.headUser; else elseTemplate">
+                        <span>{{project.headUser?.lastName + ' ' + project.headUser?.firstName | nullToDash }}</span>
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                        <span>{{ '' | nullToDash }} </span>
+                    </ng-template>
+                </dd>
                 <dt><span jhiTranslate="supplyMeApp.project.creationDate">Creation Date</span></dt>
                 <dd>
-                    <span>{{project.creationDate}}</span>
+                    <span>{{project.creationDate | datetimeFormat }}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.project.creationUser">Creation user</span></dt>
+                <dd>
+                    <span>{{project.creationUser?.lastName + ' ' + project.creationUser?.firstName | nullToDash }}</span>
                 </dd>
             </dl>
 
@@ -25,7 +38,7 @@
                 <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
             </button>
 
-            <button type="button"
+            <button *jhiHasAnyAuthority="'ROLE_PROJECT_MANAGER'" type="button"
                     [routerLink]="['/project', project.id, 'edit']"
                     class="btn btn-primary">
                 <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>

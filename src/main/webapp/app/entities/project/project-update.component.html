@@ -35,6 +35,10 @@
                         </small>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.project.headUser" for="field_headUser">Description</label>
+                    <jhi-user-selector name="headUser" id="field_headUser" [(ngModel)]="project.headUser"></jhi-user-selector>
+                </div>
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

@@ -53,6 +53,30 @@ public class Project implements Serializable {
     @JsonIgnoreProperties("")
     private User creationUser;
 
+    /**
+     * Head of project
+     */
+    @ManyToOne(optional = true)
+    @JsonIgnoreProperties("")
+    private User headUser;
+
+    /**
+     * Get the head of project
+     * @return
+     */
+    public User getHeadUser() {
+        return this.headUser;
+    }
+
+    public Project headUser(User headUser) {
+        this.headUser = headUser;
+        return this;
+    }
+
+    public void setHeadUser(User headUser) {
+        this.headUser = headUser;
+    }
+
 	public User getCreationUser()
 	{
 		return this.creationUser;

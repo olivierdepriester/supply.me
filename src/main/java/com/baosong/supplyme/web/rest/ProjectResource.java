@@ -2,8 +2,11 @@ package com.baosong.supplyme.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.baosong.supplyme.domain.Project;
+import com.baosong.supplyme.domain.errors.ParameterizedServiceException;
+import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.service.ProjectService;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
+import com.baosong.supplyme.web.rest.errors.BadRequestServiceException;
 import com.baosong.supplyme.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -39,10 +42,12 @@ public class ProjectResource {
     }
 
     /**
-     * POST  /projects : Create a new project.
+     * POST /projects : Create a new project.
      *
      * @param project the project to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new project, or with status 400 (Bad Request) if the project has already an ID
+     * @return the ResponseEntity with status 201 (Created) and with body the new
+     *         project, or with status 400 (Bad Request) if the project has already
+     *         an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/projects")
@@ -52,19 +57,25 @@ public class ProjectResource {
         if (project.getId() != null) {
             throw new BadRequestAlertException("A new project cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Project result = projectService.save(project);
-        return ResponseEntity.created(new URI("/api/projects/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        try {
+            Project result = projectService.save(project);
+            return ResponseEntity.created(new URI("/api/projects/" + result.getId()))
+                    .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
+        } catch (ParameterizedServiceException e) {
+            throw new BadRequestServiceException(e, ENTITY_NAME);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "create");
+        }
     }
 
     /**
-     * PUT  /projects : Updates an existing project.
+     * PUT /projects : Updates an existing project.
      *
      * @param project the project to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated project,
-     * or with status 400 (Bad Request) if the project is not valid,
-     * or with status 500 (Internal Server Error) if the project couldn't be updated
+     * @return the ResponseEntity with status 200 (OK) and with body the updated
+     *         project, or with status 400 (Bad Request) if the project is not
+     *         valid, or with status 500 (Internal Server Error) if the project
+     *         couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/projects")
@@ -74,16 +85,23 @@ public class ProjectResource {
         if (project.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Project result = projectService.save(project);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, project.getId().toString()))
-            .body(result);
+        Project result;
+        try {
+            result = projectService.save(project);
+            return ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, project.getId().toString())).body(result);
+        } catch (ParameterizedServiceException e) {
+            throw new BadRequestServiceException(e, ENTITY_NAME);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "update");
+        }
     }
 
     /**
-     * GET  /projects : get all the projects.
+     * GET /projects : get all the projects.
      *
-     * @return the ResponseEntity with status 200 (OK) and the list of projects in body
+     * @return the ResponseEntity with status 200 (OK) and the list of projects in
+     *         body
      */
     @GetMapping("/projects")
     @Timed
@@ -93,10 +111,11 @@ public class ProjectResource {
     }
 
     /**
-     * GET  /projects/:id : get the "id" project.
+     * GET /projects/:id : get the "id" project.
      *
      * @param id the id of the project to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the project, or with status 404 (Not Found)
+     * @return the ResponseEntity with status 200 (OK) and with body the project, or
+     *         with status 404 (Not Found)
      */
     @GetMapping("/projects/{id}")
     @Timed
@@ -107,7 +126,7 @@ public class ProjectResource {
     }
 
     /**
-     * DELETE  /projects/:id : delete the "id" project.
+     * DELETE /projects/:id : delete the "id" project.
      *
      * @param id the id of the project to delete
      * @return the ResponseEntity with status 200 (OK)
@@ -116,12 +135,19 @@ public class ProjectResource {
     @Timed
     public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
         log.debug("REST request to delete Project : {}", id);
-        projectService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        try {
+            projectService.delete(id);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString()))
+                    .build();
+        } catch (ParameterizedServiceException e) {
+            throw new BadRequestServiceException(e, ENTITY_NAME);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "delete");
+        }
     }
 
     /**
-     * SEARCH  /_search/projects?query=:query : search for the project corresponding
+     * SEARCH /_search/projects?query=:query : search for the project corresponding
      * to the query.
      *
      * @param query the query of the project search

@@ -3,8 +3,13 @@ package com.baosong.supplyme.service.impl;
 import com.baosong.supplyme.service.ProjectService;
 import com.baosong.supplyme.service.UserService;
 import com.baosong.supplyme.domain.Project;
+import com.baosong.supplyme.domain.errors.ForbiddenAccessException;
+import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.ProjectRepository;
 import com.baosong.supplyme.repository.search.ProjectSearchRepository;
+import com.baosong.supplyme.security.AuthoritiesConstants;
+import com.baosong.supplyme.security.SecurityUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +33,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final Logger log = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
+    private final static String ENTITY_NAME = "project";
+
     private final ProjectRepository projectRepository;
 
     private final ProjectSearchRepository projectSearchRepository;
@@ -45,10 +52,14 @@ public class ProjectServiceImpl implements ProjectService {
      *
      * @param project the entity to save
      * @return the persisted entity
+     * @throws ServiceException
      */
     @Override
-    public Project save(Project project) {
+    public Project save(Project project) throws ServiceException {
         log.debug("Request to save Project : {}", project);
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.PROJECT_MANAGER)) {
+            throw new ForbiddenAccessException(ENTITY_NAME, project.getId());
+        }
         if (project.getId() == null) {
             project.setCreationDate(Instant.now());
             project.setCreationUser(userService.getCurrentUser().get());
@@ -90,8 +101,11 @@ public class ProjectServiceImpl implements ProjectService {
      * @param id the id of the entity
      */
     @Override
-    public void delete(Long id) {
+    public void delete(Long id) throws ServiceException {
         log.debug("Request to delete Project : {}", id);
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.PROJECT_MANAGER)) {
+            throw new ForbiddenAccessException(ENTITY_NAME, id);
+        }
         projectRepository.deleteById(id);
         projectSearchRepository.deleteById(id);
     }

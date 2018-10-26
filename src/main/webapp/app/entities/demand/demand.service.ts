@@ -1,11 +1,12 @@
 import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SERVER_API_URL } from 'app/app.constants';
+import { SERVER_API_URL, SORTED_AUTHORITIES } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { DemandStatus, IDemand } from 'app/shared/model/demand.model';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Principal } from 'app/core';
 
 type EntityResponseType = HttpResponse<IDemand>;
 type EntityArrayResponseType = HttpResponse<IDemand[]>;
@@ -15,7 +16,7 @@ export class DemandService {
     private resourceUrl = SERVER_API_URL + 'api/demands';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/demands';
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private principal: Principal) {}
 
     create(demand: IDemand): Observable<EntityResponseType> {
         demand.creationDate = moment();
@@ -105,7 +106,7 @@ export class DemandService {
     isEditAllowed(demand: IDemand, account: any): boolean {
         const result =
             (demand.status === DemandStatus.NEW || demand.status === DemandStatus.REJECTED) &&
-            ((account.authorities && account.authorities.includes('ROLE_ADMIN')) || demand.creationUser.id === account.id);
+            (this.principal.hasAnyAuthorityDirect(['ROLE_ADMIN']) || demand.creationUser.id === account.id);
         return result;
     }
 
@@ -114,16 +115,29 @@ export class DemandService {
             demand.status !== DemandStatus.FULLY_DELIVERED &&
             demand.status !== DemandStatus.PARTIALLY_DELIVERED &&
             demand.status !== DemandStatus.ORDERED &&
-            ((account.authorities && account.authorities.includes('ROLE_ADMIN')) || demand.creationUser.id === account.id);
+            (this.principal.hasAnyAuthorityDirect(['ROLE_ADMIN']) || demand.creationUser.id === account.id);
         return result;
     }
 
     isApprovalAllowed(demand: IDemand, account: any): boolean {
         const result =
             demand.status === DemandStatus.WAITING_FOR_APPROVAL &&
-            // && !demand.material.temporary
-            account.authorities &&
-            (account.authorities.includes('ROLE_VALIDATION_LVL1') || account.authorities.includes('ROLE_VALIDATION_LVL2'));
+            this.principal.getCurrentUserHighestValidationAuthority() != null &&
+            ((demand.reachedAuthority == null && demand.project.headUser && demand.project.headUser.id === account.id) ||
+                (demand.reachedAuthority !== this.principal.getCurrentUserHighestValidationAuthority() &&
+                    this.principal.getCurrentUserHighestValidationAuthority() ===
+                        this.principal.getHigherAuthority(
+                            demand.reachedAuthority,
+                            this.principal.getCurrentUserHighestValidationAuthority()
+                        )));
         return result;
+    }
+
+    isRejectAllowed(demand: IDemand, account: any): boolean {
+        return (
+            demand.status === DemandStatus.WAITING_FOR_APPROVAL &&
+            account.authorities &&
+            account.authorities.includes('ROLE_VALIDATOR_LVL1')
+        );
     }
 }

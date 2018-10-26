@@ -101,24 +101,26 @@
                                 </button>
                                 <div *ngIf="isEditAllowed(demand); then editableDemandBlock"></div>
                                 <div *ngIf="isApprovalAllowed(demand); then approvalDemandBlock"></div>
+                                <div *ngIf="isRejectAllowed(demand); then rejectDemandBlock"></div>
                                 <div *ngIf="isPurchaseOrderAllowed(demand); then orderDemandBlock"></div>
                                 <div *ngIf="isDeleteAllowed(demand); then deleteDemandBlock"></div>
                                 <ng-template #editableDemandBlock>
                                     <button type="submit" [routerLink]="['/demand', demand.id, 'edit']" class="btn btn-primary btn-sm">
                                         <fa-icon [icon]="'pencil-alt'"></fa-icon>
                                     </button>
-                                    <button type="submit" [routerLink]="['/demand']" class="btn btn-primary btn-sm"
+                                    <button type="button" [routerLink]="['/demand']" class="btn btn-primary btn-sm"
                                         title="{{ 'supplyMeApp.demand.button.sendToApproval' | translate }}" (click)="sendToApproval(demand)">
                                         <fa-icon [icon]="'share-square'"></fa-icon>
                                     </button>
                                 </ng-template>
                                 <ng-template #approvalDemandBlock>
                                     <button type="submit" [routerLink]="['/demand']" class="btn btn-primary btn-sm" style="margin-left:2px"
-                                        [disabled]="demand.material.temporary" title="{{ 'supplyMeApp.demand.button.approve' | translate }}"
-                                        (click)="approve(demand)">
+                                        title="{{ 'supplyMeApp.demand.button.approve' | translate }}" (click)="approve(demand)">
                                         <fa-icon [icon]="'thumbs-up'"></fa-icon>
                                     </button>
-                                    <button type="button" [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/REJECTED/comment'} }]"
+                                </ng-template>
+                                <ng-template #rejectDemandBlock>
+                                        <button type="button" [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/REJECTED/comment'} }]"
                                         class="btn btn-primary btn-sm"
                                         title="{{ 'supplyMeApp.demand.button.reject' | translate }}">
                                         <fa-icon [icon]="'thumbs-down'"></fa-icon>

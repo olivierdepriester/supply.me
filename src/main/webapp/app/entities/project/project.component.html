@@ -41,8 +41,14 @@
                 <td><a [routerLink]="['/project', project.id, 'view' ]">{{project.id}}</a></td>
                 <td>{{project.code}}</td>
                 <td>{{project.description}}</td>
-                <td>{{project.headUser?.lastName + ' ' +  project.headUser?.firstName }}</td>
-                <td>{{project.creationDate | datetimeFormat }}</td>
+                <td>
+                    <ng-container *ngIf="project.headUser; else elseTemplate">
+                        {{project.headUser?.lastName + ' ' +  project.headUser?.firstName }}
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                        {{ '' | nullToDash }}
+                    </ng-template>
+                </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

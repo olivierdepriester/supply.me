@@ -176,11 +176,11 @@ export const demandPopupRoute: Routes = [
         },
         data: {
             authorities: [
-                'ROLE_VALIDATION_LVL1',
-                'ROLE_VALIDATION_LVL2',
-                'ROLE_VALIDATION_LVL3',
-                'ROLE_VALIDATION_LVL4',
-                'ROLE_VALIDATION_LVL5'
+                'ROLE_VALIDATOR_LVL1',
+                'ROLE_VALIDATOR_LVL2',
+                'ROLE_VALIDATOR_LVL3',
+                'ROLE_VALIDATOR_LVL4',
+                'ROLE_VALIDATOR_LVL5'
             ],
             pageTitle: 'supplyMeApp.demand.home.title'
         },

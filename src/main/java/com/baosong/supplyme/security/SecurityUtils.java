@@ -1,16 +1,61 @@
 package com.baosong.supplyme.security;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.Sets;
+
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.Optional;
+import org.springframework.util.StringUtils;
 
 /**
  * Utility class for Spring Security.
  */
 public final class SecurityUtils {
+
+    /**
+     * Define which authority can validate for a demand validation authority level
+     * Key : Authority level Value : List of allowed authority
+     *
+     * Example :
+     */
+    private final static Map<String, Set<String>> VALIDATION_AUTHORITIES;
+
+    private final static List<String> SORTED_AUTHORITIES;
+
+    static {
+
+        VALIDATION_AUTHORITIES = new HashMap<>();
+        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL1,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL1, AuthoritiesConstants.VALIDATION_LVL2,
+                        AuthoritiesConstants.VALIDATION_LVL3, AuthoritiesConstants.VALIDATION_LVL4,
+                        AuthoritiesConstants.VALIDATION_LVL5));
+        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL2,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL2, AuthoritiesConstants.VALIDATION_LVL3,
+                        AuthoritiesConstants.VALIDATION_LVL4, AuthoritiesConstants.VALIDATION_LVL5));
+        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL3,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL3, AuthoritiesConstants.VALIDATION_LVL4,
+                        AuthoritiesConstants.VALIDATION_LVL5));
+        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL4,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL4, AuthoritiesConstants.VALIDATION_LVL5));
+        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL5,
+                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL5));
+
+        SORTED_AUTHORITIES = new ArrayList<>();
+        SORTED_AUTHORITIES.add(AuthoritiesConstants.VALIDATION_LVL1);
+        SORTED_AUTHORITIES.add(AuthoritiesConstants.VALIDATION_LVL2);
+        SORTED_AUTHORITIES.add(AuthoritiesConstants.VALIDATION_LVL3);
+        SORTED_AUTHORITIES.add(AuthoritiesConstants.VALIDATION_LVL4);
+        SORTED_AUTHORITIES.add(AuthoritiesConstants.VALIDATION_LVL5);
+    }
 
     private SecurityUtils() {
     }
@@ -22,16 +67,15 @@ public final class SecurityUtils {
      */
     public static Optional<String> getCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        return Optional.ofNullable(securityContext.getAuthentication())
-            .map(authentication -> {
-                if (authentication.getPrincipal() instanceof UserDetails) {
-                    UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
-                    return springSecurityUser.getUsername();
-                } else if (authentication.getPrincipal() instanceof String) {
-                    return (String) authentication.getPrincipal();
-                }
-                return null;
-            });
+        return Optional.ofNullable(securityContext.getAuthentication()).map(authentication -> {
+            if (authentication.getPrincipal() instanceof UserDetails) {
+                UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
+                return springSecurityUser.getUsername();
+            } else if (authentication.getPrincipal() instanceof String) {
+                return (String) authentication.getPrincipal();
+            }
+            return null;
+        });
     }
 
     /**
@@ -42,8 +86,8 @@ public final class SecurityUtils {
     public static Optional<String> getCurrentUserJWT() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(securityContext.getAuthentication())
-            .filter(authentication -> authentication.getCredentials() instanceof String)
-            .map(authentication -> (String) authentication.getCredentials());
+                .filter(authentication -> authentication.getCredentials() instanceof String)
+                .map(authentication -> (String) authentication.getCredentials());
     }
 
     /**
@@ -54,15 +98,16 @@ public final class SecurityUtils {
     public static boolean isAuthenticated() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(securityContext.getAuthentication())
-            .map(authentication -> authentication.getAuthorities().stream()
-                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(AuthoritiesConstants.ANONYMOUS)))
-            .orElse(false);
+                .map(authentication -> authentication.getAuthorities().stream().noneMatch(
+                        grantedAuthority -> grantedAuthority.getAuthority().equals(AuthoritiesConstants.ANONYMOUS)))
+                .orElse(false);
     }
 
     /**
      * If the current user has a specific authority (security role).
      * <p>
-     * The name of this method comes from the isUserInRole() method in the Servlet API
+     * The name of this method comes from the isUserInRole() method in the Servlet
+     * API
      *
      * @param authority the authority to check
      * @return true if the current user has the authority, false otherwise
@@ -70,16 +115,17 @@ public final class SecurityUtils {
      */
     public static boolean isCurrentUserInRole(String authority) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        return Optional.ofNullable(securityContext.getAuthentication())
-            .map(authentication -> authentication.getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority)))
-            .orElse(false);
+        return Optional
+                .ofNullable(securityContext.getAuthentication()).map(authentication -> authentication.getAuthorities()
+                        .stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority)))
+                .orElse(false);
     }
 
     /**
      * If the current user has a specific authority (security role).
      * <p>
-     * The name of this method comes from the isUserInRole() method in the Servlet API
+     * The name of this method comes from the isUserInRole() method in the Servlet
+     * API
      *
      * @param authority the authority to check
      * @return true if the current user has the authority, false otherwise
@@ -88,8 +134,60 @@ public final class SecurityUtils {
     public static boolean isCurrentUserInRole(Collection<String> authorities) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(securityContext.getAuthentication())
-            .map(authentication -> authentication.getAuthorities().stream()
-                .anyMatch(grantedAuthority -> authorities.contains(grantedAuthority.getAuthority())))
-            .orElse(false);
+                .map(authentication -> authentication.getAuthorities().stream()
+                        .anyMatch(grantedAuthority -> authorities.contains(grantedAuthority.getAuthority())))
+                .orElse(false);
+    }
+
+    public static String getCurrentUserHighestAuthority() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return getHighestAuthority(
+            securityContext.getAuthentication().getAuthorities().stream()
+                .filter(ga -> SORTED_AUTHORITIES.contains(ga.getAuthority()))
+                .map(ga -> ga.getAuthority())
+                .collect(Collectors.toList())
+            );
+    }
+
+    /**
+     * Compare and get the highest {@code Authority} from a collection.
+     *
+     * @param authorities The authority collection.
+     * @return The highest authority or null if {@code authorities} is null.
+     */
+    public static String getHighestAuthority(Collection<String> authorities) {
+        if (authorities == null || authorities.isEmpty()) {
+            return null;
+        }
+        return authorities.stream().reduce(null, (prev, next) -> getHigherAuthority(prev, next));
+    }
+
+    /**
+     * Compare and get the higher {@code Authority} among 2.
+     *
+     * @param x the first {@code Authority} to compare
+     * @param y the second {@code Authority} to compare
+     * @return The higher authority
+     */
+    public static String getHigherAuthority(String x, String y) {
+        return compare(x, y) > 0 ? x : y;
+    }
+
+    /**
+     * Compares two {@code Authority} values.
+     *
+     * @param x the first {@code Authority} to compare
+     * @param y the second {@code Authority} to compare
+     * @return the value {@code 0} if {@code x == y}; a value less than {@code 0} if
+     *         {@code x < y}; and a value greater than {@code 0} if {@code x > y}
+     */
+    public static int compare(String x, String y) {
+        if (StringUtils.isEmpty(x)) {
+            return -1;
+        } else if (StringUtils.isEmpty(y)) {
+            return 1;
+        } else {
+            return Integer.compare(SORTED_AUTHORITIES.indexOf(x), SORTED_AUTHORITIES.indexOf(y));
+        }
     }
 }

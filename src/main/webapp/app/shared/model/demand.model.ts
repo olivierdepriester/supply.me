@@ -47,6 +47,8 @@ export interface IDemand {
     quantityOrdered?: number;
     quantityDelivered?: number;
     estimatedPrice?: number;
+    validationAuthority?: any;
+    reachedAuthority?: any;
     demandStatusChanges?: IDemandStatusChange[];
 }
 
@@ -66,6 +68,8 @@ export class Demand implements IDemand {
         public quantityOrdered?: number,
         public quantityDelivered?: number,
         public estimatedPrice?: number,
+        public validationAuthority?: any,
+        public reachedAuthority?: any,
         public demandStatusChanges?: IDemandStatusChange[]
     ) {}
 }

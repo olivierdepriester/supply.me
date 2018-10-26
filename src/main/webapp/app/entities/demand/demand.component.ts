@@ -96,19 +96,15 @@ export class DemandComponent implements OnInit, OnDestroy {
      * @param status
      */
     private changeStatus(demand: IDemand, status: DemandStatus, comment: string) {
-        this.demandService.changeStatus(demand.id, status, comment).subscribe(
-            (res: HttpResponse<IDemand>) => {
-                // Refresh list modified demand
-                const demandInList = this.demands.find(d => d.id === res.body.id);
-                if (demandInList !== null) {
-                    demandInList.status = res.body.status;
-                }
+        this.demandService.changeStatus(demand.id, status, comment).subscribe((res: HttpResponse<IDemand>) => {
+            // Refresh list modified demand
+            const demandInList = this.demands.find(d => d.id === res.body.id);
+            if (demandInList !== null) {
+                console.log(res.body.status);
+                demandInList.status = res.body.status;
             }
-            // ,
-            // (res: HttpErrorResponse) => {
-            //     this.onError(res.message);
-            // }
-        );
+            this.search();
+        });
     }
 
     isPurchaseOrderAllowed(demand: IDemand): boolean {
@@ -130,6 +126,10 @@ export class DemandComponent implements OnInit, OnDestroy {
 
     isDeleteAllowed(demand: IDemand): boolean {
         return this.demandService.isDeleteAllowed(demand, this.currentAccount);
+    }
+
+    isRejectAllowed(demand: IDemand): boolean {
+        return this.demandService.isRejectAllowed(demand, this.currentAccount);
     }
 
     ngOnDestroy() {

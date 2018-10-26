@@ -64,9 +64,11 @@ public class Demand implements Serializable {
     @Column(name = "description", nullable = true, columnDefinition = "CLOB")
     private String description;
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name="validation_authority_name", nullable = true, columnDefinition="VARCHAR(50)")
-    private Authority validationAuthority;
+    @Column(name="validation_authority", nullable = true, columnDefinition="VARCHAR(50)")
+    private String validationAuthority;
+
+    @Column(name="reached_authority", nullable = true, columnDefinition="VARCHAR(50)")
+    private String reachedAuthority;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -208,17 +210,30 @@ public class Demand implements Serializable {
         this.project = project;
     }
 
-    public Authority getValidationAuthority() {
+    public String getValidationAuthority() {
         return this.validationAuthority;
     }
 
-    public Demand validationAuthority(Authority validationAuthority) {
+    public Demand validationAuthority(String validationAuthority) {
         this.validationAuthority = validationAuthority;
         return this;
     }
 
-    public void setValidationAuthority(Authority validationAuthority) {
+    public void setValidationAuthority(String validationAuthority) {
         this.validationAuthority = validationAuthority;
+    }
+
+    public String getReachedAuthority() {
+        return this.reachedAuthority;
+    }
+
+    public Demand reachedAuthority(String reachedAuthority) {
+        this.setReachedAuthority(reachedAuthority);
+        return this;
+    }
+
+    public void setReachedAuthority(String reachedAuthority) {
+        this.reachedAuthority = reachedAuthority;
     }
 
     public Supplier getSupplier()

@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.baosong.supplyme.domain.Authority;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.DemandStatusChange;
 import com.baosong.supplyme.domain.Material;
@@ -24,7 +23,6 @@ import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.MessageParameterBean;
 import com.baosong.supplyme.domain.errors.ParameterizedServiceException;
 import com.baosong.supplyme.domain.errors.ServiceException;
-import com.baosong.supplyme.repository.AuthorityRepository;
 import com.baosong.supplyme.repository.DemandRepository;
 import com.baosong.supplyme.repository.search.DemandSearchRepository;
 import com.baosong.supplyme.security.AuthoritiesConstants;
@@ -45,7 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -65,17 +63,8 @@ public class DemandServiceImpl implements DemandService {
 
     private final static Map<DemandStatus, Set<DemandStatus>> DEMAND_WORKFLOW_RULES;
 
-    /**
-     * Define which authority can validate for a demand validation authority level
-     * Key : Authority level
-     * Value : List of allowed authority
-     *
-     * Example :
-     */
-    private final static Map<String, Set<String>> VALIDATION_AUTHORITIES;
-
-    // @Autowired(required = false)
-    // private ElasticsearchTemplate template;
+    @Autowired(required = false)
+    private ElasticsearchTemplate template;
 
     @Autowired
     private UserService userService;
@@ -89,8 +78,6 @@ public class DemandServiceImpl implements DemandService {
     @Autowired
     private MutablePropertiesService mutablePropertiesService;
 
-    private AuthorityRepository authorityRepository;
-
     static {
         DEMAND_WORKFLOW_RULES = new HashMap<>();
         DEMAND_WORKFLOW_RULES.put(DemandStatus.WAITING_FOR_APPROVAL,
@@ -103,28 +90,11 @@ public class DemandServiceImpl implements DemandService {
         DEMAND_WORKFLOW_RULES.put(DemandStatus.PARTIALLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED));
         DEMAND_WORKFLOW_RULES.put(DemandStatus.FULLY_DELIVERED,
                 Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
-
-        VALIDATION_AUTHORITIES = new HashMap<>();
-        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL1,
-                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL1, AuthoritiesConstants.VALIDATION_LVL2,
-                        AuthoritiesConstants.VALIDATION_LVL3, AuthoritiesConstants.VALIDATION_LVL4,
-                        AuthoritiesConstants.VALIDATION_LVL5));
-        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL2,
-                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL2, AuthoritiesConstants.VALIDATION_LVL3,
-                        AuthoritiesConstants.VALIDATION_LVL4, AuthoritiesConstants.VALIDATION_LVL5));
-        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL3,
-                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL3, AuthoritiesConstants.VALIDATION_LVL4,
-                        AuthoritiesConstants.VALIDATION_LVL5));
-        VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL4,
-                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL4, AuthoritiesConstants.VALIDATION_LVL5));
-                VALIDATION_AUTHORITIES.put(AuthoritiesConstants.VALIDATION_LVL5,
-                Sets.newHashSet(AuthoritiesConstants.VALIDATION_LVL5));
     }
 
-    public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository, AuthorityRepository authorityRepository) {
+    public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository) {
         this.demandRepository = demandRepository;
         this.demandSearchRepository = demandSearchRepository;
-        this.authorityRepository = authorityRepository;
     }
 
     /**
@@ -302,40 +272,58 @@ public class DemandServiceImpl implements DemandService {
         DemandStatus targetStatus = status;
         DemandStatusChange demandStatusChange = new DemandStatusChange(demand, targetStatus, currentUser);
         demandStatusChange.setComment(comment);
-        demand.getDemandStatusChanges().add(demandStatusChange);
-
         switch (status) {
         case WAITING_FOR_APPROVAL:
-            // Check if all the required fields are filled
-            this.checkRequiredFields(demand);
-
-            if (!this.isDemandEditable(demand)) {
-                // Can not be edited -> Error
-                throw new ServiceException(
-                        String.format("The current user can not edit nor send it to approval the demand %d", id));
-            }
-            demand.setStatus(targetStatus);
-            demand.setValidationAuthority(this.getValidationAuthorityToSet(demand));
-
-            if (canBeSetToApproved(demand)) {
-                // Automatic approval if possible
-                this.changeStatus(demand.getId(), DemandStatus.APPROVED, "Auto");
-                return demand;
+            // Check if all the required fields are filled - Exception thrown if missing
+            // field
+            if (this.checkRequiredFields(demand)) {
+                if (!this.isDemandEditable(demand)) {
+                    // Can not be edited -> Error
+                    throw new ServiceException(
+                            String.format("The current user can not edit nor send it to approval the demand %d", id));
+                }
+                demand.setStatus(targetStatus);
+                demand.setValidationAuthority(this.getValidationAuthorityToSet(demand));
+                // Try to appove Automatically if possible
+                demand = this.changeStatus(demand.getId(), DemandStatus.APPROVED, "Auto");
             }
             break;
         case APPROVED:
-            if (!canBeSetToApproved(demand)) {
-                // Can not be approved -> Error
-                throw new ServiceException(String.format("The current user can not set the demand %d to approved", id));
+            String currentUserHighestAuthority = SecurityUtils.getCurrentUserHighestAuthority();
+            boolean hasReachedAuthorityChanged = false;
+
+            // If current user is LVL1 and head of department or has higher level : change
+            // the reached validation level
+            if (!StringUtils.isEmpty(currentUserHighestAuthority)
+                    && (!AuthoritiesConstants.VALIDATION_LVL1.equals(currentUserHighestAuthority)
+                            || (AuthoritiesConstants.VALIDATION_LVL1.equals(currentUserHighestAuthority)
+                                    && demand.getProject().getHeadUser() != null
+                                    && demand.getProject().getHeadUser().equals(currentUser)))) {
+                // Compare the "demand already reached authority" and "user max authority"
+                if (SecurityUtils.compare(currentUserHighestAuthority, demand.getReachedAuthority()) > 0) {
+                    // Current user authority is greater than demand latest authority -> Update (= partial validation)
+                    hasReachedAuthorityChanged = true;
+                    demand.setReachedAuthority(currentUserHighestAuthority);
+                    // P
+                    demandStatusChange.setComment(currentUserHighestAuthority);
+                }
             }
-            demand.setStatus(targetStatus);
-            // Send a mail to the purchasers
-            List<User> recipients = userService.getUsersFromAuthority(AuthoritiesConstants.PURCHASER);
-            String to = recipients.stream().map(u -> u.getEmail()).collect(Collectors.joining(","));
-            mailService.sendApprovedDemandToPurchaserEmail(demand, to);
+            if (canBeSetToApproved(demand)) {
+                // Demand can be approved --> Change status to APPROVED
+                demand.setStatus(targetStatus);
+                // Send a mail to the purchasers
+                List<User> recipients = userService.getUsersFromAuthority(AuthoritiesConstants.PURCHASER);
+                String to = recipients.stream().map(u -> u.getEmail()).collect(Collectors.joining(","));
+                mailService.sendApprovedDemandToPurchaserEmail(demand, to);
+            } else {
+                if (!hasReachedAuthorityChanged) {
+                    // No change --> We do not save nor add any change
+                    return demand;
+                }
+            }
             break;
         case REJECTED:
-            demand.setStatus(targetStatus);
+            demand.reachedAuthority(null).setStatus(targetStatus);
             // Send a mail to the demand owner
             mailService.sendRejectedDemandEmail(demand, currentUser);
             break;
@@ -343,6 +331,7 @@ public class DemandServiceImpl implements DemandService {
             demand.setStatus(targetStatus);
             break;
         }
+        demand.getDemandStatusChanges().add(demandStatusChange);
         return this.saveAndCascadeIndex(demand);
     }
 
@@ -353,19 +342,20 @@ public class DemandServiceImpl implements DemandService {
      * @return the calculated authority level.
      * @throws ServiceException
      */
-    private Authority getValidationAuthorityToSet(Demand demand) throws ServiceException {
-        Authority validationAuthority = null;
+    private String getValidationAuthorityToSet(Demand demand) throws ServiceException {
+        String validationAuthority = null;
         Double demandAmount = demand.getEstimatedPrice() * demand.getQuantity();
-        if (demandAmount.compareTo(mutablePropertiesService.getSecondValidationThresholdAmount().get()) >= 0 ) {
-            validationAuthority = authorityRepository.getOne(AuthoritiesConstants.VALIDATION_LVL5);
+        if (demandAmount.compareTo(mutablePropertiesService.getSecondValidationThresholdAmount().get()) >= 0) {
+            validationAuthority = AuthoritiesConstants.VALIDATION_LVL5;
         } else {
-            validationAuthority = authorityRepository.getOne(AuthoritiesConstants.VALIDATION_LVL1);
+            validationAuthority = AuthoritiesConstants.VALIDATION_LVL1;
         }
         return validationAuthority;
     }
 
     /**
      * Check if the required fields of a demand to be sent are filled.
+     *
      * @param demand the demand.
      * @return false if at least 1 field is missing
      * @throws ParameterizedServiceException If it at least 1 fields is missing
@@ -391,14 +381,18 @@ public class DemandServiceImpl implements DemandService {
      * @return true if the demand can be approved
      */
     private boolean canBeSetToApproved(Demand demand) {
-        return SecurityUtils.isCurrentUserInRole(VALIDATION_AUTHORITIES.get(demand.getValidationAuthority().getName()));
+        if (demand.getValidationAuthority() == null) {
+            return true;
+        }
+        // If the required validation authority has been at least reached --> OK
+        return SecurityUtils.compare(demand.getValidationAuthority(), demand.getReachedAuthority()) <= 0;
     }
 
     @Override
     public void rebuildIndex() {
-        // template.deleteIndex(Demand.class);
-        // List<Demand> demands = findAll();
-        // demands.stream().forEach(d -> demandSearchRepository.save(d));
+        template.deleteIndex(Demand.class);
+        List<Demand> demands = findAll();
+        demands.stream().forEach(d -> demandSearchRepository.save(d));
     }
 
     /**

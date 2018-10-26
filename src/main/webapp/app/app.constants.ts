@@ -7,3 +7,10 @@ export const DEBUG_INFO_ENABLED: boolean = !!process.env.DEBUG_INFO_ENABLED;
 export const SERVER_API_URL = process.env.SERVER_API_URL;
 export const BUILD_TIMESTAMP = process.env.BUILD_TIMESTAMP;
 export const SELECTOR_SIZE = 20;
+export const SORTED_AUTHORITIES = [
+    'ROLE_VALIDATOR_LVL1',
+    'ROLE_VALIDATOR_LVL2',
+    'ROLE_VALIDATOR_LVL3',
+    'ROLE_VALIDATOR_LVL4',
+    'ROLE_VALIDATOR_LVL5'
+];

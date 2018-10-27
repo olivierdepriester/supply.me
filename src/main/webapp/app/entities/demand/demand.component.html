@@ -75,65 +75,65 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let demand of demands ;trackBy: trackId">
-                        <td><a [routerLink]="['/demand', demand.id, 'view' ]">{{demand.code}}</a></td>
+                    <tr *ngFor="let item of demands ;trackBy: trackId">
+                        <td><a [routerLink]="['/demand', item.demand.id, 'view' ]">{{item.demand.code}}</a></td>
                         <td class="text-left">
-                            <div *ngIf="demand.material" title="{{ demand.material?.partNumber + ' - ' + demand.material?.name + '\n' + demand.material?.description }}">
-                                <a [routerLink]="['/material', demand.material?.id, 'view' ]">{{ demand.material?.name }}</a>
+                            <div *ngIf="item.demand.material" title="{{ item.demand.material?.partNumber + ' - ' + item.demand.material?.name + '\n' + item.demand.material?.description }}">
+                                <a [routerLink]="['/material', item.demand.material?.id, 'view' ]">{{ item.demand.material?.name }}</a>
                             </div>
                         </td>
                         <td class="text-right">
-                            <span class="numeric">{{demand.quantity}}</span>
+                            <span class="numeric">{{item.demand.quantity}}</span>
                         </td>
                         <td>
-                            <div *ngIf="demand.project" title="{{ demand.project?.code + ' - ' + demand.project?.description }}">
-                                <a [routerLink]="['/project', demand.project?.id, 'view' ]">{{demand.project?.code}}</a>
+                            <div *ngIf="item.demand.project" title="{{ item.demand.project?.code + ' - ' + item.demand.project?.description }}">
+                                <a [routerLink]="['/project', item.demand.project?.id, 'view' ]">{{item.demand.project?.code}}</a>
                             </div>
                         </td>
-                        <td jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</td>
-                        <td class="text-center">{{demand.expectedDate | dateFormat }}</td>
-                        <td class="text-center" title="{{demand.creationDate | datetimeFormat }}">{{demand.creationDate | dateFormat }}</td>
+                        <td jhiTranslate="{{'supplyMeApp.DemandStatus.' + item.demand.status}}">Status</td>
+                        <td class="text-center">{{item.demand.expectedDate | dateFormat }}</td>
+                        <td class="text-center" title="{{item.demand.creationDate | datetimeFormat }}">{{item.demand.creationDate | dateFormat }}</td>
                         <td class="text-left">
                             <div class="btn-group flex-btn-group-container">
-                                <button type="submit" [routerLink]="['/demand', demand.id, 'view' ]" class="btn btn-info btn-sm">
+                                <button type="submit" [routerLink]="['/demand', item.demand.id, 'view' ]" class="btn btn-info btn-sm">
                                     <fa-icon [icon]="'eye'"></fa-icon>
                                     <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                                 </button>
-                                <div *ngIf="isEditAllowed(demand); then editableDemandBlock"></div>
-                                <div *ngIf="isApprovalAllowed(demand); then approvalDemandBlock"></div>
-                                <div *ngIf="isRejectAllowed(demand); then rejectDemandBlock"></div>
-                                <div *ngIf="isPurchaseOrderAllowed(demand); then orderDemandBlock"></div>
-                                <div *ngIf="isDeleteAllowed(demand); then deleteDemandBlock"></div>
+                                <div *ngIf="item.allowance.canEdit; then editableDemandBlock"></div>
+                                <div *ngIf="item.allowance.canApprove; then approvalDemandBlock"></div>
+                                <div *ngIf="item.allowance.canReject; then rejectDemandBlock"></div>
+                                <div *ngIf="false; then orderDemandBlock"></div>
+                                <div *ngIf="item.allowance.canDelete; then deleteDemandBlock"></div>
                                 <ng-template #editableDemandBlock>
-                                    <button type="submit" [routerLink]="['/demand', demand.id, 'edit']" class="btn btn-primary btn-sm">
+                                    <button type="submit" [routerLink]="['/demand', item.demand.id, 'edit']" class="btn btn-primary btn-sm">
                                         <fa-icon [icon]="'pencil-alt'"></fa-icon>
                                     </button>
-                                    <button type="button" [routerLink]="['/demand']" class="btn btn-primary btn-sm"
-                                        title="{{ 'supplyMeApp.demand.button.sendToApproval' | translate }}" (click)="sendToApproval(demand)">
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                        title="{{ 'supplyMeApp.demand.button.sendToApproval' | translate }}" (click)="sendToApproval(item.demand)">
                                         <fa-icon [icon]="'share-square'"></fa-icon>
                                     </button>
                                 </ng-template>
                                 <ng-template #approvalDemandBlock>
-                                    <button type="submit" [routerLink]="['/demand']" class="btn btn-primary btn-sm" style="margin-left:2px"
-                                        title="{{ 'supplyMeApp.demand.button.approve' | translate }}" (click)="approve(demand)">
+                                    <button type="button" class="btn btn-primary btn-sm" style="margin-left:2px"
+                                        title="{{ 'supplyMeApp.demand.button.approve' | translate }}" (click)="approve(item.demand)">
                                         <fa-icon [icon]="'thumbs-up'"></fa-icon>
                                     </button>
                                 </ng-template>
                                 <ng-template #rejectDemandBlock>
-                                        <button type="button" [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/REJECTED/comment'} }]"
+                                        <button type="button" [routerLink]="['/', { outlets: { popup: 'demand/'+ item.demand.id + '/REJECTED/comment'} }]"
                                         class="btn btn-primary btn-sm"
                                         title="{{ 'supplyMeApp.demand.button.reject' | translate }}">
                                         <fa-icon [icon]="'thumbs-down'"></fa-icon>
                                     </button>
                                 </ng-template>
                                 <ng-template #orderDemandBlock>
-                                    <button type="button" [routerLink]="['/purchase-order/new']" [queryParams]="{demandId : demand.id}"
+                                    <button type="button" [routerLink]="['/purchase-order/new']" [queryParams]="{demandId : item.demand.id}"
                                         class="btn btn-primary btn-sm">
                                         <fa-icon [icon]="'shopping-cart'"></fa-icon>
                                     </button>
                                 </ng-template>
                                 <ng-template #deleteDemandBlock>
-                                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/delete'} }]"
+                                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'demand/'+ item.demand.id + '/delete'} }]"
                                         replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
                                         <fa-icon [icon]="'times'"></fa-icon>
                                     </button>

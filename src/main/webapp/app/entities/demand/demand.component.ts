@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Principal } from 'app/core';
-import { DemandSearchCriteria, DemandStatus, IDemand } from 'app/shared/model/demand.model';
+import { DemandSearchCriteria, DemandStatus, IDemand, DemandListItem } from 'app/shared/model/demand.model';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
@@ -15,7 +15,7 @@ import { SelectItem } from 'primeng/primeng';
     styleUrls: ['./demand.scss']
 })
 export class DemandComponent implements OnInit, OnDestroy {
-    demands: IDemand[];
+    demands: DemandListItem[];
     currentAccount: any;
     eventSubscriber: Subscription;
     searchCriteria: DemandSearchCriteria;
@@ -75,7 +75,20 @@ export class DemandComponent implements OnInit, OnDestroy {
                 query: this.searchCriteria.getQuery(),
                 sort: this.sort()
             })
-            .subscribe((res: HttpResponse<IDemand[]>) => (this.demands = res.body), (res: HttpErrorResponse) => this.onError(res.message));
+            .subscribe(
+                (res: HttpResponse<IDemand[]>) =>
+                    (this.demands = res.body.map(
+                        d =>
+                            new DemandListItem(d, {
+                                canEdit: this.demandService.isEditAllowed(d, this.currentAccount),
+                                canSendToApproval: this.demandService.isEditAllowed(d, this.currentAccount),
+                                canApprove: this.demandService.isApprovalAllowed(d, this.currentAccount),
+                                canDelete: this.demandService.isDeleteAllowed(d, this.currentAccount),
+                                canReject: this.demandService.isRejectAllowed(d, this.currentAccount)
+                            })
+                    )),
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
     }
 
     clear() {
@@ -98,12 +111,19 @@ export class DemandComponent implements OnInit, OnDestroy {
     private changeStatus(demand: IDemand, status: DemandStatus, comment: string) {
         this.demandService.changeStatus(demand.id, status, comment).subscribe((res: HttpResponse<IDemand>) => {
             // Refresh list modified demand
-            const demandInList = this.demands.find(d => d.id === res.body.id);
+            const demandInList = this.demands.find(d => d.demand.id === res.body.id);
             if (demandInList !== null) {
                 console.log(res.body.status);
-                demandInList.status = res.body.status;
+                demandInList.demand = res.body;
+                demandInList.allowance = {
+                    canEdit: this.demandService.isEditAllowed(demandInList.demand, this.currentAccount),
+                    canSendToApproval: this.demandService.isEditAllowed(demandInList.demand, this.currentAccount),
+                    canApprove: this.demandService.isApprovalAllowed(demandInList.demand, this.currentAccount),
+                    canDelete: this.demandService.isDeleteAllowed(demandInList.demand, this.currentAccount),
+                    canReject: this.demandService.isRejectAllowed(demandInList.demand, this.currentAccount)
+                };
             }
-            this.search();
+            // this.search();
         });
     }
 

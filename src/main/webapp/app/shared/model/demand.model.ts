@@ -74,6 +74,20 @@ export class Demand implements IDemand {
     ) {}
 }
 
+export class DemandAllowance {
+    constructor(
+        public canEdit?: boolean,
+        public canReject?: boolean,
+        public canApprove?: boolean,
+        public canDelete?: boolean,
+        public canSendToApproval?: boolean
+    ) {}
+}
+
+export class DemandListItem {
+    constructor(public demand?: IDemand, public allowance?: DemandAllowance) {}
+}
+
 export class DemandSearchCriteria {
     /**
      * Initialize a criteria by cloning the parameter.

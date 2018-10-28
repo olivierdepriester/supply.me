@@ -44,7 +44,7 @@ public class CacheConfiguration {
             cm.createCache(com.baosong.supplyme.domain.Project.class.getName(), jcacheConfiguration);
             cm.createCache(com.baosong.supplyme.domain.Project.class.getName() + ".demands", jcacheConfiguration);
             cm.createCache(com.baosong.supplyme.domain.Material.class.getName(), jcacheConfiguration);
-            cm.createCache(com.baosong.supplyme.domain.Material.class.getName() + ".codes", jcacheConfiguration);
+            cm.createCache(com.baosong.supplyme.domain.Material.class.getName() + ".availabilities", jcacheConfiguration);
             cm.createCache(com.baosong.supplyme.domain.Material.class.getName() + ".demands", jcacheConfiguration);
             cm.createCache(com.baosong.supplyme.domain.Supplier.class.getName(), jcacheConfiguration);
             cm.createCache(com.baosong.supplyme.domain.Supplier.class.getName() + ".names", jcacheConfiguration);

@@ -16,8 +16,10 @@ import java.util.stream.StreamSupport;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.DemandStatusChange;
 import com.baosong.supplyme.domain.Material;
+import com.baosong.supplyme.domain.MaterialAvailability;
 import com.baosong.supplyme.domain.Project;
 import com.baosong.supplyme.domain.PurchaseOrderLine;
+import com.baosong.supplyme.domain.Supplier;
 import com.baosong.supplyme.domain.User;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.MessageParameterBean;
@@ -29,6 +31,7 @@ import com.baosong.supplyme.security.AuthoritiesConstants;
 import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.MailService;
+import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.UserService;
@@ -77,6 +80,9 @@ public class DemandServiceImpl implements DemandService {
 
     @Autowired
     private MutablePropertiesService mutablePropertiesService;
+
+    @Autowired
+    private MaterialService materialService;
 
     static {
         DEMAND_WORKFLOW_RULES = new HashMap<>();
@@ -311,6 +317,22 @@ public class DemandServiceImpl implements DemandService {
             if (canBeSetToApproved(demand)) {
                 // Demand can be approved --> Change status to APPROVED
                 demand.setStatus(targetStatus);
+                if(demand.getMaterial().isTemporary()) {
+                    demand.getMaterial().setTemporary(false);
+                }
+                demand.getMaterial().setEstimatedPrice(demand.getEstimatedPrice());
+                final Supplier supplier = demand.getSupplier();
+                MaterialAvailability availability = demand.getMaterial().getAvailabilities().stream()
+                    .filter(a -> a.getSupplier().equals(supplier))
+                    .findAny().orElse(null);
+                if (availability == null) {
+                    availability = new MaterialAvailability().creationDate(Instant.now());
+                    demand.getMaterial().addAvailability(availability);
+                }
+                availability.supplier(supplier)
+                    .purchasePrice(demand.getEstimatedPrice())
+                    .setUpdateDate(Instant.now());
+                this.materialService.saveAndCascadeIndex(demand.getMaterial());
                 // Send a mail to the purchasers
                 List<User> recipients = userService.getUsersFromAuthority(AuthoritiesConstants.PURCHASER);
                 String to = recipients.stream().map(u -> u.getEmail()).collect(Collectors.joining(","));

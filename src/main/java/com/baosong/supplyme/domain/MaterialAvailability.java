@@ -42,7 +42,7 @@ public class MaterialAvailability implements Serializable {
 
     @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("codes")
+    @JsonIgnoreProperties("availabilities")
     private Material material;
 
     @NotNull
@@ -149,8 +149,8 @@ public class MaterialAvailability implements Serializable {
     public String toString() {
         return "MaterialAvailability{" +
             "id=" + getId() +
-            ", startDate='" + getCreationDate() + "'" +
-            ", endDate='" + getUpdateDate() + "'" +
+            ", creationDate='" + getCreationDate() + "'" +
+            ", updateDate='" + getUpdateDate() + "'" +
             ", purchasePrice=" + getPurchasePrice() +
             "}";
     }

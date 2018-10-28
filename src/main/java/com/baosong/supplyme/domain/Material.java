@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -82,9 +83,9 @@ public class Material implements Serializable {
     @JsonIgnoreProperties("")
     private MaterialCategory materialCategory;
 
-    @OneToMany(mappedBy = "material")
+    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<MaterialAvailability> codes = new HashSet<>();
+    private Set<MaterialAvailability> availabilities = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not
     // remove
@@ -166,29 +167,29 @@ public class Material implements Serializable {
         this.creationUser = creationUser;
     }
 
-    public Set<MaterialAvailability> getCodes() {
-        return codes;
+    public Set<MaterialAvailability> getAvailabilities() {
+        return availabilities;
     }
 
-    public Material codes(Set<MaterialAvailability> materialAvailabilities) {
-        this.codes = materialAvailabilities;
+    public Material availabilities(Set<MaterialAvailability> materialAvailabilities) {
+        this.availabilities = materialAvailabilities;
         return this;
     }
 
-    public Material addCode(MaterialAvailability materialAvailability) {
-        this.codes.add(materialAvailability);
+    public Material addAvailability(MaterialAvailability materialAvailability) {
+        this.availabilities.add(materialAvailability);
         materialAvailability.setMaterial(this);
         return this;
     }
 
-    public Material removeCode(MaterialAvailability materialAvailability) {
-        this.codes.remove(materialAvailability);
+    public Material removeAvailability(MaterialAvailability materialAvailability) {
+        this.availabilities.remove(materialAvailability);
         materialAvailability.setMaterial(null);
         return this;
     }
 
     public void setCodes(Set<MaterialAvailability> materialAvailabilities) {
-        this.codes = materialAvailabilities;
+        this.availabilities = materialAvailabilities;
     }
 
     public Boolean isTemporary() {

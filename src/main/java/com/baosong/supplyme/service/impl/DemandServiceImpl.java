@@ -16,8 +16,10 @@ import java.util.stream.StreamSupport;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.DemandStatusChange;
 import com.baosong.supplyme.domain.Material;
+import com.baosong.supplyme.domain.MaterialAvailability;
 import com.baosong.supplyme.domain.Project;
 import com.baosong.supplyme.domain.PurchaseOrderLine;
+import com.baosong.supplyme.domain.Supplier;
 import com.baosong.supplyme.domain.User;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.MessageParameterBean;
@@ -29,6 +31,7 @@ import com.baosong.supplyme.security.AuthoritiesConstants;
 import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.MailService;
+import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.UserService;
@@ -77,6 +80,9 @@ public class DemandServiceImpl implements DemandService {
 
     @Autowired
     private MutablePropertiesService mutablePropertiesService;
+
+    @Autowired
+    private MaterialService materialService;
 
     static {
         DEMAND_WORKFLOW_RULES = new HashMap<>();
@@ -311,6 +317,10 @@ public class DemandServiceImpl implements DemandService {
             if (canBeSetToApproved(demand)) {
                 // Demand can be approved --> Change status to APPROVED
                 demand.setStatus(targetStatus);
+
+                // Update the material data with this demand data
+                this.updateMaterialPrice(demand);
+
                 // Send a mail to the purchasers
                 List<User> recipients = userService.getUsersFromAuthority(AuthoritiesConstants.PURCHASER);
                 String to = recipients.stream().map(u -> u.getEmail()).collect(Collectors.joining(","));
@@ -333,6 +343,38 @@ public class DemandServiceImpl implements DemandService {
         }
         demand.getDemandStatusChanges().add(demandStatusChange);
         return this.saveAndCascadeIndex(demand);
+    }
+
+    /**
+     * When approved, update the demand material fields with the data of the demand.
+     *
+     * @param demand The approved demand.
+     */
+    private void updateMaterialPrice(Demand demand) {
+        // If material was a temporary one, make it a normal
+        if(demand.getMaterial().isTemporary()) {
+            demand.getMaterial().setTemporary(false);
+        }
+        // Update the default material price with the approved demand
+        demand.getMaterial().setEstimatedPrice(demand.getEstimatedPrice());
+        // Store the price for this supplier and this material
+        final Supplier supplier = demand.getSupplier();
+        // Get an existing availability for the demand supplier
+        MaterialAvailability availability = demand.getMaterial().getAvailabilities().stream()
+            .filter(a -> a.getSupplier().equals(supplier))
+            .findAny().orElse(null);
+        if (availability == null) {
+            // No existing : create a new one and add it to the material
+            availability = new MaterialAvailability()
+                .supplier(supplier)
+                .creationDate(Instant.now());
+            demand.getMaterial().addAvailability(availability);
+        }
+        // Update price and last update date
+        availability.purchasePrice(demand.getEstimatedPrice())
+            .setUpdateDate(Instant.now());
+        // Save the material indices
+        this.materialService.saveAndCascadeIndex(demand.getMaterial());
     }
 
     /**

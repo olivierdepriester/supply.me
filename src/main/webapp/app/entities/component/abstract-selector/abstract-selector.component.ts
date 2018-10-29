@@ -1,5 +1,5 @@
 import { HttpResponse } from '@angular/common/http';
-import { Input, OnInit } from '@angular/core';
+import { Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { ISelectable } from 'app/shared/model/selectable.model';
 import { Observable } from 'rxjs';
@@ -19,6 +19,7 @@ export abstract class AbstractSelectorComponent<T extends ISelectable, K extends
     private lastQuery = '';
 
     @Input() selectedData: T;
+    @Output() change: EventEmitter<T> = new EventEmitter();
 
     constructor() {}
 
@@ -42,6 +43,7 @@ export abstract class AbstractSelectorComponent<T extends ISelectable, K extends
 
     onSelect(event) {
         this.value = event.data;
+        this.change.emit(this.value);
     }
 
     onFocus() {

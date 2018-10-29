@@ -72,8 +72,6 @@ export class Principal {
                     this.userIdentity = account;
                     this.authenticated = true;
                     this.highestValidationAuthorityLevel = this.getHighestValidationAuthority();
-                    console.log(`auth : ${this.userIdentity.authorities}`);
-                    console.log(`ici : ${this.getHighestValidationAuthority()}`);
                 } else {
                     this.userIdentity = null;
                     this.authenticated = false;

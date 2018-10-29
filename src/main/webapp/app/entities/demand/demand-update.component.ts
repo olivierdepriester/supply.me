@@ -54,8 +54,10 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: IDemand) {
-        return item.id;
+    onMaterialChange(event: IMaterial) {
+        if (event) {
+            this.demand.estimatedPrice = event.estimatedPrice;
+        }
     }
 
     previousState() {
@@ -85,17 +87,6 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
         this.isSaving = false;
     }
 
-    trackMaterialById(index: number, item: IMaterial) {
-        return item.id;
-    }
-
-    trackProjectById(index: number, item: IProject) {
-        return item.id;
-    }
-
-    trackUserById(index: number, item: IUser) {
-        return item.id;
-    }
     get demand() {
         return this._demand;
     }

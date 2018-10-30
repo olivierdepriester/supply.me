@@ -32,13 +32,70 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.category" for="field_demandCategory">Category</label>
+                    <jhi-demand-category-selector required id="field_demandCategory" name="demandCategory" [(ngModel)]="demand.demandCategory" ></jhi-demand-category-selector>
+                    <div [hidden]="!(editForm.controls.demandCategory?.dirty && editForm.controls.demandCategory?.invalid)">
+                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.useAnnualBudget" for="field_useAnnualBudget_yes">Planned</label>
+                    <div class="radio">
+                        <label class="radio-inline" for="field_useAnnualBudget_yes">
+                            <input type="radio" name="useAnnualBudget" id="field_useAnnualBudget_yes" required [value]="true" [(ngModel)]="demand.useAnnualBudget"/>
+                            <span jhiTranslate="global.field.yes" ></span>
+                        </label>
+                        <label class="radio-inline" for="field_useAnnualBudget_no">
+                            <input type="radio"  name="useAnnualBudget" id="field_useAnnualBudget_no" [value]="false" [(ngModel)]="demand.useAnnualBudget"/>
+                            <span jhiTranslate="global.field.no" ></span>
+                        </label>
+                    </div>
+                    <div [hidden]="!editForm.controls.planned?.invalid">
+                            <small class="form-text text-danger" jhiTranslate="entity.validation.required">
+                            This field is required.
+                            </small>
+                        </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.planned" for="field_planned_yes">Planned</label>
+                    <div class="radio">
+                        <label class="radio-inline" for="field_planned_yes">
+                            <input type="radio" name="planned" id="field_planned_yes" required [value]="true" [(ngModel)]="demand.planned"/>
+                            <span jhiTranslate="global.field.yes" ></span>
+                        </label>
+                        <label class="radio-inline" for="field_planned_no">
+                            <input type="radio"  name="planned" id="field_planned_no" [value]="false" [(ngModel)]="demand.planned"/>
+                            <span jhiTranslate="global.field.no" ></span>
+                        </label>
+                    </div>
+                    <div [hidden]="!editForm.controls.planned?.invalid">
+                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.urgent" for="field_urgent_yes">Planned</label>
+                    <div class="radio">
+                        <label class="radio-inline" for="field_urgent_yes">
+                            <input type="radio" name="urgent" id="field_urgent_yes" [value]="true" [(ngModel)]="demand.urgent"/>
+                            <span jhiTranslate="global.field.yes" ></span>
+                        </label>
+                        <label class="radio-inline" for="field_urgent_no">
+                            <input type="radio"  name="urgent" id="field_urgent_no" [value]="false" [(ngModel)]="demand.urgent"/>
+                            <span jhiTranslate="global.field.no" ></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.description" for="field_description">Project</label>
                     <textarea cols="50" rows="4" class="form-control" name="description" id="field_description" [(ngModel)]="demand.description"></textarea>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.quantity" for="field_quantity">Quantity</label>
-                    <input type="number" class="form-control" name="quantity" id="field_quantity"
-                        [(ngModel)]="demand.quantity" required/>
+                    <input type="number" class="form-control" name="quantity" id="field_quantity" min="0" [(ngModel)]="demand.quantity" required/>
                     <div [hidden]="!(editForm.controls.quantity?.dirty && editForm.controls.quantity?.invalid)">
                         <small class="form-text text-danger"
                         [hidden]="!editForm.controls.quantity?.errors?.required" jhiTranslate="entity.validation.required">

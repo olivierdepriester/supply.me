@@ -1,0 +1,26 @@
+
+{
+    "supplyMeApp": {
+        "demandCategory" : {
+            "home": {
+                "title": "DemandCategories",
+                "createLabel": "Créer un nouveau Demand Category",
+                "createOrEditLabel": "Créer ou éditer un Demand Category",
+                "search": "Recherche pour Demand Category"
+            },
+            "created": "Un nouveau Demand Category a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Demand Category avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Demand Category avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Demand Category {{ id }} ?"
+            },
+            "detail": {
+                "title": "Demand Category"
+            },
+            "name": "Name",
+            "description": "Description",
+            "creationDate": "Creation Date",
+            "creationUser": "Creation User"
+        }
+    }
+}

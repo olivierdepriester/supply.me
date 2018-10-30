@@ -111,6 +111,7 @@
                 "invoiceLine": "Invoice Line",
                 "mutableProperties": "Mutable Properties",
                 "materialCategory": "Material Category",
+                "demandCategory": "Demand Category",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
@@ -185,7 +186,9 @@
             }
         },
         "field": {
-            "id": "ID"
+            "id": "ID",
+            "yes": "Yes",
+            "no": "No"
         },
         "ribbon": {
             "dev":"Development"
@@ -259,6 +262,9 @@
         },
         "user": {
             "placeholder": "Type here to select a user"
+        },
+        "category": {
+            "placeholder": "Type here to select a category"
         },
         "purchaseorderline": {
             "placeholder": "Type here to select a material in a purchase order"

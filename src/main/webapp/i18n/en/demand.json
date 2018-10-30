@@ -25,6 +25,11 @@
             "creationDate": "Creation Date",
             "material": "Material",
             "project": "Project",
+            "category": "Category",
+            "unit": "Unit",
+            "planned": "Is planned ?",
+            "urgent": "Is urgent ?",
+            "useAnnualBudget": "Use annual budget ?",
             "estimatedPrice": "Estimated price",
             "creationUser": "Author",
             "statusChange": {

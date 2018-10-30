@@ -282,8 +282,23 @@ jhi-user-selector {
     border-radius: 0.5rem;
 }
 
+jhi-demand-category-selector {
+    display: block;
+    border-radius: 0.5rem;
+}
+
 dd {
     & span {
         white-space: pre-wrap;
+    }
+}
+
+.radio {
+    width: 30%;
+    & .radio-inline {
+        width: 30%;
+    }
+    & label {
+        margin-bottom: 0.1rem;
     }
 }

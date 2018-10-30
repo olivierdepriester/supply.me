@@ -3,6 +3,7 @@ import { IMaterial } from 'app/shared/model//material.model';
 import { IProject } from 'app/shared/model//project.model';
 import { Moment } from 'moment';
 import { ISupplier } from './supplier.model';
+import { IDemandCategory } from './demand-category.model';
 
 export enum DemandStatus {
     NEW = 'NEW',
@@ -44,11 +45,18 @@ export interface IDemand {
     project?: IProject;
     creationUser?: IUser;
     supplier?: ISupplier;
+    demandCategory?: IDemandCategory;
     quantityOrdered?: number;
     quantityDelivered?: number;
     estimatedPrice?: number;
     validationAuthority?: any;
     reachedAuthority?: any;
+    urgent?: boolean;
+    planned?: boolean;
+    useAnnualBudget?: boolean;
+    whereUse?: string;
+    unit?: string;
+    vat?: number;
     demandStatusChanges?: IDemandStatusChange[];
 }
 
@@ -65,11 +73,18 @@ export class Demand implements IDemand {
         public project?: IProject,
         public creationUser?: IUser,
         public supplier?: ISupplier,
+        public demandCategory?: IDemandCategory,
         public quantityOrdered?: number,
         public quantityDelivered?: number,
         public estimatedPrice?: number,
         public validationAuthority?: any,
         public reachedAuthority?: any,
+        public urgent?: boolean,
+        public planned?: boolean,
+        public useAnnualBudget?: boolean,
+        public whereUse?: string,
+        public unit?: string,
+        public vat?: number,
         public demandStatusChanges?: IDemandStatusChange[]
     ) {}
 }

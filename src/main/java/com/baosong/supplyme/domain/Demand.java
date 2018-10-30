@@ -14,19 +14,21 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.apache.lucene.search.BooleanQuery;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
@@ -82,6 +84,27 @@ public class Demand implements Serializable {
     private Instant creationDate;
 
     @NotNull
+    @Column(name = "urgent", nullable = false)
+    private Boolean urgent;
+
+    @Column(name = "use_annual_budget", nullable = true)
+    private Boolean useAnnualBudget;
+
+    @Column(name = "planned", nullable = true)
+    private Boolean planned;
+
+    @Size(max = 50)
+    @Column(name = "unit", nullable = true)
+    private String unit;
+
+    @Size(max = 50)
+    @Column(name = "where_use", nullable = true)
+    private String whereUse;
+
+    @Column(name = "vat", nullable = true)
+    private Double vat;
+
+    @NotNull
     @ManyToOne(optional = false)
     private Material material;
 
@@ -91,6 +114,10 @@ public class Demand implements Serializable {
 
     @ManyToOne(optional = true)
     private Supplier supplier;
+
+    @NotNull
+    @ManyToOne(optional = false)
+    private DemandCategory demandCategory;
 
     @ManyToOne(optional = false)
     @JsonIgnoreProperties("")
@@ -227,6 +254,102 @@ public class Demand implements Serializable {
         return this.reachedAuthority;
     }
 
+    public Boolean isUrgent() {
+        return this.urgent;
+    }
+
+    public Demand urgent(Boolean urgent) {
+        this.setUrgent(urgent);
+        return this;
+    }
+
+    public void setUrgent(Boolean urgent) {
+        this.urgent = urgent;
+    }
+
+
+	public Boolean isUseAnnualBudget() {
+        return this.useAnnualBudget;
+    }
+
+    public Demand useAnnualBudget(Boolean useAnnualBudget) {
+        this.setUseAnnualBudget(useAnnualBudget);
+        return this;
+    }
+
+    public void setUseAnnualBudget(Boolean useAnnualBudget) {
+        this.useAnnualBudget = useAnnualBudget;
+    }
+
+
+    public Boolean isPlanned() {
+        return this.planned;
+    }
+
+    public Demand planned(Boolean planned) {
+        this.setPlanned(planned);
+        return this;
+    }
+
+    public void setPlanned(Boolean planned) {
+        this.planned = planned;
+    }
+
+    public String getUnit() {
+        return this.unit;
+    }
+
+    public Demand unit(String unit) {
+        this.setUnit(unit);
+        return this;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public String getWhereUse() {
+        return this.whereUse;
+    }
+
+    public Demand whereUse(String whereUse) {
+        this.setWhereUse(whereUse);
+        return this;
+    }
+
+    public void setWhereUse(String whereUse) {
+        this.whereUse = whereUse;
+    }
+
+    /**
+     * Get the VAT as a decimal : 16% = 0.16
+     *
+     * @return the VAT
+     */
+    public Double getVat() {
+        return this.vat;
+    }
+
+    /**
+     * Set the VAT.
+     *
+     * @param the VAT to set as a decimal value.
+     * @return the demand.
+     */
+    public Demand vat(Double vat) {
+        this.setVat(vat);
+        return this;
+    }
+
+    /**
+     * Set the VAT
+     *
+     * @param the VAT to set as a decimal value
+     */
+    public void setVat(Double vat) {
+        this.vat = vat;
+    }
+
     public Demand reachedAuthority(String reachedAuthority) {
         this.setReachedAuthority(reachedAuthority);
         return this;
@@ -236,15 +359,13 @@ public class Demand implements Serializable {
         this.reachedAuthority = reachedAuthority;
     }
 
-    public Supplier getSupplier()
-	{
-		return this.supplier;
-	}
+    public Supplier getSupplier() {
+        return this.supplier;
+    }
 
-	public void setSupplier(Supplier supplier)
-	{
-		this.supplier = supplier;
-	}
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
 
     public Demand supplier(Supplier supplier) {
         this.setSupplier(supplier);
@@ -264,14 +385,12 @@ public class Demand implements Serializable {
         this.creationUser = user;
     }
 
-	public String getDescription()
-	{
-		return this.description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public void setDescription(String description)
-	{
-		this.description = description;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Demand description(String description) {
@@ -328,23 +447,21 @@ public class Demand implements Serializable {
     }
 
     /**
-     * Get the estimated price of the material for this demand.
+     * Get the unit estimated price of the material for this demand.
      *
      * @return
      */
-	public Double getEstimatedPrice()
-	{
-		return this.estimatedPrice;
-	}
+	public Double getEstimatedPrice() {
+        return this.estimatedPrice;
+    }
 
     /**
      * Set the estimated price of the material for this demand.
      *
      * @param estimatedPrice
      */
-	public void setEstimatedPrice(Double estimatedPrice)
-	{
-		this.estimatedPrice = estimatedPrice;
+    public void setEstimatedPrice(Double estimatedPrice) {
+        this.estimatedPrice = estimatedPrice;
     }
 
     /**
@@ -358,6 +475,19 @@ public class Demand implements Serializable {
         return this;
     }
 
+    public DemandCategory getDemandCategory() {
+        return this.demandCategory;
+    }
+
+    public Demand category(DemandCategory demandCategory) {
+        this.setDemandCategory(demandCategory);
+        return this;
+    }
+
+    public void setDemandCategory(DemandCategory demandCategory) {
+        this.demandCategory = demandCategory;
+    }
+
     /**
      * Gets if the demand can be added to a purchase order
      *
@@ -368,6 +498,28 @@ public class Demand implements Serializable {
         // order
         return (this.getQuantityOrdered() == null || this.getQuantityOrdered() < this.getQuantity())
                 && (DemandStatus.APPROVED.equals(this.status) || DemandStatus.ORDERED.equals(this.status));
+    }
+
+    /**
+     * Get unit estimated price with VAT.
+     *
+     * @return null if no
+     */
+    public Double getEstimatedPriceWithVat() {
+        if (this.getEstimatedPrice() != null && this.getVat() != null) {
+            return this.getEstimatedPrice() * (1 + this.getVat());
+        } else {
+            return null;
+        }
+    }
+
+    public Double getAmountWithVat() {
+        Double estimatedPriceWithVat = this.getEstimatedPriceWithVat();
+        if (estimatedPriceWithVat != null) {
+            return estimatedPriceWithVat * this.getQuantity();
+        } else {
+            return null;
+        }
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and

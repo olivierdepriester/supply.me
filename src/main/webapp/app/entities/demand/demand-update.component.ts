@@ -41,6 +41,8 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
                     }
                     this.locale = 'en';
                 });
+            } else {
+                this.demand.urgent = false;
             }
         });
         // Callback on new material creation

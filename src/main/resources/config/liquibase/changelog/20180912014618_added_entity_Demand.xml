@@ -103,4 +103,47 @@
             <column name="validation_authority" type="varchar(50)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="20181029025039-3" author="olivier">
+        <addColumn tableName="demand">
+            <column name="demand_category_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <addColumn tableName="demand">
+            <column name="urgent" type="boolean">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <addNotNullConstraint
+            columnDataType="boolean"
+            columnName="urgent"
+            defaultNullValue="false"
+            tableName="demand"/>
+        <addColumn tableName="demand">
+            <column name="use_annual_budget" type="boolean">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <addColumn tableName="demand">
+            <column name="planned" type="boolean">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <addColumn tableName="demand">
+            <column name="unit" type="varchar(50)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <addColumn tableName="demand">
+            <column name="where_use" type="varchar(50)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+
+    </changeSet>
+    <changeSet id="20181029160000-1" author="author">
+        <addColumn tableName="demand">
+            <column name="vat" type="double"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -1,14 +1,15 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IUser, Principal } from 'app/core';
+import { Principal } from 'app/core';
+import { IAttachmentFile } from 'app/shared/model/attachment-file.model';
 import { IDemand } from 'app/shared/model/demand.model';
 import { IMaterial } from 'app/shared/model/material.model';
-import { IProject } from 'app/shared/model/project.model';
 import * as moment from 'moment';
 import { JhiEventManager } from 'ng-jhipster';
 import { Observable, Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
+import { FileUpload } from 'primeng/primeng';
 
 @Component({
     selector: 'jhi-demand-update',
@@ -18,9 +19,12 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
     private _demand: IDemand;
     isSaving: boolean;
     expectedDate: Date;
+    vat: number;
     @ViewChild('editForm') editForm: HTMLFormElement;
+    @ViewChild('fileUpload') fileUpload: FileUpload;
     eventSubscriber: Subscription;
     locale: string;
+    files: IAttachmentFile[] = [];
 
     constructor(
         private demandService: DemandService,
@@ -43,6 +47,7 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
                 });
             } else {
                 this.demand.urgent = false;
+                this.vat = 16;
             }
         });
         // Callback on new material creation
@@ -66,9 +71,34 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
         window.history.back();
     }
 
+    /**
+     * Upload the selected files on the server and get their identifier
+     *
+     * @param {*} event Files to load
+     * @memberof DemandUpdateComponent
+     */
+    uploadFiles(event: any) {
+        this.isSaving = true;
+        const formData = new FormData();
+        for (const file of event.files) {
+            formData.append('files', file);
+        }
+        this.demandService.uploadFiles(formData).subscribe(
+            (response: HttpResponse<IAttachmentFile[]>) => {
+                response.body.forEach(af => this.files.push(af));
+                this.fileUpload.clear();
+                this.isSaving = false;
+            },
+            (response: HttpErrorResponse) => {
+                this.onSaveError();
+            }
+        );
+    }
+
     save() {
         this.isSaving = true;
         this.demand.expectedDate = moment(this.expectedDate);
+        this.demand.vat = this.vat / 100;
         if (this.demand.id !== undefined) {
             this.subscribeToSaveResponse(this.demandService.update(this.demand));
         } else {
@@ -76,8 +106,31 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
         }
     }
 
+    removeFile(attachment: IAttachmentFile): void {
+        if (attachment.temporaryToken) {
+            // Remove a newly created file --> Remove the draft already uploaded on the server
+            this.demandService
+                .removeDraftFile(attachment.temporaryToken)
+                .subscribe((response: HttpResponse<any>) => this.files.splice(this.files.indexOf(attachment)));
+        } else {
+            // Remove the file from the list. The whole list will be saved after the demand has.
+            this.files.splice(this.files.indexOf(attachment));
+        }
+    }
+
     private subscribeToSaveResponse(result: Observable<HttpResponse<IDemand>>) {
-        result.subscribe((res: HttpResponse<IDemand>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
+        result.subscribe(
+            (res: HttpResponse<IDemand>) => {
+                this.demandService.saveAttachedFiles(res.body, this.files).subscribe(
+                    (filesResponse: HttpResponse<IAttachmentFile[]>) => {
+                        this.files = filesResponse.body;
+                        this.onSaveSuccess();
+                    },
+                    (filesResponse: HttpErrorResponse) => this.onSaveError()
+                );
+            },
+            (res: HttpErrorResponse) => this.onSaveError()
+        );
     }
 
     private onSaveSuccess() {
@@ -99,6 +152,11 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
             this.expectedDate = demand.expectedDate.toDate();
         } else {
             this.expectedDate = null;
+        }
+        if (demand.vat != null) {
+            this.vat = demand.vat * 100;
+        } else {
+            this.vat = null;
         }
     }
 }

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { SERVER_API_URL, SORTED_AUTHORITIES } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { DemandStatus, IDemand } from 'app/shared/model/demand.model';
+import { AttachmentFile, IAttachmentFile } from 'app/shared/model/attachment-file.model';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -79,6 +80,18 @@ export class DemandService {
         return this.http
             .get<IDemand[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
+
+    uploadFiles(formData: FormData): Observable<HttpResponse<IAttachmentFile[]>> {
+        return this.http.post<any>(`${this.resourceUrl}/draftAttachment`, formData, { observe: 'response' });
+    }
+
+    removeDraftFile(token: string): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/draftAttachment/${token}`, { observe: 'response' });
+    }
+
+    saveAttachedFiles(demand: IDemand, attachments: IAttachmentFile[]): Observable<HttpResponse<IAttachmentFile[]>> {
+        return this.http.put<IAttachmentFile[]>(`${this.resourceUrl}/attachments/${demand.id}`, attachments, { observe: 'response' });
     }
 
     private convertDateFromClient(demand: IDemand): IDemand {

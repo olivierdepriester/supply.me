@@ -30,7 +30,10 @@
             "planned": "Is planned ?",
             "urgent": "Is urgent ?",
             "useAnnualBudget": "Use annual budget ?",
+            "vat": "VAT (%)",
+            "whereUse": "Where use",
             "estimatedPrice": "Estimated price",
+            "attachments": "Attachments",
             "creationUser": "Author",
             "statusChange": {
                 "title": "Events",
@@ -44,7 +47,12 @@
                 "sendToApproval": "Send the request to approval",
                 "reject": "Reject the request",
                 "approve": "Approve the request",
-                "createMaterial": "Create a new material for this request"
+                "createMaterial": "Create a new material for this request",
+                "uploader" : {
+                    "choose": "Choose",
+                    "upload": "Upload",
+                    "cancel": "Cancel"
+                }
             }
         }
     }

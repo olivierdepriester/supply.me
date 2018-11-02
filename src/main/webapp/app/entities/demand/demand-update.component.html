@@ -77,7 +77,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.urgent" for="field_urgent_yes">Planned</label>
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.urgent" for="field_urgent_yes">Urgent</label>
                     <div class="radio">
                         <label class="radio-inline" for="field_urgent_yes">
                             <input type="radio" name="urgent" id="field_urgent_yes" [value]="true" [(ngModel)]="demand.urgent"/>
@@ -90,8 +90,34 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.description" for="field_description">Project</label>
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.description" for="field_description">Description</label>
                     <textarea cols="50" rows="4" class="form-control" name="description" id="field_description" [(ngModel)]="demand.description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.whereUse" for="field_whereUse">Where use</label>
+                    <input type="text" class="form-control" name="whereUse" id="field_whereUse" [(ngModel)]="demand.whereUse" [maxLength]="50" >
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.attachments" for="field_attachedFiles">Where use</label>
+                    <p-fileUpload #fileUpload id="field_attachedFiles" name="fileUpload" customUpload="true" [multiple]="true" (uploadHandler)="uploadFiles($event)"
+                        [chooseLabel]="'supplyMeApp.demand.button.uploader.choose' | translate"
+                        [uploadLabel]="'supplyMeApp.demand.button.uploader.upload' | translate"
+                        [cancelLabel]="'supplyMeApp.demand.button.uploader.cancel' | translate" >
+                        <ng-template pTemplate="content">
+                            <div *ngIf="files.length > 0">
+                                <span>Existing</span>
+                                <div class="ui-fileupload-row" *ngFor="let item of files">
+                                    <div>{{ item.name }}</div>
+                                    <div>{{ item.size | fileSize }} </div>
+                                    <div>
+                                        <button type="button" class="btn btn-danger btn-sm" (click)="removeFile(item)" >
+                                            <fa-icon [icon]="'times'"></fa-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-fileUpload>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.quantity" for="field_quantity">Quantity</label>
@@ -111,6 +137,16 @@
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.estimatedPrice" for="field_estimatedPrice">Estimated price</label>
                     <input type="number" class="form-control" name="estimatedPrice" id="field_estimatedPrice" [(ngModel)]="demand.estimatedPrice" />
                     <div [hidden]="!(editForm.controls.quantity?.dirty && editForm.controls.quantity?.invalid)">
+                        <small class="form-text text-danger"
+                            [hidden]="!editForm.controls.quantity?.errors?.number" jhiTranslate="entity.validation.number">
+                            This field should be a number.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.vat" for="field_vat">VAT</label>
+                    <input type="number" class="form-control" name="vat" id="field_vat" [(ngModel)]="vat" min="0" max="100" />
+                    <div [hidden]="!(editForm.controls.vat?.dirty && editForm.controls.vat?.invalid)">
                         <small class="form-text text-danger"
                             [hidden]="!editForm.controls.quantity?.errors?.number" jhiTranslate="entity.validation.number">
                             This field should be a number.

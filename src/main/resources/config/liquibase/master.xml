@@ -20,6 +20,7 @@
     <include file="config/liquibase/changelog/20180912014625_added_entity_MutableProperties.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181014180000_added_entity_DemandStatusChange.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181029025039_added_entity_DemandCategory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181101180000_added_entity_AttachmentFile.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20180912014617_added_entity_constraints_MaterialAvailability.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180912014618_added_entity_constraints_Demand.xml" relativeToChangelogFile="false"/>
@@ -32,5 +33,6 @@
     <include file="config/liquibase/changelog/20181014180000_added_entity_constraints_DemandStatusChange.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181019081701_added_entity_constraints_MaterialCategory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181029025039_added_entity_constraints_DemandCategory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181101180000_added_entity_constraints_AttachmentFile.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

@@ -70,6 +70,10 @@ spring:
         password:
     messages:
         cache-duration: PT1S # 1 second, see the ISO 8601 standard
+    servlet:
+        multipart:
+            max-file-size: 50000000
+            max-request-size: 100000000
     thymeleaf:
         cache: false
     zipkin: # Use the "zipkin" Maven profile to have the Spring Cloud Zipkin dependencies
@@ -152,4 +156,10 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+    storage:
+        rootPath: /data/supplyme/ # main path for all files storage
+        attachments: # storage parameters for attachments
+            path: /data/supplyme/attachments/
+            temporaryPath: /data/supplyme/attachments/temporary/
+            retentionDuration: 1800

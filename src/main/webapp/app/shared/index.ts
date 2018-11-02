@@ -11,6 +11,7 @@ export * from './util/currency-custom.pipe';
 export * from './util/date-format.pipe';
 export * from './util/datetime-format.pipe';
 export * from './util/null-to-dash.pipe';
+export * from './util/file-size.pipe';
 export * from './shared-libs.module';
 export * from './shared-common.module';
 export * from './shared.module';

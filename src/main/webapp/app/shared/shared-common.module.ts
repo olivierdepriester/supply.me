@@ -10,6 +10,7 @@ import {
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
+import { FileSizePipe } from './util/file-size.pipe';
 
 @NgModule({
     imports: [SupplyMeSharedLibsModule],
@@ -19,6 +20,7 @@ import {
         DateFormatPipe,
         DatetimeFormatPipe,
         NullToDashPipe,
+        FileSizePipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ],
@@ -29,6 +31,7 @@ import {
         DateFormatPipe,
         DatetimeFormatPipe,
         NullToDashPipe,
+        FileSizePipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]

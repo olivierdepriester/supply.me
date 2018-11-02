@@ -5,6 +5,7 @@ import com.baosong.supplyme.SupplyMeApp;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.repository.DemandRepository;
 import com.baosong.supplyme.repository.search.DemandSearchRepository;
+import com.baosong.supplyme.service.AttachmentFileService;
 import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.web.rest.errors.ExceptionTranslator;
 
@@ -62,10 +63,13 @@ public class DemandResourceIntTest {
     @Autowired
     private DemandRepository demandRepository;
 
-    
+
 
     @Autowired
     private DemandService demandService;
+
+    @Autowired
+    private AttachmentFileService attachmentFileService;
 
     /**
      * This repository is mocked in the com.baosong.supplyme.repository.search test package.
@@ -94,7 +98,7 @@ public class DemandResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final DemandResource demandResource = new DemandResource(demandService);
+        final DemandResource demandResource = new DemandResource(demandService, attachmentFileService);
         this.restDemandMockMvc = MockMvcBuilders.standaloneSetup(demandResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -238,7 +242,7 @@ public class DemandResourceIntTest {
             .andExpect(jsonPath("$.[*].expectedDate").value(hasItem(DEFAULT_EXPECTED_DATE.toString())))
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
-    
+
 
     @Test
     @Transactional
@@ -309,7 +313,7 @@ public class DemandResourceIntTest {
 
         // Create the Demand
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restDemandMockMvc.perform(put("/api/demands")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(demand)))

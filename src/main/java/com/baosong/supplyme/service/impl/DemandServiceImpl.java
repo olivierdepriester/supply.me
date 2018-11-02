@@ -2,17 +2,25 @@ package com.baosong.supplyme.service.impl;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.baosong.supplyme.config.ApplicationProperties;
+import com.baosong.supplyme.domain.AttachmentFile;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.DemandStatusChange;
 import com.baosong.supplyme.domain.Material;
@@ -25,6 +33,7 @@ import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.MessageParameterBean;
 import com.baosong.supplyme.domain.errors.ParameterizedServiceException;
 import com.baosong.supplyme.domain.errors.ServiceException;
+import com.baosong.supplyme.repository.AttachmentFileRepository;
 import com.baosong.supplyme.repository.DemandRepository;
 import com.baosong.supplyme.repository.search.DemandSearchRepository;
 import com.baosong.supplyme.security.AuthoritiesConstants;
@@ -35,9 +44,11 @@ import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.UserService;
+import com.baosong.supplyme.service.dto.AttachmentFileDTO;
 import com.baosong.supplyme.service.util.DemandSearchCriteria;
 import com.google.common.collect.Sets;
 
+import org.apache.commons.io.FileUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
@@ -50,6 +61,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Implementation for managing Demand.
@@ -63,6 +75,10 @@ public class DemandServiceImpl implements DemandService {
     private final DemandRepository demandRepository;
 
     private final DemandSearchRepository demandSearchRepository;
+
+    private final AttachmentFileRepository attachmentFileRepository;
+
+    private final ApplicationProperties applicationProperties;
 
     private final static Map<DemandStatus, Set<DemandStatus>> DEMAND_WORKFLOW_RULES;
 
@@ -98,9 +114,12 @@ public class DemandServiceImpl implements DemandService {
                 Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
     }
 
-    public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository) {
+    public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository,
+            AttachmentFileRepository attachmentFileRepository, ApplicationProperties applicationProperties) {
         this.demandRepository = demandRepository;
         this.demandSearchRepository = demandSearchRepository;
+        this.applicationProperties = applicationProperties;
+        this.attachmentFileRepository = attachmentFileRepository;
     }
 
     /**
@@ -307,7 +326,8 @@ public class DemandServiceImpl implements DemandService {
                                     && demand.getProject().getHeadUser().equals(currentUser)))) {
                 // Compare the "demand already reached authority" and "user max authority"
                 if (SecurityUtils.compare(currentUserHighestAuthority, demand.getReachedAuthority()) > 0) {
-                    // Current user authority is greater than demand latest authority -> Update (= partial validation)
+                    // Current user authority is greater than demand latest authority -> Update (=
+                    // partial validation)
                     hasReachedAuthorityChanged = true;
                     demand.setReachedAuthority(currentUserHighestAuthority);
                     // P
@@ -352,7 +372,7 @@ public class DemandServiceImpl implements DemandService {
      */
     private void updateMaterialPrice(Demand demand) {
         // If material was a temporary one, make it a normal
-        if(demand.getMaterial().isTemporary()) {
+        if (demand.getMaterial().isTemporary()) {
             demand.getMaterial().setTemporary(false);
         }
         // Update the default material price with the approved demand
@@ -361,18 +381,14 @@ public class DemandServiceImpl implements DemandService {
         final Supplier supplier = demand.getSupplier();
         // Get an existing availability for the demand supplier
         MaterialAvailability availability = demand.getMaterial().getAvailabilities().stream()
-            .filter(a -> a.getSupplier().equals(supplier))
-            .findAny().orElse(null);
+                .filter(a -> a.getSupplier().equals(supplier)).findAny().orElse(null);
         if (availability == null) {
             // No existing : create a new one and add it to the material
-            availability = new MaterialAvailability()
-                .supplier(supplier)
-                .creationDate(Instant.now());
+            availability = new MaterialAvailability().supplier(supplier).creationDate(Instant.now());
             demand.getMaterial().addAvailability(availability);
         }
         // Update price and last update date
-        availability.purchasePrice(demand.getEstimatedPrice())
-            .setUpdateDate(Instant.now());
+        availability.purchasePrice(demand.getEstimatedPrice()).setUpdateDate(Instant.now());
         // Save the material indices
         this.materialService.saveAndCascadeIndex(demand.getMaterial());
     }
@@ -411,7 +427,8 @@ public class DemandServiceImpl implements DemandService {
             missingFields.add(MessageParameterBean.of("NotNull", "supplier", "detail.title"));
         }
         if (!missingFields.isEmpty()) {
-            throw new ParameterizedServiceException(String.format("Missing fiedlds on demand %s", demand.getId()), missingFields);
+            throw new ParameterizedServiceException(String.format("Missing fiedlds on demand %s", demand.getId()),
+                    missingFields);
         }
         return missingFields.isEmpty();
     }
@@ -473,4 +490,5 @@ public class DemandServiceImpl implements DemandService {
     public List<Demand> findByProjectId(Long projectId) {
         return this.demandRepository.findAll(Example.of(new Demand().project(new Project().id(projectId))));
     }
+
 }

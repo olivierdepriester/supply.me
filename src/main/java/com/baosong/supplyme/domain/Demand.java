@@ -25,10 +25,8 @@ import javax.validation.constraints.Size;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import org.apache.lucene.search.BooleanQuery;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 /**

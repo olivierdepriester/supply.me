@@ -6,6 +6,7 @@ import { SupplyMeAdminModule } from 'app/admin/admin.module';
 import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
 import { MultiSelectModule } from 'primeng/components/multiselect/multiselect';
 import { CalendarModule } from 'primeng/components/calendar/calendar';
+import { FileUploadModule } from 'primeng/fileupload';
 import { MaterialSelectorModule } from 'app/entities/component/material-selector';
 import { ProjectSelectorModule } from 'app/entities/component/project-selector';
 import { UserSelectorModule } from 'app/entities/component/user-selector';
@@ -35,6 +36,7 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         AutoCompleteModule,
         MultiSelectModule,
         CalendarModule,
+        FileUploadModule,
         MaterialSelectorModule,
         ProjectSelectorModule,
         UserSelectorModule,

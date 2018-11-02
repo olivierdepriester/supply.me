@@ -2,18 +2,19 @@ package com.baosong.supplyme.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.baosong.supplyme.domain.AttachmentFile;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.ParameterizedServiceException;
 import com.baosong.supplyme.domain.errors.ServiceException;
+import com.baosong.supplyme.service.AttachmentFileService;
 import com.baosong.supplyme.service.DemandService;
+import com.baosong.supplyme.service.dto.AttachmentFileDTO;
 import com.baosong.supplyme.service.util.DemandSearchCriteria;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
 import com.baosong.supplyme.web.rest.errors.BadRequestServiceException;
@@ -26,10 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,9 +40,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.github.jhipster.web.util.ResponseUtil;
-import joptsimple.util.KeyValuePair;
 
 /**
  * REST controller for managing Demand.
@@ -56,8 +57,11 @@ public class DemandResource {
 
     private final DemandService demandService;
 
-    public DemandResource(DemandService demandService) {
+    private final AttachmentFileService attachmentFileService;
+
+    public DemandResource(DemandService demandService, AttachmentFileService attachmentFileService) {
         this.demandService = demandService;
+        this.attachmentFileService = attachmentFileService;
     }
 
     /**
@@ -118,7 +122,8 @@ public class DemandResource {
         log.debug("REST request to update Demand : {}", demandStatusChange.getId());
         Demand result = null;
         try {
-            result = demandService.changeStatus(demandStatusChange.getId(), demandStatusChange.getStatus(), demandStatusChange.getComment());
+            result = demandService.changeStatus(demandStatusChange.getId(), demandStatusChange.getStatus(),
+                    demandStatusChange.getComment());
             return ResponseEntity.ok()
                     .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, demandStatusChange.getId().toString()))
                     .body(result);
@@ -188,8 +193,8 @@ public class DemandResource {
     public List<Demand> searchDemands(@RequestParam Optional<String> query, @RequestParam Optional<Long> materialId,
             @RequestParam Optional<Long> projectId, @RequestParam Optional<Long> creationUserId,
             @RequestParam Optional<List<DemandStatus>> status, Pageable pageable) {
-        log.debug(String.format("REST request to search Demands for query : [%s, %s, %s, %s, %s]",
-        query, materialId, projectId, creationUserId, status));
+        log.debug(String.format("REST request to search Demands for query : [%s, %s, %s, %s, %s]", query, materialId,
+                projectId, creationUserId, status));
         return demandService.search(new DemandSearchCriteria().query(query.orElse(null))
                 .materialId(materialId.orElse(null)).projectId(projectId.orElse(null))
                 .creationUserId(creationUserId.orElse(null)).demandStatus(status.orElse(null)), pageable);
@@ -218,5 +223,43 @@ public class DemandResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page,
                 "/api/_search/demands/purchasable");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/demands/draftAttachment")
+    @Timed
+    public ResponseEntity<List<AttachmentFileDTO>> uploadDraftAttachment(@RequestParam List<MultipartFile> files) {
+        log.debug("REST request to upload %d files", files.size());
+        List<AttachmentFileDTO> attachmentFiles = this.attachmentFileService.saveDraftAttachmentFiles(files);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("Attachment", "0"))
+                .body(attachmentFiles);
+    }
+
+    @DeleteMapping("/demands/draftAttachment/{token}")
+    @Timed
+    public ResponseEntity<Void> removeDraftAttachment(@PathVariable String token) {
+        log.debug("REST request to remove draft attachment %s", token);
+        BodyBuilder responseBuilder = null;
+        try {
+            if (this.attachmentFileService.removeDraftAttachmentFile(token)) {
+                responseBuilder = ResponseEntity.ok();
+            } else {
+                responseBuilder = ResponseEntity.badRequest();
+            }
+            return responseBuilder.headers(HeaderUtil.createEntityDeletionAlert("Attachment", token)).build();
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), "Attachment", "delete");
+        }
+    }
+
+    @PutMapping("/demands/attachments/{id}")
+    public ResponseEntity<List<AttachmentFileDTO>> saveAttachments(@PathVariable Long id,
+            @RequestBody List<AttachmentFileDTO> files) {
+        try {
+            List<AttachmentFileDTO> attachmentFiles = this.attachmentFileService.saveAttachmentFiles(id, files);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("Attachment", "0"))
+                    .body(attachmentFiles);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), "Attachment", "update");
+        }
     }
 }

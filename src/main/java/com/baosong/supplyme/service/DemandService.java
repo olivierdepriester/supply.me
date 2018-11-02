@@ -1,15 +1,19 @@
 package com.baosong.supplyme.service;
 
+import java.security.Provider.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.baosong.supplyme.domain.AttachmentFile;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
+import com.baosong.supplyme.service.dto.AttachmentFileDTO;
 import com.baosong.supplyme.service.util.DemandSearchCriteria;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Interface for managing Demand.
@@ -56,7 +60,6 @@ public interface DemandService {
      */
     List<Demand> findAll();
 
-
     /**
      * Get the "id" demand.
      *
@@ -87,19 +90,21 @@ public interface DemandService {
      *
      * @return the list of entities
      */
-	List<Demand> search(String query);
+    List<Demand> search(String query);
 
-	/**
-	 * Search for demands based on the parameters below
-	 * @param criteria Bean with the search parameters
-	 * @return
-	 */
+    /**
+     * Search for demands based on the parameters below
+     *
+     * @param criteria Bean with the search parameters
+     * @return
+     */
     List<Demand> search(DemandSearchCriteria criteria, Pageable pageable);
 
     /**
      * Change the status of a demand
-     * @param id Demand identifier
-     * @param status Status to set
+     *
+     * @param id      Demand identifier
+     * @param status  Status to set
      * @param comment Optional comment filled by the user who made the status change
      * @return The modified demand
      * @exception ServiceException In case of business rules violation
@@ -117,7 +122,7 @@ public interface DemandService {
      * @param id the demand id
      * @return sum of the quantity ordered
      */
-    double getQuantityOrderedFromPO(Long id) ;
+    double getQuantityOrderedFromPO(Long id);
 
     /**
      * Get the delivered quantity for a demand based on the purchase order lines
@@ -129,7 +134,8 @@ public interface DemandService {
 
     /**
      * Get demands that can be purchased
-     * @param query filter
+     *
+     * @param query    filter
      * @param pageable
      * @return
      */

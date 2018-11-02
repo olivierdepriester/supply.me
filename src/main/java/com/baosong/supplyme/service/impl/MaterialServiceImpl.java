@@ -12,7 +12,6 @@ import com.baosong.supplyme.repository.search.MaterialSearchRepository;
 import com.baosong.supplyme.security.AuthoritiesConstants;
 import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.DemandService;
-import com.baosong.supplyme.service.MaterialCategoryService;
 import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.UserService;
@@ -46,9 +45,6 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private DemandService demandService;
-
-    @Autowired
-    private MaterialCategoryService materialCategoryService;
 
     @Autowired
     private MutablePropertiesService mutablePropertiesService;

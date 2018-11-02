@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import com.baosong.supplyme.domain.AttachmentFile;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.ParameterizedServiceException;

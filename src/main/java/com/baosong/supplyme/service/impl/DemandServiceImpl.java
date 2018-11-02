@@ -2,25 +2,17 @@ package com.baosong.supplyme.service.impl;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.baosong.supplyme.config.ApplicationProperties;
-import com.baosong.supplyme.domain.AttachmentFile;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.DemandStatusChange;
 import com.baosong.supplyme.domain.Material;
@@ -33,7 +25,6 @@ import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.MessageParameterBean;
 import com.baosong.supplyme.domain.errors.ParameterizedServiceException;
 import com.baosong.supplyme.domain.errors.ServiceException;
-import com.baosong.supplyme.repository.AttachmentFileRepository;
 import com.baosong.supplyme.repository.DemandRepository;
 import com.baosong.supplyme.repository.search.DemandSearchRepository;
 import com.baosong.supplyme.security.AuthoritiesConstants;
@@ -44,11 +35,9 @@ import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.UserService;
-import com.baosong.supplyme.service.dto.AttachmentFileDTO;
 import com.baosong.supplyme.service.util.DemandSearchCriteria;
 import com.google.common.collect.Sets;
 
-import org.apache.commons.io.FileUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
@@ -61,7 +50,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Implementation for managing Demand.
@@ -75,10 +63,6 @@ public class DemandServiceImpl implements DemandService {
     private final DemandRepository demandRepository;
 
     private final DemandSearchRepository demandSearchRepository;
-
-    private final AttachmentFileRepository attachmentFileRepository;
-
-    private final ApplicationProperties applicationProperties;
 
     private final static Map<DemandStatus, Set<DemandStatus>> DEMAND_WORKFLOW_RULES;
 
@@ -114,12 +98,9 @@ public class DemandServiceImpl implements DemandService {
                 Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
     }
 
-    public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository,
-            AttachmentFileRepository attachmentFileRepository, ApplicationProperties applicationProperties) {
+    public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository) {
         this.demandRepository = demandRepository;
         this.demandSearchRepository = demandSearchRepository;
-        this.applicationProperties = applicationProperties;
-        this.attachmentFileRepository = attachmentFileRepository;
     }
 
     /**

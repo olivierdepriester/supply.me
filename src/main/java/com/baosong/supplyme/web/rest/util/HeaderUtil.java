@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 
-import joptsimple.util.KeyValuePair;
-
 /**
  * Utility class for HTTP headers creation.
  */

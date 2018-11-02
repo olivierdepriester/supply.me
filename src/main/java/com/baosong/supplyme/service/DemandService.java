@@ -1,19 +1,15 @@
 package com.baosong.supplyme.service;
 
-import java.security.Provider.Service;
 import java.util.List;
 import java.util.Optional;
 
-import com.baosong.supplyme.domain.AttachmentFile;
 import com.baosong.supplyme.domain.Demand;
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
 import com.baosong.supplyme.domain.errors.ServiceException;
-import com.baosong.supplyme.service.dto.AttachmentFileDTO;
 import com.baosong.supplyme.service.util.DemandSearchCriteria;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Interface for managing Demand.

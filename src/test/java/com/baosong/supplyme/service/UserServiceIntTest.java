@@ -1,10 +1,21 @@
 package com.baosong.supplyme.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
+
 import com.baosong.supplyme.SupplyMeApp;
 import com.baosong.supplyme.config.Constants;
 import com.baosong.supplyme.domain.User;
-import com.baosong.supplyme.repository.search.UserSearchRepository;
 import com.baosong.supplyme.repository.UserRepository;
+import com.baosong.supplyme.repository.search.UserSearchRepository;
 import com.baosong.supplyme.service.dto.UserDTO;
 import com.baosong.supplyme.service.util.RandomUtil;
 
@@ -21,19 +32,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Test class for the UserResource REST controller.

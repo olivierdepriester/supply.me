@@ -1,6 +1,5 @@
 package com.baosong.supplyme.domain.errors;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

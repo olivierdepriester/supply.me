@@ -1,10 +1,12 @@
 package com.baosong.supplyme.web.rest;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.baosong.supplyme.domain.Demand;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -259,6 +262,42 @@ public class DemandResource {
                     .body(attachmentFiles);
         } catch (ServiceException e) {
             throw new BadRequestAlertException(e.getMessage(), "Attachment", "update");
+        }
+    }
+
+    @GetMapping("/demands/attachments/{id}")
+    public List<AttachmentFileDTO> getAttachments(@PathVariable Long id) {
+        return this.attachmentFileService.getAttachmentFiles(id);
+    }
+
+    @RequestMapping(value = "/demands/attachment/{id}", method = RequestMethod.GET)
+    public void downloadAttachmentFile(HttpServletResponse response, @PathVariable Long id) {
+        try {
+            AttachmentFileDTO dto = this.attachmentFileService.getAttachmentFile(id);
+            // Set the content type and attachment header.
+            response.addHeader("Content-disposition", "attachment;filename=" + dto.getName());
+            response.setContentType(dto.getType());
+            // Write the content into the response
+            response.getOutputStream().write(dto.getContent());
+            // Close for the stream to be saved
+            response.getOutputStream().close();
+            response.flushBuffer();
+        } catch (ServiceException | IOException e) {
+            throw new BadRequestAlertException(e.getMessage(), "Attachment", "getFile");
+        }
+    }
+
+    @GetMapping(value = "/demands/draftAttachment/{token}")
+    public void downloadDraftAttachmentFile(HttpServletResponse response, @PathVariable String token) {
+        try {
+            // Set the content type and attachment header.
+            // Write the content into the response
+            response.getOutputStream().write(this.attachmentFileService.getDraftAttachmentFile(token));
+            // Close for the stream to be saved
+            response.getOutputStream().close();
+            response.flushBuffer();
+        } catch (ServiceException | IOException e) {
+            throw new BadRequestAlertException(e.getMessage(), "Attachment", "getFile");
         }
     }
 }

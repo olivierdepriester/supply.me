@@ -12,6 +12,7 @@ import { DemandComponent } from './demand.component';
 import { DemandService } from './demand.service';
 import { MaterialTemporaryPopupComponent } from './material-temporary-dialog.component';
 import { DemandChangeStatusPopupComponent } from './demand-change-status-dialog.component';
+import { IAttachmentFile } from 'app/shared/model/attachment-file.model';
 
 @Injectable({ providedIn: 'root' })
 export class DemandResolve implements Resolve<IDemand> {
@@ -39,6 +40,19 @@ export class DemandWithChangesResolve implements Resolve<IDemand> {
             return this.service.find(id, true).pipe(map((demand: HttpResponse<Demand>) => demand.body));
         }
         return of(new Demand());
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class AttachmentFilesResolve implements Resolve<IAttachmentFile[]> {
+    constructor(private service: DemandService) {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.getAttachmentFiles(id).pipe(map((res: HttpResponse<IAttachmentFile[]>) => res.body));
+        }
+        return [];
     }
 }
 @Injectable({ providedIn: 'root' })
@@ -119,7 +133,8 @@ export const demandRoute: Routes = [
         path: 'demand/:id/view',
         component: DemandDetailComponent,
         resolve: {
-            demand: DemandWithChangesResolve
+            demand: DemandWithChangesResolve,
+            attachments: AttachmentFilesResolve
         },
         data: {
             authorities: ['ROLE_USER'],
@@ -131,7 +146,8 @@ export const demandRoute: Routes = [
         path: 'demand/new',
         component: DemandUpdateComponent,
         resolve: {
-            demand: DemandResolve
+            demand: DemandResolve,
+            attachments: AttachmentFilesResolve
         },
         data: {
             authorities: ['ROLE_USER'],
@@ -143,7 +159,8 @@ export const demandRoute: Routes = [
         path: 'demand/:id/edit',
         component: DemandUpdateComponent,
         resolve: {
-            demand: DemandResolve
+            demand: DemandResolve,
+            attachments: AttachmentFilesResolve
         },
         data: {
             authorities: ['ROLE_USER'],

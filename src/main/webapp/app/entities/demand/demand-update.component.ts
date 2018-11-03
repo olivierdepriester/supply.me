@@ -24,7 +24,7 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
     @ViewChild('fileUpload') fileUpload: FileUpload;
     eventSubscriber: Subscription;
     locale: string;
-    files: IAttachmentFile[] = [];
+    files: IAttachmentFile[];
 
     constructor(
         private demandService: DemandService,
@@ -36,8 +36,9 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ demand }) => {
+        this.activatedRoute.data.subscribe(({ demand, attachments }) => {
             this.demand = demand;
+            this.files = attachments;
             if (demand.id != null) {
                 this.principal.identity().then(account => {
                     if (!this.demandService.isEditAllowed(this.demand, account)) {
@@ -83,7 +84,7 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
         for (const file of event.files) {
             formData.append('files', file);
         }
-        this.demandService.uploadFiles(formData).subscribe(
+        this.demandService.uploadDraftFiles(formData).subscribe(
             (response: HttpResponse<IAttachmentFile[]>) => {
                 response.body.forEach(af => this.files.push(af));
                 this.fileUpload.clear();
@@ -116,6 +117,16 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
             // Remove the file from the list. The whole list will be saved after the demand has.
             this.files.splice(this.files.indexOf(attachment));
         }
+    }
+
+    downloadFile(attachment: IAttachmentFile) {
+        this.demandService.downloadAttachmentFile(attachment).subscribe((res: Blob) => {
+            const element = document.createElement('a');
+            element.href = URL.createObjectURL(res);
+            element.download = attachment.name;
+            document.body.appendChild(element);
+            element.click();
+        });
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<IDemand>>) {

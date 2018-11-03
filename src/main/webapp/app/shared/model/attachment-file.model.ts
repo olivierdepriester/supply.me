@@ -4,7 +4,7 @@ export interface IAttachmentFile {
     temporaryToken?: string;
     type?: string;
     size?: number;
-    content?: any[];
+    content?: string;
 }
 
 export class AttachmentFile implements IAttachmentFile {
@@ -14,6 +14,6 @@ export class AttachmentFile implements IAttachmentFile {
         public temporaryToken?: string,
         public type?: string,
         public size?: number,
-        public content?: any[]
+        public content?: string
     ) {}
 }

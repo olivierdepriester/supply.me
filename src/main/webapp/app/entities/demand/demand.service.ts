@@ -1,13 +1,13 @@
-import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SERVER_API_URL, SORTED_AUTHORITIES } from 'app/app.constants';
+import { SERVER_API_URL } from 'app/app.constants';
+import { Principal } from 'app/core';
 import { createRequestOption } from 'app/shared';
+import { IAttachmentFile, AttachmentFile } from 'app/shared/model/attachment-file.model';
 import { DemandStatus, IDemand } from 'app/shared/model/demand.model';
-import { AttachmentFile, IAttachmentFile } from 'app/shared/model/attachment-file.model';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Principal } from 'app/core';
 
 type EntityResponseType = HttpResponse<IDemand>;
 type EntityArrayResponseType = HttpResponse<IDemand[]>;
@@ -82,7 +82,7 @@ export class DemandService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    uploadFiles(formData: FormData): Observable<HttpResponse<IAttachmentFile[]>> {
+    uploadDraftFiles(formData: FormData): Observable<HttpResponse<IAttachmentFile[]>> {
         return this.http.post<any>(`${this.resourceUrl}/draftAttachment`, formData, { observe: 'response' });
     }
 
@@ -92,6 +92,31 @@ export class DemandService {
 
     saveAttachedFiles(demand: IDemand, attachments: IAttachmentFile[]): Observable<HttpResponse<IAttachmentFile[]>> {
         return this.http.put<IAttachmentFile[]>(`${this.resourceUrl}/attachments/${demand.id}`, attachments, { observe: 'response' });
+    }
+
+    /**
+     * Get the attached files of a demand.
+     *
+     * @param {number} demandId : The Demand identifier
+     * @returns {Observable<HttpResponse<IAttachmentFile[]>>}
+     * @memberof DemandService
+     */
+    getAttachmentFiles(demandId: number): Observable<HttpResponse<IAttachmentFile[]>> {
+        return this.http.get<IAttachmentFile[]>(`${this.resourceUrl}/attachments/${demandId}`, { observe: 'response' });
+    }
+
+    /**
+     * Download an attached file.
+     *
+     * @param {number} id The attachment file identifier
+     * @returns {Observable<Blob>}
+     * @memberof DemandService
+     */
+    downloadAttachmentFile(attachmentFile: AttachmentFile): Observable<Blob> {
+        const requestUrl = attachmentFile.temporaryToken
+            ? `draftAttachment/${attachmentFile.temporaryToken}`
+            : `attachment/${attachmentFile.id}`;
+        return this.http.get<Blob>(`${this.resourceUrl}/${requestUrl}`, { responseType: 'blob' as 'json' });
     }
 
     private convertDateFromClient(demand: IDemand): IDemand {

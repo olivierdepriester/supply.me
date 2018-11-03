@@ -29,6 +29,8 @@ public class AttachmentFileDTO {
     @Max(value = 50)
     private String temporaryToken;
 
+    private Long demandId;
+
     private byte[] content;
 
     public AttachmentFileDTO() {
@@ -40,6 +42,9 @@ public class AttachmentFileDTO {
         this.type = af.getType();
         this.size = af.getSize();
         this.name = af.getName();
+        if  (af.getDemand() != null) {
+            this.demandId = af.getDemand().getId();
+        }
     }
 
     public Long getId() {
@@ -118,6 +123,20 @@ public class AttachmentFileDTO {
      */
     public void setContent(byte[] content) {
         this.content = content;
+    }
+
+    /**
+     * @return the demandId
+     */
+    public Long getDemandId() {
+        return demandId;
+    }
+
+    /**
+     * @param demandId the demandId to set
+     */
+    public void setDemandId(Long demandId) {
+        this.demandId = demandId;
     }
 
     @Override

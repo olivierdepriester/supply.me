@@ -1,8 +1,11 @@
 package com.baosong.supplyme.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -134,5 +137,45 @@ public class AttachmentFileServiceImpl implements AttachmentFileService {
         }
 
         return this.attachmentFileMapper.fromEntitiesToDTOs(afs);
+    }
+
+    @Override
+    public List<AttachmentFileDTO> getAttachmentFiles(Long id) {
+        return this.attachmentFileMapper.fromEntitiesToDTOs(this.attachmentFileRepository.findByDemandId(id));
+    }
+
+    @Override
+    public AttachmentFileDTO getAttachmentFile(Long id) throws ServiceException {
+        AttachmentFileDTO attachmentFileDTO = this.attachmentFileMapper.fromEntityToDTO(this.attachmentFileRepository.getOne(id));
+        final String attachmentPath = new StringBuilder(applicationProperties.getStorage().getAttachments().getPath())
+                .append(attachmentFileDTO.getDemandId()).append('/').append(id).toString();
+        InputStream is = null;
+        try {
+            File file = new File(attachmentPath);
+            is = new FileInputStream(file);
+            byte[] buffer = new byte[attachmentFileDTO.getSize().intValue()];
+            is.read(buffer);
+            is.close();
+            attachmentFileDTO.setContent(buffer);
+            return attachmentFileDTO;
+        } catch (FileNotFoundException e) {
+            throw new ServiceException(e.getMessage(), e);
+        } catch (IOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public byte[] getDraftAttachmentFile(String token) throws ServiceException {
+        final String temporaryPath = applicationProperties.getStorage().getAttachments().getTemporaryPath();
+        try {
+            FileInputStream fis = new FileInputStream(new StringBuilder(temporaryPath).append(token).toString());
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+            return buffer;
+        } catch (IOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
 }

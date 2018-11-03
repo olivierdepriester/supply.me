@@ -112,10 +112,10 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
             // Remove a newly created file --> Remove the draft already uploaded on the server
             this.demandService
                 .removeDraftFile(attachment.temporaryToken)
-                .subscribe((response: HttpResponse<any>) => this.files.splice(this.files.indexOf(attachment)));
+                .subscribe((response: HttpResponse<any>) => this.files.splice(this.files.indexOf(attachment), 1));
         } else {
             // Remove the file from the list. The whole list will be saved after the demand has.
-            this.files.splice(this.files.indexOf(attachment));
+            this.files.splice(this.files.indexOf(attachment), 1);
         }
     }
 

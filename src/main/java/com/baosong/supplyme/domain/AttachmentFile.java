@@ -99,11 +99,11 @@ public class AttachmentFile implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Demand demand = (Demand) o;
-        if (demand.getId() == null || getId() == null) {
+        AttachmentFile af = (AttachmentFile) o;
+        if (af.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), demand.getId());
+        return Objects.equals(getId(), af.getId());
     }
 
     @Override

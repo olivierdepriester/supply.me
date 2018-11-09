@@ -117,6 +117,21 @@ public class AttachmentFileServiceImpl implements AttachmentFileService {
                 .append(id).append('/').toString();
         List<AttachmentFile> afs = this.attachmentFileRepository.findByDemandId(id);
         try {
+            List<AttachmentFile> toRemove = afs.parallelStream()
+                .filter(af ->
+                    attachmentFilesDTO.stream()
+                        .filter(afDTO -> afDTO.getId() != null)
+                        .noneMatch(
+                            afDTO -> afDTO.getId().equals(af.getId())
+                        )
+                    ).collect(Collectors.toList());
+            afs.removeIf(af -> toRemove.contains(af));
+            for (AttachmentFile afToRemove : toRemove) {
+                File fileToRemove = new File(new StringBuilder(demandPath).append(afToRemove.getId()).toString());
+                fileToRemove.delete();
+                this.attachmentFileRepository.delete(afToRemove);
+            }
+
             Iterator<AttachmentFileDTO> attachmentIterator = attachmentFilesDTO.stream()
                     .filter(af -> !StringUtils.isEmpty(af.getTemporaryToken())).iterator();
             AttachmentFileDTO attachmentFileDTO = null;
@@ -131,19 +146,6 @@ public class AttachmentFileServiceImpl implements AttachmentFileService {
                         new StringBuilder(temporaryPath).append(attachmentFileDTO.getTemporaryToken()).toString());
                 File storedFile = new File(new StringBuilder(demandPath).append(attachmentFile.getId()).toString());
                 FileUtils.moveFile(temporaryFile, storedFile);
-            }
-            List<AttachmentFile> toRemove = afs.parallelStream()
-                .filter(af ->
-                    attachmentFilesDTO.stream()
-                        .noneMatch(
-                            afDTO -> afDTO.getId().equals(af.getId())
-                        )
-                    ).collect(Collectors.toList());
-            afs.removeIf(af -> toRemove.contains(af));
-            for (AttachmentFile afToRemove : toRemove) {
-                File fileToRemove = new File(new StringBuilder(demandPath).append(afToRemove.getId()).toString());
-                fileToRemove.delete();
-                this.attachmentFileRepository.delete(afToRemove);
             }
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);

@@ -7,10 +7,14 @@ import {
     DatetimeFormatPipe,
     DateFormatPipe,
     NullToDashPipe,
+    FileSizePipe,
+    SmSupplierPipe,
+    SmProjectPipe,
+    SmMaterialPipe,
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
-import { FileSizePipe } from './util/file-size.pipe';
+import { YesNoPipe } from './util/yes-no.pipe';
 
 @NgModule({
     imports: [SupplyMeSharedLibsModule],
@@ -21,6 +25,10 @@ import { FileSizePipe } from './util/file-size.pipe';
         DatetimeFormatPipe,
         NullToDashPipe,
         FileSizePipe,
+        YesNoPipe,
+        SmProjectPipe,
+        SmMaterialPipe,
+        SmSupplierPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ],
@@ -32,6 +40,10 @@ import { FileSizePipe } from './util/file-size.pipe';
         DatetimeFormatPipe,
         NullToDashPipe,
         FileSizePipe,
+        YesNoPipe,
+        SmProjectPipe,
+        SmMaterialPipe,
+        SmSupplierPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]

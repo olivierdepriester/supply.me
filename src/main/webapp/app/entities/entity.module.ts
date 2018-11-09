@@ -13,6 +13,7 @@ import { SupplyMeInvoiceModule } from './invoice/invoice.module';
 import { SupplyMeInvoiceLineModule } from './invoice-line/invoice-line.module';
 import { SupplyMeMutablePropertiesModule } from './mutable-properties/mutable-properties.module';
 import { SupplyMeMaterialCategoryModule } from './material-category/material-category.module';
+import { SupplyMeDemandCategoryModule } from './demand-category/demand-category.module';
 import { SupplyMeDepartmentModule } from './department/department.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
@@ -28,11 +29,12 @@ import { SupplyMeDepartmentModule } from './department/department.module';
         SupplyMePurchaseOrderLineModule,
         SupplyMeDeliveryNoteModule,
         SupplyMeDeliveryNoteLineModule,
+        SupplyMeDemandCategoryModule,
         SupplyMeInvoiceModule,
         SupplyMeInvoiceLineModule,
         SupplyMeMutablePropertiesModule,
         SupplyMeMaterialCategoryModule,
-        SupplyMeDepartmentModule,
+        SupplyMeDepartmentModule
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     providers: [],

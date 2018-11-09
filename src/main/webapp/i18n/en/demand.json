@@ -24,6 +24,7 @@
             "expectedDate": "Expected Date",
             "creationDate": "Creation Date",
             "material": "Material",
+            "department": "Department",
             "project": "Project",
             "category": "Category",
             "unit": "Unit",

@@ -23,6 +23,15 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.department" for="field_department">Department</label>
+                    <jhi-department-selector required id="field_department" name="department" [(ngModel)]="demand.department" ></jhi-department-selector>
+                    <div [hidden]="!(editForm.controls.department?.dirty && editForm.controls.department?.invalid)">
+                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
                     <jhi-project-selector required id="field_project" name="project" [(ngModel)]="demand.project" ></jhi-project-selector>
                     <div [hidden]="!(editForm.controls.project?.dirty && editForm.controls.project?.invalid)">
@@ -53,10 +62,10 @@
                         </label>
                     </div>
                     <div [hidden]="!editForm.controls.planned?.invalid">
-                            <small class="form-text text-danger" jhiTranslate="entity.validation.required">
-                            This field is required.
-                            </small>
-                        </div>
+                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.planned" for="field_planned_yes">Planned</label>

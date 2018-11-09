@@ -9,6 +9,7 @@ import { CalendarModule } from 'primeng/components/calendar/calendar';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MaterialSelectorModule } from 'app/entities/component/material-selector';
 import { ProjectSelectorModule } from 'app/entities/component/project-selector';
+import { DepartmentSelectorModule } from 'app/entities/component/department-selector';
 import { UserSelectorModule } from 'app/entities/component/user-selector';
 import { CategorySelectorModule } from 'app/entities/component/category-selector';
 import { SupplierSelectorModule } from 'app/entities/component/supplier-selector';
@@ -38,6 +39,7 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         CalendarModule,
         FileUploadModule,
         MaterialSelectorModule,
+        DepartmentSelectorModule,
         ProjectSelectorModule,
         UserSelectorModule,
         CategorySelectorModule,

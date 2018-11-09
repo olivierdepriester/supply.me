@@ -68,7 +68,7 @@
                         <th jhiSortBy="code.keyword" class="text-left"><span jhiTranslate="supplyMeApp.demand.code">Code</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="status.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.status">Status</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="material.partNumber.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span> <span class="fa fa-sort"></span></th>
-                        <th jhiSortBy="project.code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="department.code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.department">Department</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="quantity" class="text-right"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="amountWithVat" class="text-right"><span jhiTranslate="supplyMeApp.demand.amount">Amount</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="expectedDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span> <span class="fa fa-sort"></span></th>
@@ -91,8 +91,8 @@
                             </div>
                         </td>
                         <td>
-                            <div *ngIf="item.demand.project" title="{{ item.demand.project?.code + ' - ' + item.demand.project?.description }}">
-                                <a [routerLink]="['/project', item.demand.project?.id, 'view' ]">{{item.demand.project | smProject }}</a>
+                            <div *ngIf="item.demand.department" title="{{ item.demand.department | smDepartment }}">
+                                <a [routerLink]="['/department', item.demand.department?.id, 'view' ]">{{item.demand.department | smDepartment }}</a>
                             </div>
                         </td>
                         <td class="text-right">

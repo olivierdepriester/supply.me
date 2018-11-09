@@ -4,25 +4,25 @@
         "department" : {
             "home": {
                 "title": "Departments",
-                "createLabel": "Create a new Department",
-                "createOrEditLabel": "Create or edit a Department",
-                "search": "Search for Department"
+                "createLabel": "Create a new department",
+                "createOrEditLabel": "Create or edit a department",
+                "search": "Search for departments"
             },
-            "created": "A new Department is created with identifier {{ param }}",
-            "updated": "A Department is updated with identifier {{ param }}",
-            "deleted": "A Department is deleted with identifier {{ param }}",
+            "created": "A new department is created with identifier {{ param }}",
+            "updated": "A department is updated with identifier {{ param }}",
+            "deleted": "A department is deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Department {{ id }}?"
+                "question": "Are you sure you want to delete department {{ id }}?"
             },
             "detail": {
-                "title": "Department"
+                "title": "department"
             },
             "code": "Code",
             "description": "Description",
             "creationDate": "Creation Date",
             "active": "Active",
             "creationUser": "Creation User",
-            "headUser": "Head User",
+            "headUser": "Head",
             "defaultProject": "Default Project"
         }
     }

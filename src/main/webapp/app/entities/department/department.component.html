@@ -29,14 +29,12 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="code"><span jhiTranslate="supplyMeApp.department.code">Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="description"><span jhiTranslate="supplyMeApp.department.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.department.creationDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="active"><span jhiTranslate="supplyMeApp.department.active">Active</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creationUser.login"><span jhiTranslate="supplyMeApp.department.creationUser">Creation User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="headUser.login"><span jhiTranslate="supplyMeApp.department.headUser">Head User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="defaultProject.id"><span jhiTranslate="supplyMeApp.department.defaultProject">Default Project</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span>  <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="code"><span jhiTranslate="supplyMeApp.department.code">Code</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="description"><span jhiTranslate="supplyMeApp.department.description">Description</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="active"><span jhiTranslate="supplyMeApp.department.active">Active</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="headUser.login"><span jhiTranslate="supplyMeApp.department.headUser">Head User</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="defaultProject.id"><span jhiTranslate="supplyMeApp.department.defaultProject">Default Project</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
@@ -45,17 +43,13 @@
                 <td><a [routerLink]="['/department', department.id, 'view' ]">{{department.id}}</a></td>
                 <td>{{department.code}}</td>
                 <td>{{department.description}}</td>
-                <td>{{department.creationDate | date:'medium'}}</td>
-                <td>{{department.active}}</td>
+                <td>{{department.active | yesNo | translate }}</td>
                 <td>
-                    {{department.creationUser?.login}}
-                </td>
-                <td>
-                    {{department.headUser?.login}}
+                    {{department.headUser | smUser }}
                 </td>
                 <td>
                     <div *ngIf="department.defaultProject">
-                        <a [routerLink]="['../project', department.defaultProject?.id, 'view' ]" >{{department.defaultProject?.id}}</a>
+                        <a [routerLink]="['../project', department.defaultProject?.id, 'view' ]" >{{department.defaultProject | smProject }}</a>
                     </div>
                 </td>
                 <td class="text-right">

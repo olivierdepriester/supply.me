@@ -15,23 +15,21 @@
                         <a [routerLink]="['/material', demand.material?.id, 'view']">{{demand.material | smMaterial }}</a>
                     </div>
                 </dd>
+                <dt><span jhiTranslate="supplyMeApp.demand.department">Department</span></dt>
+                <dd>
+                    <div *ngIf="demand.department">
+                        <a [routerLink]="['/department', demand.department?.id, 'view']">{{demand.department | smDepartment }}</a>
+                    </div>
+                </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.project">Project</span></dt>
                 <dd>
                     <div *ngIf="demand.project">
                         <a [routerLink]="['/project', demand.project?.id, 'view']">{{demand.project | smProject }}</a>
                     </div>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.demand.description">Description</span></dt>
-                <dd>
-                    <span>{{demand.description | nullToDash }}</span>
-                </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></dt>
                 <dd>
                     <span>{{demand.quantity | number }}</span>
-                </dd>
-                <dt><span jhiTranslate="supplyMeApp.demand.estimatedPrice">Estimated price</span></dt>
-                <dd>
-                    <span>{{demand.estimatedPrice | currencyCustom | nullToDash }}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></dt>
                 <dd>
@@ -39,9 +37,12 @@
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.supplier">Supplier</span></dt>
                 <dd>
-                    <a  [routerLink]="['/supplier', demand.supplier?.id, 'view']">
-                        {{demand.supplier | smSupplier }}
-                    </a>
+                    <ng-container *ngIf="demand.supplier; else elseTemplate">
+                        <a  [routerLink]="['/supplier', demand.supplier?.id, 'view']">{{demand.supplier | smSupplier }}</a>
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                        {{ '' | nullToDash }}
+                    </ng-template>
                 </dd>
             </dl>
             <div class="accordion" *ngIf="demand.demandStatusChanges && demand.demandStatusChanges.length > 0">
@@ -136,6 +137,14 @@
                                     <span>{{demand.whereUse | nullToDash }}</span>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.description">Description</span>
+                                </div>
+                                <div class="col-xs-7 col-sm-8 col-lg-9">
+                                    <span>{{demand.description | nullToDash }}</span>
+                                </div>
+                            </div>
                         </ng-template>
                     </ngb-panel>
                     <ngb-panel id="ngb-panel-attachments">
@@ -169,9 +178,10 @@
                                 <tbody>
                                     <tr *ngFor="let statusChange of demand.demandStatusChanges">
                                         <td class="text-center" style="width: 20%">{{ statusChange.creationDate | datetimeFormat }}</td>
-                                        <td style="width: 20%">{{ statusChange.creationUser.lastName + ' ' +
-                                            statusChange.creationUser.firstName }}</td>
-                                        <td class="text-center" style="width: 20%"><span jhiTranslate="{{'supplyMeApp.DemandStatus.' + statusChange.status}}">Status</span></td>
+                                        <td style="width: 20%">{{ statusChange.creationUser | smUser }}</td>
+                                        <td class="text-center" style="width: 20%">
+                                            <span [ngClass]="statusChange.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.DemandStatus.' + statusChange.status}}">demand.status</span>
+                                        </td>
                                         <td style="width: 40%">{{statusChange.comment }}</td>
                                     </tr>
                                 </tbody>

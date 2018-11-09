@@ -267,6 +267,9 @@
         "category": {
             "placeholder": "Type here to select a category"
         },
+        "department": {
+            "placeholder": "Type here to select a department"
+        },
         "purchaseorderline": {
             "placeholder": "Type here to select a material in a purchase order"
         }

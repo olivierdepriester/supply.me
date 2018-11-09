@@ -15,6 +15,8 @@ import {
     JhiAlertErrorComponent
 } from './';
 import { YesNoPipe } from './util/yes-no.pipe';
+import { SmDepartmentPipe } from './util/entities/sm-department.pipe';
+import { SmUserPipe } from './util/entities/sm-user.pipe';
 
 @NgModule({
     imports: [SupplyMeSharedLibsModule],
@@ -26,9 +28,11 @@ import { YesNoPipe } from './util/yes-no.pipe';
         NullToDashPipe,
         FileSizePipe,
         YesNoPipe,
+        SmDepartmentPipe,
         SmProjectPipe,
         SmMaterialPipe,
         SmSupplierPipe,
+        SmUserPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ],
@@ -41,9 +45,11 @@ import { YesNoPipe } from './util/yes-no.pipe';
         NullToDashPipe,
         FileSizePipe,
         YesNoPipe,
-        SmProjectPipe,
+        SmDepartmentPipe,
         SmMaterialPipe,
+        SmProjectPipe,
         SmSupplierPipe,
+        SmUserPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]

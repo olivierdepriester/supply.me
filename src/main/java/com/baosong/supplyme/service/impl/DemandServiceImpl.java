@@ -5,6 +5,7 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -118,6 +119,9 @@ public class DemandServiceImpl implements DemandService {
             demand.status(DemandStatus.NEW).quantityDelivered(0d).quantityOrdered(0d).creationDate(Instant.now())
                     .code(mutablePropertiesService.getNewDemandCode())
                     .setCreationUser(userService.getCurrentUser().get());
+            List<DemandStatusChange> dsc = new ArrayList<>(1);
+            dsc.add(new DemandStatusChange(demand, demand.getStatus(), demand.getCreationUser()));
+            demand.setDemandStatusChanges(dsc);
         }
         return this.saveAndCascadeIndex(demand);
     }

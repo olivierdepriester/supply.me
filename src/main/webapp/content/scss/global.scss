@@ -1,5 +1,4 @@
 @import 'bootstrap-variables';
-
 /* ==============================================================
 Bootstrap tweaks
 ===============================================================*/
@@ -258,10 +257,6 @@ span[contenteditable='true'] {
     }
 }
 
-div .collapsed {
-    display: none;
-}
-
 jhi-material-selector {
     display: block;
     border-radius: 0.5rem;
@@ -301,4 +296,58 @@ dd {
     & label {
         margin-bottom: 0.1rem;
     }
+}
+
+.accordion {
+    margin-bottom: 1rem;
+    & .title {
+        font-weight: 700;
+    }
+}
+
+.row {
+    margin-bottom: 0.1rem;
+    & .header {
+        font-weight: 700;
+    }
+}
+
+/* ==========================================================================
+demand status
+========================================================================== */
+%demand-status {
+    border-radius: 0.8rem;
+    border-width: 0.1rem;
+    border-style: solid;
+    padding: 0.4rem;
+    font-weight: 700;
+    vertical-align: middle;
+    font-size: 1rem;
+}
+
+.new {
+    @extend %demand-status;
+    color: whitesmoke;
+    background-color: $info;
+    border-color: $info;
+}
+
+.rejected {
+    @extend %demand-status;
+    color: whitesmoke;
+    background-color: $warning;
+    border-color: $warning;
+}
+.waiting_for_approval {
+    @extend %demand-status;
+    color: $success;
+    background-color: transparent;
+    border-color: $success;
+}
+
+.approved {
+    @extend %demand-status;
+    color: whitesmoke;
+    background-color: $success;
+    border-color: $success;
 }

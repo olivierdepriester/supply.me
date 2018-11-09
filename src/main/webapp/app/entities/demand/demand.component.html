@@ -23,25 +23,26 @@
                         <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
-                <div class="showfilter" [ngClass]="{'collapsed': isAdvancedFilterDisplayed}">
-                    <button type="button" class="btn" (click)="expandCollapse()">
-                        <fa-icon [icon]="'sort-down'"></fa-icon>
+                <div class="input-group w-100 mt-3">
+                    <button type="button" class="btn btn-outline-info btn-xs" (click)="isCollapsed = !isCollapsed"
+                    [attr.aria-expanded]="!isCollapsed">
+                        <ng-container *ngIf="isCollapsed; else elseTemplate">
+                            <fa-icon [icon]="'sort-down'"></fa-icon>
+                            <span jhiTranslate="search.showAdvancedFilters"></span>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            <fa-icon [icon]="'sort-up'"></fa-icon>
+                            <span jhiTranslate="search.hideAdvancedFilters"></span>
+                        </ng-template>
                     </button>
-                    <span jhiTranslate="search.showAdvancedFilters" (click)="expandCollapse()"></span>
                 </div>
-                <div class="showfilter" [ngClass]="{'collapsed': !isAdvancedFilterDisplayed}">
-                    <button type="button" class="btn" (click)="expandCollapse()">
-                        <fa-icon [icon]="'sort-up'"></fa-icon>
-                    </button>
-                    <span jhiTranslate="search.hideAdvancedFilters" (click)="expandCollapse()"></span>
-                </div>
-                <div class="input-group w-100 mt-3" [ngClass]="{'collapsed': !isAdvancedFilterDisplayed }">
+                <div class="input-group w-100 mt-3" [ngbCollapse]="isCollapsed" >
                     <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.project" for="field_project">Project</label>
                     <jhi-project-selector class="w35" id="field_project" name="project" [(ngModel)]="searchCriteria.project"></jhi-project-selector>
                     <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.material" for="field_material">Material</label>
                     <jhi-material-selector class="w35" id="field_material" name="material" [(ngModel)]="searchCriteria.material"></jhi-material-selector>
                 </div>
-                <div class="input-group w-100 mt-3" [ngClass]="{'collapsed': !isAdvancedFilterDisplayed }">
+                <div class="input-group w-100 mt-3" [ngbCollapse]="isCollapsed" >
                     <label class="criteria-label w10" jhiTranslate="supplyMeApp.demand.status" for="field_status">Status</label>
                     <p-multiSelect class="w35" name="status" [defaultLabel]="'selector.status.placeholder' | translate"
                         [inputStyle]="{'width':'100%'}" [showHeader]="false" [style]="{'width':'100%', 'padding': '0.1em 0.5em'}"
@@ -64,11 +65,12 @@
             <table class="table table-striped">
                 <thead>
                     <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-                        <th jhiSortBy="code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.code">Code</span> <span class="fa fa-sort"></span></th>
-                        <th jhiSortBy="material.partNumber.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span> <span class="fa fa-sort"></span></th>
-                        <th jhiSortBy="quantity" class="text-center"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span> <span class="fa fa-sort"></span></th>
-                        <th jhiSortBy="project.code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="code.keyword" class="text-left"><span jhiTranslate="supplyMeApp.demand.code">Code</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="status.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.status">Status</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="material.partNumber.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.material">Material</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="project.code.keyword" class="text-center"><span jhiTranslate="supplyMeApp.demand.project">Project</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="quantity" class="text-right"><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="amountWithVat" class="text-right"><span jhiTranslate="supplyMeApp.demand.amount">Amount</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="expectedDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="creationDate" class="text-center"><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span> <span class="fa fa-sort"></span></th>
                         <th></th>
@@ -76,21 +78,29 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let item of demands ;trackBy: trackId">
-                        <td><a [routerLink]="['/demand', item.demand.id, 'view' ]">{{item.demand.code}}</a></td>
+                        <td>
+                            <a [routerLink]="['/demand', item.demand.id, 'view' ]">{{item.demand.code}}</a>
+                            <span *ngIf="item.demand.urgent" class="urgent fa fa-exclamation" title="{{ 'supplyMeApp.demand.urgencyWarning' | translate}} "></span>
+                        </td>
+                        <td class="text-center" >
+                            <span [ngClass]="item.demand.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.DemandStatus.' + item.demand.status}}">demand.status</span>
+                        </td>
                         <td class="text-left">
                             <div *ngIf="item.demand.material" title="{{ item.demand.material?.partNumber + ' - ' + item.demand.material?.name + '\n' + item.demand.material?.description }}">
-                                <a [routerLink]="['/material', item.demand.material?.id, 'view' ]">{{ item.demand.material?.name }}</a>
+                                <a [routerLink]="['/material', item.demand.material?.id, 'view' ]">{{ item.demand.material | smMaterial }}</a>
                             </div>
-                        </td>
-                        <td class="text-right">
-                            <span class="numeric">{{item.demand.quantity}}</span>
                         </td>
                         <td>
                             <div *ngIf="item.demand.project" title="{{ item.demand.project?.code + ' - ' + item.demand.project?.description }}">
-                                <a [routerLink]="['/project', item.demand.project?.id, 'view' ]">{{item.demand.project?.code}}</a>
+                                <a [routerLink]="['/project', item.demand.project?.id, 'view' ]">{{item.demand.project | smProject }}</a>
                             </div>
                         </td>
-                        <td jhiTranslate="{{'supplyMeApp.DemandStatus.' + item.demand.status}}">Status</td>
+                        <td class="text-right">
+                            <span class="numeric">{{item.demand.quantity | number }}</span>
+                        </td>
+                        <td class="text-right">
+                            <span class="numeric">{{item.demand.amountWithVat | currencyCustom }}</span>
+                        </td>
                         <td class="text-center">{{item.demand.expectedDate | dateFormat }}</td>
                         <td class="text-center" title="{{item.demand.creationDate | datetimeFormat }}">{{item.demand.creationDate | dateFormat }}</td>
                         <td class="text-left">
@@ -138,7 +148,6 @@
                                         <fa-icon [icon]="'times'"></fa-icon>
                                     </button>
                                 </ng-template>
-
                             </div>
                         </td>
                     </tr>

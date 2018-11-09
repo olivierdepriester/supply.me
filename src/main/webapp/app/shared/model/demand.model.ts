@@ -57,6 +57,8 @@ export interface IDemand {
     whereUse?: string;
     unit?: string;
     vat?: number;
+    estimatedPriceWithVat?: number;
+    amountWithVat?: number;
     demandStatusChanges?: IDemandStatusChange[];
 }
 
@@ -85,6 +87,8 @@ export class Demand implements IDemand {
         public whereUse?: string,
         public unit?: string,
         public vat?: number,
+        public estimatedPriceWithVat?: number,
+        public amountWithVat?: number,
         public demandStatusChanges?: IDemandStatusChange[]
     ) {}
 }

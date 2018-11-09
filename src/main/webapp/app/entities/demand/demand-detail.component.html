@@ -1,23 +1,24 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <ng-container *ngIf="demand">
-            <h2><span jhiTranslate="supplyMeApp.demand.detail.title">Demand</span> {{demand.code}}</h2>
+            <h2>
+                <span jhiTranslate="supplyMeApp.demand.detail.title">Demand</span> {{demand.code}}
+                <div class="status" [ngClass]="demand.status.toLowerCase()" style="margin-bottom: 0.4rem; display: inline-block;" jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</div>
+                <span *ngIf="demand.urgent" class="urgent fa fa-exclamation" title="{{ 'supplyMeApp.demand.urgencyWarning' | translate}} "></span>
+            </h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="supplyMeApp.demand.material">Material</span></dt>
                 <dd>
                     <div *ngIf="demand.material">
-                        <a [routerLink]="['/material', demand.material?.id, 'view']">{{demand.material?.partNumber + '
-                            - ' + demand.material?.name}}</a>
+                        <a [routerLink]="['/material', demand.material?.id, 'view']">{{demand.material | smMaterial }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.project">Project</span></dt>
                 <dd>
                     <div *ngIf="demand.project">
-                        <a [routerLink]="['/project', demand.project?.id, 'view']">
-                            {{demand.project?.code + ' - ' + demand.project?.description }}
-                        </a>
+                        <a [routerLink]="['/project', demand.project?.id, 'view']">{{demand.project | smProject }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.description">Description</span></dt>
@@ -32,106 +33,152 @@
                 <dd>
                     <span>{{demand.estimatedPrice | currencyCustom | nullToDash }}</span>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.demand.status">Status</span></dt>
-                <dd>
-                    <span jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</span>
-                </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></dt>
                 <dd>
                     <span>{{demand.expectedDate | dateFormat | nullToDash }}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.supplier">Supplier</span></dt>
                 <dd>
-                    <ng-container *ngIf="demand.supplier; else elseTemplate">
-                        <a  [routerLink]="['/supplier', demand.supplier?.id, 'view']">
-                            {{demand.supplier.referenceNumber + ' - ' + demand.supplier.name }}
-                        </a>
-                    </ng-container>
-                    <ng-template #elseTemplate>
-                            <span>{{ '' | nullToDash }}</span>
-                    </ng-template>
-                </dd>
-                <dt><span jhiTranslate="supplyMeApp.demand.attachments">Attachments</span></dt>
-                <dd>
-                    <ng-container *ngIf="files && files.length > 0; else elseAttachmentsTemplate">
-                        <div class="ui-fileupload-row" *ngFor="let item of files; let i = index">
-                            <div><a href="javascript:void(0)" (click)="downloadFile(item)" >{{ item.name }}</a> </div>
-                            <div>{{ item.size | fileSize }} </div>
-                        </div>
-                    </ng-container>
-                    <ng-template #elseAttachmentsTemplate>
-                        <span>{{ '' | nullToDash }}</span>
-                    </ng-template>
-                </dd>
-                <dt><span jhiTranslate="supplyMeApp.demand.creationDate">Creation Date</span></dt>
-                <dd>
-                    <span>{{demand.creationDate | datetimeFormat}}</span>
-                </dd>
-                <dt><span jhiTranslate="supplyMeApp.demand.creationUser">Creation User</span></dt>
-                <dd>
-                    {{demand.creationUser?.lastName + ' ' + demand.creationUser?.firstName}}
+                    <a  [routerLink]="['/supplier', demand.supplier?.id, 'view']">
+                        {{demand.supplier | smSupplier }}
+                    </a>
                 </dd>
             </dl>
-            <div *ngIf="purchaseOrderLines && purchaseOrderLines.length > 0">
-                <h3>
-                    <span jhiTranslate="supplyMeApp.purchaseOrder.home.title">Purchase orders</span>
-                </h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr class="text-center">
-                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span></th>
-                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span></th>
-                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span></th>
-                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">ExpectedDate</span></th>
-                            <th><span jhiTranslate="supplyMeApp.purchaseOrderLine.quantity">Quantity</span></th>
-                            <th><span jhiTranslate="supplyMeApp.purchaseOrderLine.orderPrice">Order price</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let line of purchaseOrderLines">
-                            <td class="text-center">
-                                <a [routerLink]="['/purchase-order', line.purchaseOrder?.id, 'view' ]">{{
-                                    line.purchaseOrder.code }}</a>
-                            </td>
-                            <td>
-                                <div *ngIf="line.purchaseOrder.supplier">
-                                    <a [routerLink]="['/supplier', line.purchaseOrder.supplier?.id, 'view' ]">{{
-                                        line.purchaseOrder.supplier?.name }}</a>
+            <div class="accordion" *ngIf="demand.demandStatusChanges && demand.demandStatusChanges.length > 0">
+                <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-pricing">
+                    <ngb-panel id="ngb-panel-pricing">
+                        <ng-template ngbPanelTitle>
+                            <fa-icon [icon]="'sort-down'"></fa-icon>
+                            <span class="title" jhiTranslate="supplyMeApp.demand.pricing">Pricing</span>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.estimatedPrice">Estimated price</span>
                                 </div>
-                            </td>
-                            <td class="text-center">
-                                <span jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + line.purchaseOrder.status}}">{{line.purchaseOrder.status}}</span>
-                            </td>
-                            <td class="text-center">{{ line.purchaseOrder.expectedDate | dateFormat }} </td>
-                            <td class="numeric">{{ line.quantity }} </td>
-                            <td class="numeric">{{ line.orderPrice | currency:'CNY':'symbol-narrow':'1.0-3' }} </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div *ngIf="demand.demandStatusChanges && demand.demandStatusChanges.length > 0">
-                <h3>
-                    <span jhiTranslate="supplyMeApp.demand.statusChange.title">Events</span>
-                </h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr class="text-center">
-                            <th><span jhiTranslate="supplyMeApp.demand.creationDate">Creation date</span></th>
-                            <th><span jhiTranslate="supplyMeApp.demand.creationUser">Creation user</span></th>
-                            <th><span jhiTranslate="supplyMeApp.demand.status">Status</span></th>
-                            <th><span jhiTranslate="supplyMeApp.demand.statusChange.comment">Comment</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let statusChange of demand.demandStatusChanges">
-                            <td class="text-center" style="width: 20%">{{ statusChange.creationDate | datetimeFormat }}</td>
-                            <td style="width: 20%">{{ statusChange.creationUser.lastName + ' ' +
-                                statusChange.creationUser.firstName }}</td>
-                            <td class="text-center" style="width: 20%"><span jhiTranslate="{{'supplyMeApp.DemandStatus.' + statusChange.status}}">Status</span></td>
-                            <td style="width: 40%">{{statusChange.comment }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <div class="col-xs-2 col-sm-2 col-lg-2 numeric">
+                                    <span>{{demand.estimatedPrice | currencyCustom | nullToDash }}</span>
+                                </div>
+                                <div class="col-xs-5 col-sm-6 col-lg-7"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.vat">VAT</span>
+                                </div>
+                                <div class="col-xs-2 col-sm-2 col-lg-2 numeric">
+                                    <span>{{demand.vat | percent | nullToDash }}</span>
+                                </div>
+                                <div class="col-xs-5 col-sm-6 col-lg-7"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.estimatedPriceWithVat">Estimated unit price VAT included</span>
+                                </div>
+                                <div class="col-xs-2 col-sm-2 col-lg-2 numeric">
+                                    <span>{{demand.estimatedPriceWithVat | currencyCustom | nullToDash }}</span>
+                                </div>
+                                <div class="col-xs-5 col-sm-6 col-lg-7"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.amountWithVat">Total amount VAT included</span>
+                                </div>
+                                <div class="col-xs-2 col-sm-2 col-lg-2 numeric">
+                                    <span>{{demand.amountWithVat | currencyCustom | nullToDash }}</span>
+                                </div>
+                                <div class="col-xs-5 col-sm-6 col-lg-7"></div>
+                            </div>
+                        </ng-template>
+                    </ngb-panel>
+                    <ngb-panel id="ngb-panel-usage">
+                        <ng-template ngbPanelTitle>
+                            <fa-icon [icon]="'sort-down'"></fa-icon>
+                            <span class="title" jhiTranslate="supplyMeApp.demand.usage">Usage</span>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.category">Category</span>
+                                </div>
+                                <div class="col-xs-7 col-sm-8 col-lg-9">
+                                    <span>{{demand.demandCategory?.name | nullToDash }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.useAnnualBudget">Use annual budget</span>
+                                </div>
+                                <div class="col-xs-7 col-sm-8 col-lg-9">
+                                    <span>{{demand.useAnnualBudget | yesNo | translate | nullToDash  }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.planned">Planned</span>
+                                </div>
+                                <div class="col-xs-7 col-sm-8 col-lg-9">
+                                    <span>{{demand.planned | yesNo | translate | nullToDash  }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.urgent">Urgent</span>
+                                </div>
+                                <div class="col-xs-7 col-sm-8 col-lg-9">
+                                    <span>{{demand.urgent | yesNo | translate | nullToDash  }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-4 col-lg-3 header">
+                                    <span jhiTranslate="supplyMeApp.demand.whereUse">Where use</span>
+                                </div>
+                                <div class="col-xs-7 col-sm-8 col-lg-9">
+                                    <span>{{demand.whereUse | nullToDash }}</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngb-panel>
+                    <ngb-panel id="ngb-panel-attachments">
+                        <ng-template ngbPanelTitle>
+                            <fa-icon [icon]="'sort-down'"></fa-icon>
+                            <span class="title" jhiTranslate="supplyMeApp.demand.attachments">Attachments</span>
+                            <span class="title" >: {{ files.length }} </span>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
+                            <div class="ui-fileupload-row" *ngFor="let item of files; let i = index">
+                                <div><a href="javascript:void(0)" (click)="downloadFile(item)" >{{ item.name }}</a> </div>
+                                <div>{{ item.size | fileSize }} </div>
+                            </div>
+                        </ng-template>
+                    </ngb-panel>
+                    <ngb-panel id="ngb-panel-events">
+                        <ng-template ngbPanelTitle>
+                            <fa-icon [icon]="'sort-down'"></fa-icon>
+                            <span class="title" jhiTranslate="supplyMeApp.demand.statusChange.title">Events</span>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th><span jhiTranslate="supplyMeApp.demand.creationDate">Creation date</span></th>
+                                        <th><span jhiTranslate="supplyMeApp.demand.creationUser">Creation user</span></th>
+                                        <th><span jhiTranslate="supplyMeApp.demand.status">Status</span></th>
+                                        <th><span jhiTranslate="supplyMeApp.demand.statusChange.comment">Comment</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let statusChange of demand.demandStatusChanges">
+                                        <td class="text-center" style="width: 20%">{{ statusChange.creationDate | datetimeFormat }}</td>
+                                        <td style="width: 20%">{{ statusChange.creationUser.lastName + ' ' +
+                                            statusChange.creationUser.firstName }}</td>
+                                        <td class="text-center" style="width: 20%"><span jhiTranslate="{{'supplyMeApp.DemandStatus.' + statusChange.status}}">Status</span></td>
+                                        <td style="width: 40%">{{statusChange.comment }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </ng-template>
+                    </ngb-panel>
+                </ngb-accordion>
             </div>
             <button type="submit" (click)="previousState()" class="btn btn-info">
                 <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>

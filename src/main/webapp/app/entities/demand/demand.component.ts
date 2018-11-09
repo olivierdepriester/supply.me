@@ -19,7 +19,7 @@ export class DemandComponent implements OnInit, OnDestroy {
     currentAccount: any;
     eventSubscriber: Subscription;
     searchCriteria: DemandSearchCriteria;
-    isAdvancedFilterDisplayed = false;
+    isCollapsed = true;
     availableStatus: SelectItem[] = [];
     predicate: any;
     reverse: boolean;
@@ -54,7 +54,7 @@ export class DemandComponent implements OnInit, OnDestroy {
                     // No criteria : intialize new block
                     this.searchCriteria = new DemandSearchCriteria();
                 }
-                this.isAdvancedFilterDisplayed = true;
+                this.isCollapsed = true;
             }
         });
         // Current user
@@ -172,7 +172,7 @@ export class DemandComponent implements OnInit, OnDestroy {
     }
 
     expandCollapse(): void {
-        this.isAdvancedFilterDisplayed = !this.isAdvancedFilterDisplayed;
+        this.isCollapsed = !this.isCollapsed;
     }
 
     reset() {

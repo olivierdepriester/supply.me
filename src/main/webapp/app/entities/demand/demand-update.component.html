@@ -90,36 +90,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.description" for="field_description">Description</label>
-                    <textarea cols="50" rows="4" class="form-control" name="description" id="field_description" [(ngModel)]="demand.description"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.whereUse" for="field_whereUse">Where use</label>
-                    <input type="text" class="form-control" name="whereUse" id="field_whereUse" [(ngModel)]="demand.whereUse" [maxLength]="50" >
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.attachments" for="field_attachedFiles">Where use</label>
-                    <p-fileUpload #fileUpload id="field_attachedFiles" name="fileUpload" customUpload="true" [multiple]="true" (uploadHandler)="uploadFiles($event)"
-                        [chooseLabel]="'supplyMeApp.demand.button.uploader.choose' | translate"
-                        [uploadLabel]="'supplyMeApp.demand.button.uploader.upload' | translate"
-                        [cancelLabel]="'supplyMeApp.demand.button.uploader.cancel' | translate" >
-                        <ng-template pTemplate="content">
-                            <div *ngIf="files.length > 0">
-                                <span>Existing</span>
-                                <div class="ui-fileupload-row" *ngFor="let item of files">
-                                    <div><a href="javascript:void(0)" (click)="downloadFile(item)" >{{ item.name }}</a> </div>
-                                    <div>{{ item.size | fileSize }} </div>
-                                    <div>
-                                        <button type="button" class="btn btn-danger btn-sm" (click)="removeFile(item)" >
-                                            <fa-icon [icon]="'times'"></fa-icon>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-                    </p-fileUpload>
-                </div>
-                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.quantity" for="field_quantity">Quantity</label>
                     <input type="number" class="form-control" name="quantity" id="field_quantity" min="0" [(ngModel)]="demand.quantity" required/>
                     <div [hidden]="!(editForm.controls.quantity?.dirty && editForm.controls.quantity?.invalid)">
@@ -164,6 +134,36 @@
                         [monthNavigator]="true" [yearNavigator]="true" yearRange="2018:2030" [style]="{'width': '100%'}"
                         [(ngModel)]="expectedDate" name="expectedDate" dateFormat="yy-mm-dd"></p-calendar>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.whereUse" for="field_whereUse">Where use</label>
+                    <input type="text" class="form-control" name="whereUse" id="field_whereUse" [(ngModel)]="demand.whereUse" [maxLength]="50" >
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.description" for="field_description">Description</label>
+                    <textarea cols="50" rows="4" class="form-control" name="description" id="field_description" [(ngModel)]="demand.description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.attachments" for="field_attachedFiles">Where use</label>
+                    <p-fileUpload #fileUpload id="field_attachedFiles" name="fileUpload" customUpload="true" [multiple]="true" (uploadHandler)="uploadFiles($event)"
+                        [chooseLabel]="'supplyMeApp.demand.button.uploader.choose' | translate"
+                        [uploadLabel]="'supplyMeApp.demand.button.uploader.upload' | translate"
+                        [cancelLabel]="'supplyMeApp.demand.button.uploader.cancel' | translate" >
+                        <ng-template pTemplate="content">
+                            <div *ngIf="files.length > 0">
+                                <span>Existing</span>
+                                <div class="ui-fileupload-row" *ngFor="let item of files">
+                                    <div><a href="javascript:void(0)" (click)="downloadFile(item)" >{{ item.name }}</a> </div>
+                                    <div>{{ item.size | fileSize }} </div>
+                                    <div>
+                                        <button type="button" class="btn btn-danger btn-sm" (click)="removeFile(item)" >
+                                            <fa-icon [icon]="'times'"></fa-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-fileUpload>
                 </div>
             </div>
             <div>

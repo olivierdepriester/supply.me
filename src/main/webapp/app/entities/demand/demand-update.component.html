@@ -24,7 +24,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.department" for="field_department">Department</label>
-                    <jhi-department-selector required id="field_department" name="department" [(ngModel)]="demand.department" ></jhi-department-selector>
+                    <jhi-department-selector (change)="onDepartmentChange($event)" required id="field_department" name="department" [(ngModel)]="demand.department" ></jhi-department-selector>
                     <div [hidden]="!(editForm.controls.department?.dirty && editForm.controls.department?.invalid)">
                         <small class="form-text text-danger" jhiTranslate="entity.validation.required">
                         This field is required.

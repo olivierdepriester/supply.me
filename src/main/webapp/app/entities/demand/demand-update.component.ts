@@ -10,6 +10,7 @@ import { JhiEventManager } from 'ng-jhipster';
 import { Observable, Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
 import { FileUpload } from 'primeng/primeng';
+import { IDepartment } from 'app/shared/model/department.model';
 
 @Component({
     selector: 'jhi-demand-update',
@@ -65,6 +66,12 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
     onMaterialChange(event: IMaterial) {
         if (event) {
             this.demand.estimatedPrice = event.estimatedPrice;
+        }
+    }
+
+    onDepartmentChange(event: IDepartment) {
+        if (event && event.defaultProject && this.demand.project == null) {
+            this.demand.project = event.defaultProject;
         }
     }
 

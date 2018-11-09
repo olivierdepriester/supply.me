@@ -20,6 +20,12 @@
                                  referencedColumnNames="id"
                                  referencedTableName="project"/>
 
+        <addForeignKeyConstraint baseColumnNames="department_id"
+                                 baseTableName="demand"
+                                 constraintName="fk_demand_department_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="department"/>
+
         <addForeignKeyConstraint baseColumnNames="creation_user_id"
                                  baseTableName="demand"
                                  constraintName="fk_demand_creation_user_id"
@@ -32,17 +38,10 @@
                                  referencedColumnNames="id"
                                  referencedTableName="supplier"/>
 
-        <addForeignKeyConstraint baseColumnNames="validation_authority_name"
+        <addForeignKeyConstraint baseColumnNames="demand_category_id"
                                  baseTableName="demand"
-                                 constraintName="fk_demand_validation_authority_name"
-                                 referencedColumnNames="name"
-                                 referencedTableName="jhi_authority"/>
-    </changeSet>
-    <changeSet id="20181029025039-4" author="olivier">
-      <addForeignKeyConstraint baseColumnNames="demand_category_id"
-          baseTableName="demand"
-          constraintName="fk_demand_demand_category_id"
-          referencedColumnNames="id"
-          referencedTableName="demand_category"/>
+                                 constraintName="fk_demand_demand_category_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="demand_category"/>
     </changeSet>
 </databaseChangeLog>

@@ -9,6 +9,8 @@ public class DemandSearchCriteria {
 
     private Long projectId;
 
+    private Long departmentId;
+
     private List<DemandStatus> demandStatus;
 
     private Long creationUserId;
@@ -86,6 +88,20 @@ public class DemandSearchCriteria {
         this.materialId = materialId;
     }
 
+    /**
+     * @return the departmentId
+     */
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    /**
+     * @param departmentId the departmentId to set
+     */
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
+    }
+
     public DemandSearchCriteria creationUserId(Long creationUserId) {
         this.setCreationUserId(creationUserId);
         return this;
@@ -108,6 +124,11 @@ public class DemandSearchCriteria {
 
     public DemandSearchCriteria query(String query) {
         this.setQuery(query);
+        return this;
+    }
+
+    public DemandSearchCriteria departmentId(Long departmentId) {
+        this.setDepartmentId(departmentId);
         return this;
     }
 

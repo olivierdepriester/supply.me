@@ -1,0 +1,53 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="department">
+            <h2><span jhiTranslate="supplyMeApp.department.detail.title">Department</span> {{department.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.department.code">Code</span></dt>
+                <dd>
+                    <span>{{department.code}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.department.description">Description</span></dt>
+                <dd>
+                    <span>{{department.description}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.department.creationDate">Creation Date</span></dt>
+                <dd>
+                    <span>{{department.creationDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.department.active">Active</span></dt>
+                <dd>
+                    <span>{{department.active}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.department.creationUser">Creation User</span></dt>
+                <dd>
+                    {{department.creationUser?.login}}
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.department.headUser">Head User</span></dt>
+                <dd>
+                    {{department.headUser?.login}}
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.department.defaultProject">Default Project</span></dt>
+                <dd>
+                    <div *ngIf="department.defaultProject">
+                        <a [routerLink]="['/project', department.defaultProject?.id, 'view']">{{department.defaultProject?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/department', department.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

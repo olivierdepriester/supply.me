@@ -107,6 +107,7 @@
                 "mutableProperties": "Mutable Properties",
                 "materialCategory": "Material Category",
                 "demandCategory": "Demand Category",
+                "department": "Department",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

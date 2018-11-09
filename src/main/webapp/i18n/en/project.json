@@ -3,25 +3,25 @@
     "supplyMeApp": {
         "project" : {
             "home": {
-                "title": "Departments",
-                "createLabel": "Create a new department",
-                "createOrEditLabel": "Create or edit a department",
-                "search": "Search for departments"
+                "title": "Projects",
+                "createLabel": "Create a new project",
+                "createOrEditLabel": "Create or edit a project",
+                "search": "Search for projects"
             },
-            "created": "A new departement is created with identifier {{ param }}",
-            "updated": "A department is updated with identifier {{ param }}",
-            "deleted": "A department is deleted with identifier {{ param }}",
+            "created": "A new project is created with identifier {{ param }}",
+            "updated": "A project is updated with identifier {{ param }}",
+            "deleted": "A project is deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete the department {{ id }}?"
+                "question": "Are you sure you want to delete the project {{ id }}?"
             },
             "detail": {
-                "title": "Department"
+                "title": "project"
             },
             "code": "Code",
             "description": "Description",
             "creationDate": "Creation date",
             "creationUser": "Creation user",
-            "headUser" : "Head of dpt.",
+            "headUser" : "Project leader",
             "demand": "Demand"
         }
     }

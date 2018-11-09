@@ -3,6 +3,7 @@ import { IMaterial } from 'app/shared/model//material.model';
 import { IProject } from 'app/shared/model//project.model';
 import { Moment } from 'moment';
 import { ISupplier } from './supplier.model';
+import { IDepartment } from './department.model';
 import { IDemandCategory } from './demand-category.model';
 
 export enum DemandStatus {
@@ -43,6 +44,7 @@ export interface IDemand {
     creationDate?: Moment;
     material?: IMaterial;
     project?: IProject;
+    department?: IDepartment;
     creationUser?: IUser;
     supplier?: ISupplier;
     demandCategory?: IDemandCategory;
@@ -73,6 +75,7 @@ export class Demand implements IDemand {
         public creationDate?: Moment,
         public material?: IMaterial,
         public project?: IProject,
+        public department?: IDepartment,
         public creationUser?: IUser,
         public supplier?: ISupplier,
         public demandCategory?: IDemandCategory,

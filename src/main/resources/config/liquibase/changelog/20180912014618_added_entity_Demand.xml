@@ -30,11 +30,14 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="department_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
             <column name="project_id" type="bigint">
                 <constraints nullable="false" />
             </column>
 
-            <column name="supplier_id" type="bigint">
+            <column name="demand_category_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 
@@ -42,15 +45,32 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="validation_authority" type="varchar(50)"/>
+            <column name="reached_authority" type="varchar(50)"/>
+
             <column name="quantity" type="double">
                 <constraints nullable="false" />
             </column>
 
-            <column name="description" type="text">
+            <column name="supplier_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 
             <column name="expected_date" type="datetime">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="urgent" type="boolean">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="use_annual_budget" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="planned" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="unit" type="varchar(50)">
                 <constraints nullable="true" />
             </column>
 
@@ -62,13 +82,17 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="estimated_price" type="double">
+            <column name="description" type="text">
                 <constraints nullable="true" />
             </column>
 
-            <column name="validation_authority_name" type="varchar(50)">
+            <column name="where_use" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+
+            <column name="estimated_price" type="double" />
+
+            <column name="vat" type="double"/>
 
             <column name="creation_date" type="datetime">
                 <constraints nullable="false" />
@@ -85,65 +109,5 @@
 
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
-    <changeSet id="20181026090000" author="olivier">
-        <addColumn tableName="demand">
-            <column name="reached_authority_name" type="varchar(50)"/>
-        </addColumn>
-        <addForeignKeyConstraint baseColumnNames="reached_authority_name"
-            baseTableName="demand"
-            constraintName="fk_demand_reached_authority_name"
-            referencedColumnNames="name"
-            referencedTableName="jhi_authority"/>
-    </changeSet>
-    <changeSet id="20181026180000-1" author="olivier">
-        <addColumn tableName="demand">
-            <column name="reached_authority" type="varchar(50)"/>
-        </addColumn>
-        <addColumn tableName="demand">
-            <column name="validation_authority" type="varchar(50)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet id="20181029025039-3" author="olivier">
-        <addColumn tableName="demand">
-            <column name="demand_category_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-        </addColumn>
-        <addColumn tableName="demand">
-            <column name="urgent" type="boolean">
-                <constraints nullable="true" />
-            </column>
-        </addColumn>
-        <addNotNullConstraint
-            columnDataType="boolean"
-            columnName="urgent"
-            defaultNullValue="false"
-            tableName="demand"/>
-        <addColumn tableName="demand">
-            <column name="use_annual_budget" type="boolean">
-                <constraints nullable="true" />
-            </column>
-        </addColumn>
-        <addColumn tableName="demand">
-            <column name="planned" type="boolean">
-                <constraints nullable="true" />
-            </column>
-        </addColumn>
-        <addColumn tableName="demand">
-            <column name="unit" type="varchar(50)">
-                <constraints nullable="true" />
-            </column>
-        </addColumn>
-        <addColumn tableName="demand">
-            <column name="where_use" type="varchar(50)">
-                <constraints nullable="true" />
-            </column>
-        </addColumn>
 
-    </changeSet>
-    <changeSet id="20181029160000-1" author="author">
-        <addColumn tableName="demand">
-            <column name="vat" type="double"/>
-        </addColumn>
-    </changeSet>
 </databaseChangeLog>

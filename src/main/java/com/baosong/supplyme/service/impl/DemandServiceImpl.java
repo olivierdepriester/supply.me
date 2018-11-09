@@ -220,6 +220,9 @@ public class DemandServiceImpl implements DemandService {
         if (criteria.getProjectId() != null) {
             booleanQueryBuilder.must(QueryBuilders.termQuery("project.id", criteria.getProjectId()));
         }
+        if (criteria.getDepartmentId() != null) {
+            booleanQueryBuilder.must(QueryBuilders.termQuery("department.id", criteria.getProjectId()));
+        }
         if (criteria.getCreationUserId() != null) {
             booleanQueryBuilder.must(QueryBuilders.termQuery("creationUser.id", criteria.getCreationUserId()));
         }
@@ -307,8 +310,8 @@ public class DemandServiceImpl implements DemandService {
             if (!StringUtils.isEmpty(currentUserHighestAuthority)
                     && (!AuthoritiesConstants.VALIDATION_LVL1.equals(currentUserHighestAuthority)
                             || (AuthoritiesConstants.VALIDATION_LVL1.equals(currentUserHighestAuthority)
-                                    && demand.getProject().getHeadUser() != null
-                                    && demand.getProject().getHeadUser().equals(currentUser)))) {
+                                    && demand.getDepartment().getHeadUser() != null
+                                    && demand.getDepartment().getHeadUser().equals(currentUser)))) {
                 // Compare the "demand already reached authority" and "user max authority"
                 if (SecurityUtils.compare(currentUserHighestAuthority, demand.getReachedAuthority()) > 0) {
                     // Current user authority is greater than demand latest authority -> Update (=

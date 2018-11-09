@@ -108,13 +108,21 @@ public class Demand implements Serializable {
 
     @NotNull
     @ManyToOne(optional = false)
+    @JsonIgnoreProperties("creationUser")
+    private Department department;
+
+    @NotNull
+    @ManyToOne(optional = false)
+    @JsonIgnoreProperties("creationUser")
     private Project project;
 
     @ManyToOne(optional = true)
+    @JsonIgnoreProperties("creationUser")
     private Supplier supplier;
 
     @NotNull
     @ManyToOne(optional = false)
+    @JsonIgnoreProperties("creationUser")
     private DemandCategory demandCategory;
 
     @ManyToOne(optional = false)
@@ -233,6 +241,25 @@ public class Demand implements Serializable {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    /**
+     * @return the department
+     */
+    public Department getDepartment() {
+        return department;
+    }
+
+    /**
+     * @param department the department to set
+     */
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Demand department(Department department) {
+        this.setDepartment(department);
+        return this;
     }
 
     public String getValidationAuthority() {

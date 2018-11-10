@@ -34,7 +34,10 @@
                         </small>
                     </div>
                 </div>
-
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.supplier.rating" for="field_rating">Name</label>
+                    <p-rating id="field_rating" name="rating" [(ngModel)]="supplier.rating" [stars]="5"></p-rating>
+                </div>
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

@@ -18,7 +18,8 @@
                 "title": "Supplier"
             },
             "referenceNumber": "Reference Number",
-            "name": "Name"
+            "name": "Name",
+            "rating": "Rating"
         }
     }
 }

@@ -20,6 +20,9 @@ export class SupplierUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ supplier }) => {
             this.supplier = supplier;
+            if (!this.supplier.id) {
+                this.supplier.temporary = false;
+            }
         });
     }
 

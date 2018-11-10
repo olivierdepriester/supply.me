@@ -1,6 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
+import { RatingModule } from 'primeng/rating';
 import { SupplyMeSharedModule } from 'app/shared';
 import {
     SupplierComponent,
@@ -15,7 +15,7 @@ import {
 const ENTITY_STATES = [...supplierRoute, ...supplierPopupRoute];
 
 @NgModule({
-    imports: [SupplyMeSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [SupplyMeSharedModule, RatingModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         SupplierComponent,
         SupplierDetailComponent,

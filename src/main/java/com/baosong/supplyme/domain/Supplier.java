@@ -1,6 +1,7 @@
 package com.baosong.supplyme.domain;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -52,6 +54,17 @@ public class Supplier implements Serializable {
     @Column(name = "name", length = 255, nullable = false)
     private String name;
 
+    @Max(5)
+    @Column(name = "rating", nullable = true)
+    private Integer rating;
+
+    @NotNull
+    @Column(name = "temporary", nullable = false)
+    private Boolean temporary;
+
+    @Column(name = "creation_date", nullable = false)
+    private Instant creationDate;
+
     @ManyToOne(optional = false)
     @JsonIgnoreProperties("")
     private User creationUser;
@@ -71,6 +84,24 @@ public class Supplier implements Serializable {
 		this.creationUser = creationUser;
 	}
 
+    /**
+     * @return the creationDate
+     */
+    public Instant getCreationDate() {
+        return creationDate;
+    }
+
+    /**
+     * @param creationDate the creationDate to set
+     */
+    public void setCreationDate(Instant creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Supplier creationDate(Instant creationDate) {
+        this.setCreationDate(creationDate);
+        return this;
+    }
 
     @OneToMany(mappedBy = "supplier")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -109,6 +140,34 @@ public class Supplier implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the rating
+     */
+    public Integer getRating() {
+        return rating;
+    }
+
+    /**
+     * @param rating the rating to set
+     */
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    /**
+     * @return the temporary
+     */
+    public Boolean getTemporary() {
+        return temporary;
+    }
+
+    /**
+     * @param temporary the temporary to set
+     */
+    public void setTemporary(Boolean temporary) {
+        this.temporary = temporary;
     }
 
     public Set<MaterialAvailability> getNames() {

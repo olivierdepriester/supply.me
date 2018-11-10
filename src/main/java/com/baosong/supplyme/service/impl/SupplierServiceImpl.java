@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -49,7 +49,7 @@ public class SupplierServiceImpl implements SupplierService {
     public Supplier save(Supplier supplier) {
         log.debug("Request to save Supplier : {}", supplier);
         if (supplier.getId() == null) {
-            supplier.setCreationUser(userService.getCurrentUser().get());
+            supplier.creationDate(Instant.now()).setCreationUser(userService.getCurrentUser().get());
         }
         Supplier result = supplierRepository.save(supplier);
         supplierSearchRepository.save(result);

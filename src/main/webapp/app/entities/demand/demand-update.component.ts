@@ -107,7 +107,7 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
         this.isSaving = true;
         this.demand.expectedDate = moment(this.expectedDate);
         this.demand.vat = this.vat / 100;
-        if (this.demand.id !== undefined) {
+        if (this.demand.id !== undefined && this.demand.id != null) {
             this.subscribeToSaveResponse(this.demandService.update(this.demand));
         } else {
             this.subscribeToSaveResponse(this.demandService.create(this.demand));

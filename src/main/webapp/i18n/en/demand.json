@@ -54,6 +54,7 @@
                 "sendToApproval": "Send the request to approval",
                 "reject": "Reject the request",
                 "approve": "Approve the request",
+                "copy": "Copy",
                 "createMaterial": "Create a new material for this request",
                 "uploader" : {
                     "choose": "Choose",

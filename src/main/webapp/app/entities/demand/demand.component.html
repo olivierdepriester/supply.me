@@ -109,6 +109,11 @@
                                     <fa-icon [icon]="'eye'"></fa-icon>
                                     <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                                 </button>
+                                <button type="submit" [routerLink]="'/demand/new'" [queryParams]="{origin : item.demand.id}"
+                                    title="{{ 'supplyMeApp.demand.button.copy' | translate }}"
+                                    class="btn btn-primary btn-sm">
+                                    <fa-icon [icon]="['far','clone']"></fa-icon>
+                                </button>
                                 <div *ngIf="item.allowance.canEdit; then editableDemandBlock"></div>
                                 <div *ngIf="item.allowance.canApprove; then approvalDemandBlock"></div>
                                 <div *ngIf="item.allowance.canReject; then rejectDemandBlock"></div>

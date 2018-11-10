@@ -24,7 +24,21 @@ export class DemandResolve implements Resolve<IDemand> {
             if (id.startsWith('PR')) {
                 // TODO : Implements find by PR code
             } else {
-                return this.service.find(parseInt(id, 10)).pipe(map((demand: HttpResponse<Demand>) => demand.body));
+                return this.service.find(parseInt(id, 10)).pipe(map((response: HttpResponse<Demand>) => response.body));
+            }
+        } else {
+            const originId: number = route.queryParams['origin'] ? route.queryParams['origin'] : null;
+            console.log(originId);
+            if (originId) {
+                return this.service.find(originId).pipe(
+                    map((response: HttpResponse<Demand>) => {
+                        const newDemand = response.body;
+                        newDemand.id = null;
+                        newDemand.code = null;
+                        newDemand.status = DemandStatus.NEW;
+                        return newDemand;
+                    })
+                );
             }
         }
         return of(new Demand());

@@ -113,7 +113,6 @@ export class DemandComponent implements OnInit, OnDestroy {
             // Refresh list modified demand
             const demandInList = this.demands.find(d => d.demand.id === res.body.id);
             if (demandInList !== null) {
-                console.log(res.body.status);
                 demandInList.demand = res.body;
                 demandInList.allowance = {
                     canEdit: this.demandService.isEditAllowed(demandInList.demand, this.currentAccount),

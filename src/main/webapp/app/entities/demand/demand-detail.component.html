@@ -179,10 +179,10 @@
                                     <tr *ngFor="let statusChange of demand.demandStatusChanges">
                                         <td class="text-center" style="width: 20%">{{ statusChange.creationDate | datetimeFormat }}</td>
                                         <td style="width: 20%">{{ statusChange.creationUser | smUser }}</td>
-                                        <td class="text-center" style="width: 20%">
+                                        <td class="text-center" style="width: 30%">
                                             <span [ngClass]="statusChange.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.DemandStatus.' + statusChange.status}}">demand.status</span>
                                         </td>
-                                        <td style="width: 40%">{{statusChange.comment }}</td>
+                                        <td style="width: 30%">{{statusChange.comment }}</td>
                                     </tr>
                                 </tbody>
                             </table>

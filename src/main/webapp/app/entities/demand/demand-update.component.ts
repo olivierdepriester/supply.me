@@ -11,6 +11,7 @@ import { Observable, Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
 import { FileUpload } from 'primeng/primeng';
 import { IDepartment } from 'app/shared/model/department.model';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'jhi-demand-update',
@@ -48,8 +49,12 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
                     this.locale = 'en';
                 });
             } else {
-                this.demand.urgent = false;
-                this.vat = 16;
+                if (isNullOrUndefined(this.demand.urgent)) {
+                    this.demand.urgent = false;
+                }
+                if (isNullOrUndefined(this.vat)) {
+                    this.vat = 16;
+                }
             }
         });
         // Callback on new material creation

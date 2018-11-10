@@ -28,7 +28,6 @@ export class DemandResolve implements Resolve<IDemand> {
             }
         } else {
             const originId: number = route.queryParams['origin'] ? route.queryParams['origin'] : null;
-            console.log(originId);
             if (originId) {
                 return this.service.find(originId).pipe(
                     map((response: HttpResponse<Demand>) => {

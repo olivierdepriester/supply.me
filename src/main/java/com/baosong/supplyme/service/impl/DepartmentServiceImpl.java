@@ -43,7 +43,8 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public Department save(Department department) {
-        log.debug("Request to save Department : {}", department);        Department result = departmentRepository.save(department);
+        log.debug("Request to save Department : {}", department);
+        Department result = departmentRepository.save(department);
         departmentSearchRepository.save(result);
         return result;
     }
@@ -98,5 +99,5 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional(readOnly = true)
     public Page<Department> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Departments for query {}", query);
-        return departmentSearchRepository.search(queryStringQuery(query), pageable);    }
+        return departmentSearchRepository.search(queryStringQuery(query.endsWith("*") ? query.toLowerCase() : new StringBuilder(query).append('*').toString()), pageable);    }
 }

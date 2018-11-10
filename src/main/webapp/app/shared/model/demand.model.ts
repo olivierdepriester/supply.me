@@ -139,6 +139,7 @@ export class DemandSearchCriteria {
         public status?: string[],
         public material?: IMaterial,
         public project?: IProject,
+        public department?: IDepartment,
         public creationUser?: IUser
     ) {
         this.status = [];
@@ -156,7 +157,8 @@ export class DemandSearchCriteria {
             status: this.status,
             materialId: this.material != null ? this.material.id : null,
             projectId: this.project != null ? this.project.id : null,
-            creationUserId: this.creationUser != null ? this.creationUser.id : null
+            creationUserId: this.creationUser != null ? this.creationUser.id : null,
+            departmentId: this.department != null ? this.department.id : null
         };
     }
     /**
@@ -170,6 +172,7 @@ export class DemandSearchCriteria {
         this.material = null;
         this.project = null;
         this.creationUser = null;
+        this.department = null;
     }
 
     isEmpty(): boolean {

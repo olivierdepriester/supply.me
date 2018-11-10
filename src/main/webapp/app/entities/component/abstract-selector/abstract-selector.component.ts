@@ -58,11 +58,18 @@ export abstract class AbstractSelectorComponent<T extends ISelectable, K extends
     }
 
     onClear() {
+        this.lastQuery = '';
         this.value = null;
+        this.forceRefresh = true;
+        // OnClear display the refreshed list. The timeout is required to let the clear event finish before
+        // calling the focus event
+        setTimeout(() => {
+            this.onFocus();
+        }, 200);
     }
 
     private itemListNeedRefresh(): boolean {
-        return this.forceRefresh || (this.filteredItems == null && this.lastQuery === '');
+        return this.forceRefresh || ((this.filteredItems == null || this.filteredItems.length === 0) && this.lastQuery === '');
     }
 
     protected abstract getAutoCompleteComponent();

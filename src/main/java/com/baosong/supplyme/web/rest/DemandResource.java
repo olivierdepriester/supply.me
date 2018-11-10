@@ -194,11 +194,12 @@ public class DemandResource {
     @Timed
     public List<Demand> searchDemands(@RequestParam Optional<String> query, @RequestParam Optional<Long> materialId,
             @RequestParam Optional<Long> projectId, @RequestParam Optional<Long> creationUserId,
+            @RequestParam Optional<Long> departmentId,
             @RequestParam Optional<List<DemandStatus>> status, Pageable pageable) {
-        log.debug(String.format("REST request to search Demands for query : [%s, %s, %s, %s, %s]", query, materialId,
-                projectId, creationUserId, status));
+        log.debug(String.format("REST request to search Demands for query : [%s, %s, %s, %s, %s, %s]", query, materialId,
+                departmentId, projectId, creationUserId, status));
         return demandService.search(new DemandSearchCriteria().query(query.orElse(null))
-                .materialId(materialId.orElse(null)).projectId(projectId.orElse(null))
+                .materialId(materialId.orElse(null)).projectId(projectId.orElse(null)).departmentId(departmentId.orElse(null))
                 .creationUserId(creationUserId.orElse(null)).demandStatus(status.orElse(null)), pageable);
     }
 

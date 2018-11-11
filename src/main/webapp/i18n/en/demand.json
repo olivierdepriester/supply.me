@@ -22,7 +22,6 @@
             "status": "Status",
             "description": "Description",
             "expectedDate": "Expected Date",
-            "creationDate": "Creation Date",
             "material": "Material",
             "department": "Department",
             "project": "Project",
@@ -41,7 +40,6 @@
             "usage": "Usage",
             "attachments": "Attachments",
             "pricing": "Pricing",
-            "creationUser": "Author",
             "statusChange": {
                 "title": "Events",
                 "comment": "Comment"

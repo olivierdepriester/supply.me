@@ -4,11 +4,6 @@
             <h2 id="jhi-project-heading" jhiTranslate="supplyMeApp.project.home.createOrEditLabel">Create or edit a Project</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!project.id">
-                    <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="project.id" readonly />
-                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.project.code" for="field_code">Code</label>
                     <input type="text" class="form-control" name="code" id="field_code"

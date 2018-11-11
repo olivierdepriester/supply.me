@@ -189,7 +189,9 @@
         "field": {
             "id": "ID",
             "yes": "Yes",
-            "no": "No"
+            "no": "No",
+            "creationDate": "Creation Date",
+            "creationUser": "Creation User"
         },
         "ribbon": {
             "dev":"Development"

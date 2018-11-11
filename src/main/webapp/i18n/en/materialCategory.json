@@ -19,9 +19,7 @@
             },
             "name": "Name",
             "description": "Description",
-            "creationDate": "Creation date",
-            "parentMaterialCategory": "Parent category",
-            "creationUser": "Creation user"
+            "parentMaterialCategory": "Parent category"
         }
     }
 }

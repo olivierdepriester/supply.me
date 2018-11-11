@@ -20,7 +20,6 @@
             "partNumber": "Part Number",
             "name": "Name",
             "description": "Description",
-            "creationDate": "Creation Date",
             "code": "Code",
             "demand": "Demand",
             "category": "Category",

@@ -22,13 +22,13 @@
                         <span>{{ '' | nullToDash }} </span>
                     </ng-template>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.project.creationDate">Creation Date</span></dt>
+                <dt><span jhiTranslate="global.field.creationUser">Creation User</span></dt>
+                <dd>
+                    <span>{{project.creationUser | smUser }}</span>
+                </dd>
+                <dt><span jhiTranslate="global.field.creationDate">Creation Date</span></dt>
                 <dd>
                     <span>{{project.creationDate | datetimeFormat }}</span>
-                </dd>
-                <dt><span jhiTranslate="supplyMeApp.project.creationUser">Creation user</span></dt>
-                <dd>
-                    <span>{{project.creationUser?.lastName + ' ' + project.creationUser?.firstName | nullToDash }}</span>
                 </dd>
             </dl>
 

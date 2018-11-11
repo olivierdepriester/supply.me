@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="materialCategory">
-            <h2><span jhiTranslate="supplyMeApp.materialCategory.detail.title">Material Category</span> {{materialCategory.id}}</h2>
+            <h2><span jhiTranslate="supplyMeApp.materialCategory.detail.title">Material Category</span>: {{materialCategory.name }}</h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
@@ -13,19 +13,20 @@
                 <dd>
                     <span>{{materialCategory.description}}</span>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.materialCategory.creationDate">Creation Date</span></dt>
-                <dd>
-                    <span>{{materialCategory.creationDate}}</span>
-                </dd>
+
                 <dt><span jhiTranslate="supplyMeApp.materialCategory.parentMaterialCategory">Parent Material Category</span></dt>
                 <dd>
                     <div *ngIf="materialCategory.parentMaterialCategory">
                         <a [routerLink]="['/material-category', materialCategory.parentMaterialCategory?.id, 'view']">{{materialCategory.parentMaterialCategory?.name}}</a>
                     </div>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.materialCategory.creationUser">Creation User</span></dt>
+                <dt><span jhiTranslate="global.field.creationUser">Creation User</span></dt>
                 <dd>
-                    {{materialCategory.creationUser?.login}}
+                    <span>{{materialCategory.creationUser | smUser }}</span>
+                </dd>
+                <dt><span jhiTranslate="global.field.creationDate">Creation Date</span></dt>
+                <dd>
+                    <span>{{materialCategory.creationDate | datetimeFormat }}</span>
                 </dd>
             </dl>
 

@@ -15,12 +15,10 @@
                 "question": "Are you sure you want to delete the project {{ id }}?"
             },
             "detail": {
-                "title": "project"
+                "title": "Project"
             },
             "code": "Code",
             "description": "Description",
-            "creationDate": "Creation date",
-            "creationUser": "Creation user",
             "headUser" : "Project leader",
             "demand": "Demand"
         }

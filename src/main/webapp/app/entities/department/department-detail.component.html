@@ -5,6 +5,14 @@
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.department.code">Code</span></dt>
+                <dd>
+                    {{department.code }}
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.department.description">Description</span></dt>
+                <dd>
+                    {{department.description }}
+                </dd>
                 <dt><span jhiTranslate="supplyMeApp.department.activated">Active</span></dt>
                 <dd>
                     <span>{{department.activated | yesNo | translate }}</span>
@@ -19,11 +27,11 @@
                         <a [routerLink]="['/project', department.defaultProject?.id, 'view']">{{department.defaultProject | smProject }}</a>
                     </div>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.department.creationUser">Creation User</span></dt>
+                <dt><span jhiTranslate="global.field.creationUser">Creation User</span></dt>
                 <dd>
-                    {{department.creationUser | smUser }}
+                    <span>{{department.creationUser | smUser }}</span>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.department.creationDate">Creation Date</span></dt>
+                <dt><span jhiTranslate="global.field.creationDate">Creation Date</span></dt>
                 <dd>
                     <span>{{department.creationDate | datetimeFormat }}</span>
                 </dd>

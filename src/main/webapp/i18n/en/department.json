@@ -19,9 +19,7 @@
             },
             "code": "Code",
             "description": "Description",
-            "creationDate": "Creation Date",
             "activated": "Activated",
-            "creationUser": "Creation User",
             "headUser": "Head",
             "defaultProject": "Default Project"
         }

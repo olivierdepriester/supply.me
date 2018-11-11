@@ -51,12 +51,6 @@
                     <label class="form-control-label" jhiTranslate="supplyMeApp.material.estimatedPrice" for="field_description">estimatedPrice</label>
                     <input type="number" class="form-control" name="estimatedPrice" id="field_estimatedPrice" [(ngModel)]="material.estimatedPrice" >
                 </div>
-                <div *ngIf="material.id" class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.material.creationDate" for="field_creationDate">Creation Date</label>
-                    <div class="d-flex">
-                        <input id="field_creationDate" type="text" disabled class="form-control" name="creationDate" value="{{ material.creationDate | datetimeFormat }}" />
-                    </div>
-                </div>
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

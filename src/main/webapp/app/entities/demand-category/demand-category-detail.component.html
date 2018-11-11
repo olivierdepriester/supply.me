@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="demandCategory">
-            <h2><span jhiTranslate="supplyMeApp.demandCategory.detail.title">Demand Category</span> {{demandCategory.id}}</h2>
+            <h2><span jhiTranslate="supplyMeApp.demandCategory.detail.title">Demand Category</span> {{demandCategory.name}}</h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
@@ -13,13 +13,13 @@
                 <dd>
                     <span>{{demandCategory.description}}</span>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.demandCategory.creationDate">Creation Date</span></dt>
+                <dt><span jhiTranslate="global.field.creationUser">Creation User</span></dt>
                 <dd>
-                    <span>{{demandCategory.creationDate}}</span>
+                    {{demandCategory.creationUser | smUser }}
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.demandCategory.creationUser">Creation User</span></dt>
+                <dt><span jhiTranslate="global.field.creationDate">Creation Date</span></dt>
                 <dd>
-                    {{demandCategory.creationUser?.login}}
+                    <span>{{demandCategory.creationDate | datetimeFormat }}</span>
                 </dd>
             </dl>
 

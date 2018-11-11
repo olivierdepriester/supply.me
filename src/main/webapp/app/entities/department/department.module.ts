@@ -3,6 +3,8 @@ import { RouterModule } from '@angular/router';
 
 import { SupplyMeSharedModule } from 'app/shared';
 import { SupplyMeAdminModule } from 'app/admin/admin.module';
+import { UserSelectorModule } from 'app/entities/component/user-selector';
+import { ProjectSelectorModule } from 'app/entities/component/project-selector';
 import {
     DepartmentComponent,
     DepartmentDetailComponent,
@@ -12,11 +14,12 @@ import {
     departmentRoute,
     departmentPopupRoute
 } from './';
+import { Project } from 'app/shared/model/project.model';
 
 const ENTITY_STATES = [...departmentRoute, ...departmentPopupRoute];
 
 @NgModule({
-    imports: [SupplyMeSharedModule, SupplyMeAdminModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [SupplyMeSharedModule, SupplyMeAdminModule, UserSelectorModule, ProjectSelectorModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         DepartmentComponent,
         DepartmentDetailComponent,

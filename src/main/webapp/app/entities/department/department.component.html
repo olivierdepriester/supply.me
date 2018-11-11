@@ -32,7 +32,7 @@
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span>  <span class="fa fa-sort"></span></th>
             <th jhiSortBy="code"><span jhiTranslate="supplyMeApp.department.code">Code</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="description"><span jhiTranslate="supplyMeApp.department.description">Description</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="active"><span jhiTranslate="supplyMeApp.department.active">Active</span> <span class="fa fa-sort"></span></th>
+            <th class="text-center" jhiSortBy="activated"><span jhiTranslate="supplyMeApp.department.activated">Active</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="headUser.login"><span jhiTranslate="supplyMeApp.department.headUser">Head User</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="defaultProject.id"><span jhiTranslate="supplyMeApp.department.defaultProject">Default Project</span> <span class="fa fa-sort"></span></th>
             <th></th>
@@ -43,7 +43,7 @@
                 <td><a [routerLink]="['/department', department.id, 'view' ]">{{department.id}}</a></td>
                 <td>{{department.code}}</td>
                 <td>{{department.description}}</td>
-                <td>{{department.active | yesNo | translate }}</td>
+                <td class="text-center">{{department.activated | yesNo | translate }}</td>
                 <td>
                     {{department.headUser | smUser }}
                 </td>
@@ -52,7 +52,7 @@
                         <a [routerLink]="['../project', department.defaultProject?.id, 'view' ]" >{{department.defaultProject | smProject }}</a>
                     </div>
                 </td>
-                <td class="text-right">
+                <td class="text-left">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['/department', department.id, 'view' ]"
@@ -61,12 +61,14 @@
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
+                                *jhiHasAnyAuthority="['ROLE_DEPARTMENT_MANAGER']"
                                 [routerLink]="['/department', department.id, 'edit']"
                                 class="btn btn-primary btn-sm">
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
+                                *jhiHasAnyAuthority="['ROLE_DEPARTMENT_MANAGER']"
                                 [routerLink]="['/', { outlets: { popup: 'department/'+ department.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"

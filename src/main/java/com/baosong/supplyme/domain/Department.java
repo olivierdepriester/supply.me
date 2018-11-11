@@ -41,10 +41,9 @@ public class Department implements Serializable {
 
     @NotNull
     @Column(name = "active", nullable = false)
-    private Boolean active;
+    private Boolean activated;
 
     @ManyToOne(optional = false)
-    @NotNull
     @JsonIgnoreProperties("")
     private User creationUser;
 
@@ -105,17 +104,17 @@ public class Department implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Boolean isActive() {
-        return active;
+    public Boolean isActivated() {
+        return activated;
     }
 
     public Department active(Boolean active) {
-        this.active = active;
+        this.activated = active;
         return this;
     }
 
     public void setActive(Boolean active) {
-        this.active = active;
+        this.activated = active;
     }
 
     public User getCreationUser() {
@@ -185,7 +184,7 @@ public class Department implements Serializable {
             ", code='" + getCode() + "'" +
             ", description='" + getDescription() + "'" +
             ", creationDate='" + getCreationDate() + "'" +
-            ", active='" + isActive() + "'" +
+            ", active='" + isActivated() + "'" +
             "}";
     }
 }

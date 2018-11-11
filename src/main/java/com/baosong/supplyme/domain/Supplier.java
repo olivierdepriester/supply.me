@@ -159,7 +159,7 @@ public class Supplier implements Serializable {
     /**
      * @return the temporary
      */
-    public Boolean getTemporary() {
+    public Boolean isTemporary() {
         return temporary;
     }
 

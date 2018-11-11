@@ -1,18 +1,21 @@
 package com.baosong.supplyme.service.impl;
 
 import com.baosong.supplyme.service.DepartmentService;
+import com.baosong.supplyme.service.UserService;
 import com.baosong.supplyme.domain.Department;
 import com.baosong.supplyme.repository.DepartmentRepository;
 import com.baosong.supplyme.repository.search.DepartmentSearchRepository;
+import com.baosong.supplyme.security.SecurityUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -30,6 +33,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentSearchRepository departmentSearchRepository;
 
+    @Autowired
+    private UserService userService;
+
     public DepartmentServiceImpl(DepartmentRepository departmentRepository, DepartmentSearchRepository departmentSearchRepository) {
         this.departmentRepository = departmentRepository;
         this.departmentSearchRepository = departmentSearchRepository;
@@ -44,6 +50,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Department save(Department department) {
         log.debug("Request to save Department : {}", department);
+        if (department.getId() == null) {
+            department.creationDate(Instant.now()).setCreationUser(userService.getCurrentUser().get());
+        }
         Department result = departmentRepository.save(department);
         departmentSearchRepository.save(result);
         return result;

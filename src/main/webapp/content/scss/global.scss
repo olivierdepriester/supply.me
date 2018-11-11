@@ -230,6 +230,29 @@ ui bootstrap tweaks
     white-space: nowrap;
 }
 
+/* ==========================================================================
+ui bootstrap tweaks for checkboxes
+========================================================================== */
+#department-update-form .form-check {
+    position: relative;
+    display: block;
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+}
+
+#department-update-form .form-check-input {
+    position: absolute;
+    margin-top: 0.3rem;
+    margin-left: -2rem;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+#department-update-form .form-check-label {
+    margin-bottom: 0;
+    padding-top: 0.25rem;
+}
+
 /* jhipster-needle-scss-add-main JHipster will add new css style */
 .numeric {
     text-align: right;

@@ -15,12 +15,12 @@
                 "question": "Are you sure you want to delete department {{ id }}?"
             },
             "detail": {
-                "title": "department"
+                "title": "Department"
             },
             "code": "Code",
             "description": "Description",
             "creationDate": "Creation Date",
-            "active": "Active",
+            "activated": "Activated",
             "creationUser": "Creation User",
             "headUser": "Head",
             "defaultProject": "Default Project"

@@ -156,7 +156,7 @@ public class DepartmentResourceIntTest {
         assertThat(testDepartment.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testDepartment.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testDepartment.getCreationDate()).isEqualTo(DEFAULT_CREATION_DATE);
-        assertThat(testDepartment.isActive()).isEqualTo(DEFAULT_ACTIVE);
+        assertThat(testDepartment.isActivated()).isEqualTo(DEFAULT_ACTIVE);
 
         // Validate the Department in Elasticsearch
         verify(mockDepartmentSearchRepository, times(1)).save(testDepartment);
@@ -294,7 +294,7 @@ public class DepartmentResourceIntTest {
         assertThat(testDepartment.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testDepartment.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testDepartment.getCreationDate()).isEqualTo(UPDATED_CREATION_DATE);
-        assertThat(testDepartment.isActive()).isEqualTo(UPDATED_ACTIVE);
+        assertThat(testDepartment.isActivated()).isEqualTo(UPDATED_ACTIVE);
 
         // Validate the Department in Elasticsearch
         verify(mockDepartmentSearchRepository, times(1)).save(testDepartment);

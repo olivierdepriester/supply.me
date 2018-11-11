@@ -59,7 +59,7 @@ export const departmentRoute: Routes = [
             department: DepartmentResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_DEPARTMENT_MANAGER'],
             pageTitle: 'supplyMeApp.department.home.title'
         },
         canActivate: [UserRouteAccessService]
@@ -71,7 +71,7 @@ export const departmentRoute: Routes = [
             department: DepartmentResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_DEPARTMENT_MANAGER'],
             pageTitle: 'supplyMeApp.department.home.title'
         },
         canActivate: [UserRouteAccessService]
@@ -86,7 +86,7 @@ export const departmentPopupRoute: Routes = [
             department: DepartmentResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_DEPARTMENT_MANAGER'],
             pageTitle: 'supplyMeApp.department.home.title'
         },
         canActivate: [UserRouteAccessService],

@@ -7,7 +7,7 @@ export interface IDepartment {
     code?: string;
     description?: string;
     creationDate?: Moment;
-    active?: boolean;
+    activated?: boolean;
     creationUser?: IUser;
     headUser?: IUser;
     defaultProject?: IProject;
@@ -19,11 +19,11 @@ export class Department implements IDepartment {
         public code?: string,
         public description?: string,
         public creationDate?: Moment,
-        public active?: boolean,
+        public activated?: boolean,
         public creationUser?: IUser,
         public headUser?: IUser,
         public defaultProject?: IProject
     ) {
-        this.active = this.active || false;
+        this.activated = this.activated || false;
     }
 }

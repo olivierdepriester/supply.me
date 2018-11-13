@@ -73,6 +73,13 @@ public interface MutablePropertiesService {
     String getNewDemandCode() throws ServiceException;
 
     /**
+     * Get a temporary supplier code and increments counter
+     * @return a temporary supplier formatted code : TS00000000
+     * @throws ServiceException
+     */
+    String getNewTemporarySupplierCode() throws ServiceException;
+
+    /**
      * Get the 1st threshold for which a purchase request need a 2nd level validation
      * @return
      * @throws ServiceException

@@ -78,7 +78,9 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
         }
         // Check if the note can be edited
         if (!isEditable(persistedDeliveryNote)) {
-            throw new ServiceException(String.format("deliveryNote.not.editable", persistedDeliveryNote.getId()));
+            throw new ServiceException(
+                    String.format("The Delivery Note %d is not editable", persistedDeliveryNote.getId()),
+                    "deliveryNote.not.editable");
         }
         // Update lines
         this.updateDeliveryNoteLines(deliveryNote, persistedDeliveryNote);
@@ -119,14 +121,12 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 line.setPurchaseOrderLine(
                         this.purchaseOrderLineService.findOne(line.getPurchaseOrderLine().getId()).get());
                 /// Calculate et set the delivered quantity for the purchase order line
-                this.purchaseOrderLineService.save(line.getPurchaseOrderLine().quantityDelivered(this.purchaseOrderLineService
-                        .getQuantityDeliveredFromDeliveryNotes(line.getPurchaseOrderLine().getId())));
+                this.purchaseOrderLineService
+                        .save(line.getPurchaseOrderLine().quantityDelivered(this.purchaseOrderLineService
+                                .getQuantityDeliveredFromDeliveryNotes(line.getPurchaseOrderLine().getId())));
                 /// Calculate et set the delivered quantity for the demand
-                this.demandService.save(
-                    line.getPurchaseOrderLine().getDemand().quantityDelivered(
-                        this.demandService.getQuantityDeliveredFromPO(line.getPurchaseOrderLine().getDemand().getId())
-                    )
-                );
+                this.demandService.save(line.getPurchaseOrderLine().getDemand().quantityDelivered(this.demandService
+                        .getQuantityDeliveredFromPO(line.getPurchaseOrderLine().getDemand().getId())));
             }
         }
     }

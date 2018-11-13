@@ -40,15 +40,7 @@
                         </small>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.category" for="field_demandCategory">Category</label>
-                    <jhi-demand-category-selector required id="field_demandCategory" name="demandCategory" [(ngModel)]="demand.demandCategory" ></jhi-demand-category-selector>
-                    <div [hidden]="!(editForm.controls.demandCategory?.dirty && editForm.controls.demandCategory?.invalid)">
-                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
-                        This field is required.
-                        </small>
-                    </div>
-                </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.useAnnualBudget" for="field_useAnnualBudget_yes">Planned</label>
                     <div class="radio">
@@ -112,12 +104,30 @@
                         </small>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.expectedDate" for="field_expectedDate">Expected Date</label>
+                    <div class="d-flex">
+                        <p-calendar id="field_expectedDate" style="width:100%" [inputStyleClass]="'form-control'"
+                        [monthNavigator]="true" [yearNavigator]="true" yearRange="2018:2030" [style]="{'width': '100%'}"
+                        [(ngModel)]="expectedDate" name="expectedDate" dateFormat="yy-mm-dd"></p-calendar>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.supplier" for="field_supplier">Supplier</label>
+                    <jhi-supplier-selector name="supplier" id="field_supplier" [(ngModel)]="demand.supplier" ></jhi-supplier-selector>
+                    <a [routerLink]="['/', { outlets: { popup: 'demand/supplier/new'} }]"
+                            replaceUrl="false"
+                            queryParamsHandling="merge"
+                            jhiTranslate="supplyMeApp.demand.button.createSupplier">
+                    </a>
+                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.estimatedPrice" for="field_estimatedPrice">Estimated price</label>
                     <input type="number" class="form-control" name="estimatedPrice" id="field_estimatedPrice" [(ngModel)]="demand.estimatedPrice" />
-                    <div [hidden]="!(editForm.controls.quantity?.dirty && editForm.controls.quantity?.invalid)">
+                    <div [hidden]="!(editForm.controls.estimatedPrice?.dirty && editForm.controls.estimatedPrice?.invalid)">
                         <small class="form-text text-danger"
-                            [hidden]="!editForm.controls.quantity?.errors?.number" jhiTranslate="entity.validation.number">
+                            [hidden]="!editForm.controls.estimatedPrice?.errors?.number" jhiTranslate="entity.validation.number">
                             This field should be a number.
                         </small>
                     </div>
@@ -127,21 +137,18 @@
                     <input type="number" class="form-control" name="vat" id="field_vat" [(ngModel)]="vat" min="0" max="100" />
                     <div [hidden]="!(editForm.controls.vat?.dirty && editForm.controls.vat?.invalid)">
                         <small class="form-text text-danger"
-                            [hidden]="!editForm.controls.quantity?.errors?.number" jhiTranslate="entity.validation.number">
+                            [hidden]="!editForm.controls.vat?.errors?.number" jhiTranslate="entity.validation.number">
                             This field should be a number.
                         </small>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.supplier" for="field_supplier">Supplier</label>
-                    <jhi-supplier-selector name="supplier" id="field_supplier" [(ngModel)]="demand.supplier" ></jhi-supplier-selector>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.expectedDate" for="field_expectedDate">Expected Date</label>
-                    <div class="d-flex">
-                        <p-calendar id="field_expectedDate" style="width:100%" [inputStyleClass]="'form-control'"
-                        [monthNavigator]="true" [yearNavigator]="true" yearRange="2018:2030" [style]="{'width': '100%'}"
-                        [(ngModel)]="expectedDate" name="expectedDate" dateFormat="yy-mm-dd"></p-calendar>
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.category" for="field_demandCategory">Category</label>
+                    <jhi-demand-category-selector required id="field_demandCategory" name="demandCategory" [(ngModel)]="demand.demandCategory" ></jhi-demand-category-selector>
+                    <div [hidden]="!(editForm.controls.demandCategory?.dirty && editForm.controls.demandCategory?.invalid)">
+                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
                     </div>
                 </div>
                 <div class="form-group">

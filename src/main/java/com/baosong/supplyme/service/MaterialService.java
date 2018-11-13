@@ -50,8 +50,9 @@ public interface MaterialService {
      * Delete the "id" material.
      *
      * @param id the id of the entity
+     * @throws ServiceException
      */
-    void delete(Long id);
+    void delete(Long id) throws ServiceException;
 
     /**
      * Search for the material corresponding to the query.

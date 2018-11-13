@@ -71,7 +71,7 @@ public class MaterialResource {
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
         } catch (ServiceException e) {
-            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getMessage()) ;
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getKeyCode()) ;
         }
     }
 
@@ -97,7 +97,7 @@ public class MaterialResource {
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, material.getId().toString()))
                 .body(result);
         } catch (ServiceException e) {
-            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getMessage()) ;
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getKeyCode()) ;
         }
     }
 
@@ -142,8 +142,13 @@ public class MaterialResource {
     @Timed
     public ResponseEntity<Void> deleteMaterial(@PathVariable Long id) {
         log.debug("REST request to delete Material : {}", id);
-        materialService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        try {
+            materialService.delete(id);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString()))
+                    .build();
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getKeyCode()) ;
+        }
     }
 
     /**
@@ -167,6 +172,6 @@ public class MaterialResource {
     @Timed
     public ResponseEntity<Void> rebuildIndex() {
         materialService.rebuildIndex();
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "0")).build();
+        return ResponseEntity.ok().build();
     }
 }

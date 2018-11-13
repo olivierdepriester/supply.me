@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Spring Data  repository for the Supplier entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
-
+    Supplier getByReferenceNumber(String referenceNumber);
 }

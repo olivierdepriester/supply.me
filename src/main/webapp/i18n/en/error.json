@@ -14,6 +14,23 @@
                 "orderPrice": "Invalid price value for lines {{ value }}",
                 "quantity": "Invalid quantity value for lines {{ value }}"
             }
+        },
+        "supplier": {
+            "edit": {
+                "alreadyExists": "Another supplier already exists for this reference number",
+                "forbidden": "You are not allowed to create or modify this supplier"
+            },
+            "delete": {
+                "forbidden": "You are not allowed to delete this supplier"
+            }
+        },
+        "material": {
+            "edit": {
+                "forbidden": "You are not allowed to create or modify this material"
+            },
+            "delete": {
+                "forbidden": "You are not allowed to delete this ma"
+            }
         }
     }
 }

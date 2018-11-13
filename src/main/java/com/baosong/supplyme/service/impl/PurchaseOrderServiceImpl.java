@@ -96,7 +96,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             // updated
             if (!isEditable(persistedPurchaseOrder)) {
                 throw new ServiceException(String.format("The purchase order %d can not be edited by the current user",
-                        persistedPurchaseOrder.getId()));
+                        persistedPurchaseOrder.getId()),
+                        "purchaseOrder.edit.forbidden");
             }
             // Update lines
             this.updatePurchaseOrderLines(purchaseOrder, persistedPurchaseOrder);
@@ -227,7 +228,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         PurchaseOrder purchaseOrder = findOne(id).get();
         if (!isEditable(purchaseOrder)) {
             throw new ServiceException(
-                    String.format("The purchase order %d can not be deleted by the current user", id));
+                    String.format("The purchase order %d can not be deleted by the current user", id),
+                "purchaseOrder.delete.forbidden");
         }
         for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLines()) {
             // Get demand

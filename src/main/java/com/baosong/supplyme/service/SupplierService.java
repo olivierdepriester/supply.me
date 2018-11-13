@@ -1,6 +1,7 @@
 package com.baosong.supplyme.service;
 
 import com.baosong.supplyme.domain.Supplier;
+import com.baosong.supplyme.domain.errors.ServiceException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +18,9 @@ public interface SupplierService {
      *
      * @param supplier the entity to save
      * @return the persisted entity
+     * @throws ServiceException
      */
-    Supplier save(Supplier supplier);
+    Supplier save(Supplier supplier) throws ServiceException;
 
     /**
      * Get all the suppliers.
@@ -41,8 +43,9 @@ public interface SupplierService {
      * Delete the "id" supplier.
      *
      * @param id the id of the entity
+     * @throws ServiceException
      */
-    void delete(Long id);
+    void delete(Long id) throws ServiceException;
 
     /**
      * Search for the supplier corresponding to the query.

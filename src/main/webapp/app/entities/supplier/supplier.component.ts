@@ -41,7 +41,7 @@ export class SupplierComponent implements OnInit, OnDestroy {
         this.links = {
             last: 0
         };
-        this.predicate = 'id';
+        this.predicate = 'referenceNumber';
         this.reverse = true;
         this.currentSearch =
             this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']

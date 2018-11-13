@@ -13,12 +13,12 @@ public class ParameterizedServiceException extends ServiceException {
     private List<MessageParameterBean> messageParameters;
 
     public ParameterizedServiceException(String message, MessageParameterBean messageParameter) {
-        super(message);
+        super(message, "");
         this.messageParameters = Arrays.asList(messageParameter);
     }
 
     public ParameterizedServiceException(String message, List<MessageParameterBean> messageParameter) {
-        super(message);
+        super(message, "");
         this.messageParameters = messageParameter;
     }
 

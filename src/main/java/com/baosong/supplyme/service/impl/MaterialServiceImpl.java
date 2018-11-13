@@ -77,7 +77,9 @@ public class MaterialServiceImpl implements MaterialService {
         }
         if (!isMaterialEditable(persistedMaterial)) {
             // Check the persisted version in case of the
-            throw new ServiceException("material.not.editable");
+            throw new ServiceException(
+                String.format("Material %d is not editable", persistedMaterial.getId()),
+                "material.edit.forbidden");
         }
         persistedMaterial = persistedMaterial.name(material.getName()).description(material.getDescription())
                 .estimatedPrice(material.getEstimatedPrice()).materialCategory(material.getMaterialCategory());
@@ -128,10 +130,16 @@ public class MaterialServiceImpl implements MaterialService {
      * Delete the material by id.
      *
      * @param id the id of the entity
+     * @throws ServiceException
      */
     @Override
-    public void delete(Long id) {
+    public void delete(Long id) throws ServiceException {
         log.debug("Request to delete Material : {}", id);
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MATERIAL_MANAGER)) {
+            throw new ServiceException(
+                String.format("The current user cannot delete Material %d", id),
+                "material.delete.forbidden");
+        }
         materialRepository.deleteById(id);
         materialSearchRepository.deleteById(id);
     }

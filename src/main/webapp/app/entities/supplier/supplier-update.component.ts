@@ -43,6 +43,10 @@ export class SupplierUpdateComponent implements OnInit {
         result.subscribe((res: HttpResponse<ISupplier>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
     }
 
+    onTemporaryChange() {
+        this.supplier.referenceNumber = '';
+    }
+
     private onSaveSuccess() {
         this.isSaving = false;
         this.previousState();

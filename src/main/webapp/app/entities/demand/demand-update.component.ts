@@ -24,7 +24,8 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
     vat: number;
     @ViewChild('editForm') editForm: HTMLFormElement;
     @ViewChild('fileUpload') fileUpload: FileUpload;
-    eventSubscriber: Subscription;
+    materialCreationEventSubscriber: Subscription;
+    supplierCreationEventSubscriber: Subscription;
     locale: string;
     files: IAttachmentFile[];
 
@@ -58,14 +59,18 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
             }
         });
         // Callback on new material creation
-        this.eventSubscriber = this.eventManager.subscribe('temporaryMaterialCreated', response => {
+        this.materialCreationEventSubscriber = this.eventManager.subscribe('temporaryMaterialCreated', response => {
             this.demand.material = response.content;
             this.demand.estimatedPrice = this.demand.material.estimatedPrice;
+        });
+        // Callback on new supplier creation
+        this.supplierCreationEventSubscriber = this.eventManager.subscribe('temporarySupplierCreated', response => {
+            this.demand.supplier = response.content;
         });
     }
 
     ngOnDestroy() {
-        this.eventManager.destroy(this.eventSubscriber);
+        this.eventManager.destroy(this.materialCreationEventSubscriber);
     }
 
     onMaterialChange(event: IMaterial) {

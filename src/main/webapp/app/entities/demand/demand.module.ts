@@ -24,6 +24,8 @@ import {
     demandPopupRoute,
     MaterialTemporaryDialogComponent,
     MaterialTemporaryPopupComponent,
+    SupplierTemporaryDialogComponent,
+    SupplierTemporaryPopupComponent,
     DemandChangeStatusDialogComponent,
     DemandChangeStatusPopupComponent
 } from './';
@@ -55,6 +57,8 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         DemandDeletePopupComponent,
         MaterialTemporaryDialogComponent,
         MaterialTemporaryPopupComponent,
+        SupplierTemporaryDialogComponent,
+        SupplierTemporaryPopupComponent,
         DemandChangeStatusDialogComponent,
         DemandChangeStatusPopupComponent
     ],
@@ -65,6 +69,8 @@ const ENTITY_STATES = [...demandRoute, ...demandPopupRoute];
         DemandDeletePopupComponent,
         MaterialTemporaryDialogComponent,
         MaterialTemporaryPopupComponent,
+        SupplierTemporaryDialogComponent,
+        SupplierTemporaryPopupComponent,
         DemandChangeStatusDialogComponent,
         DemandChangeStatusPopupComponent
     ],

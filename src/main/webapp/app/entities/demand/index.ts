@@ -4,5 +4,6 @@ export * from './demand-delete-dialog.component';
 export * from './demand-detail.component';
 export * from './demand.component';
 export * from './demand.route';
-export * from './material-temporary-dialog.component';
 export * from './demand-change-status-dialog.component';
+export * from './material-temporary-dialog.component';
+export * from './supplier-temporary-dialog.component';

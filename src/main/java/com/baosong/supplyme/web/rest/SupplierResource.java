@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import com.baosong.supplyme.domain.Supplier;
+import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.service.SupplierService;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
 import com.baosong.supplyme.web.rest.util.HeaderUtil;
@@ -51,10 +52,12 @@ public class SupplierResource {
     }
 
     /**
-     * POST  /suppliers : Create a new supplier.
+     * POST /suppliers : Create a new supplier.
      *
      * @param supplier the supplier to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new supplier, or with status 400 (Bad Request) if the supplier has already an ID
+     * @return the ResponseEntity with status 201 (Created) and with body the new
+     *         supplier, or with status 400 (Bad Request) if the supplier has
+     *         already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/suppliers")
@@ -64,19 +67,23 @@ public class SupplierResource {
         if (supplier.getId() != null) {
             throw new BadRequestAlertException("A new supplier cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Supplier result = supplierService.save(supplier);
-        return ResponseEntity.created(new URI("/api/suppliers/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        try {
+            Supplier result = supplierService.save(supplier);
+            return ResponseEntity.created(new URI("/api/suppliers/" + result.getId()))
+                    .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getKeyCode());
+        }
     }
 
     /**
-     * PUT  /suppliers : Updates an existing supplier.
+     * PUT /suppliers : Updates an existing supplier.
      *
      * @param supplier the supplier to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated supplier,
-     * or with status 400 (Bad Request) if the supplier is not valid,
-     * or with status 500 (Internal Server Error) if the supplier couldn't be updated
+     * @return the ResponseEntity with status 200 (OK) and with body the updated
+     *         supplier, or with status 400 (Bad Request) if the supplier is not
+     *         valid, or with status 500 (Internal Server Error) if the supplier
+     *         couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/suppliers")
@@ -86,17 +93,21 @@ public class SupplierResource {
         if (supplier.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Supplier result = supplierService.save(supplier);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, supplier.getId().toString()))
-            .body(result);
+        try {
+            Supplier result = supplierService.save(supplier);
+            return ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, supplier.getId().toString())).body(result);
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getKeyCode());
+        }
     }
 
     /**
-     * GET  /suppliers : get all the suppliers.
+     * GET /suppliers : get all the suppliers.
      *
      * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of suppliers in body
+     * @return the ResponseEntity with status 200 (OK) and the list of suppliers in
+     *         body
      */
     @GetMapping("/suppliers")
     @Timed
@@ -108,10 +119,11 @@ public class SupplierResource {
     }
 
     /**
-     * GET  /suppliers/:id : get the "id" supplier.
+     * GET /suppliers/:id : get the "id" supplier.
      *
      * @param id the id of the supplier to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the supplier, or with status 404 (Not Found)
+     * @return the ResponseEntity with status 200 (OK) and with body the supplier,
+     *         or with status 404 (Not Found)
      */
     @GetMapping("/suppliers/{id}")
     @Timed
@@ -122,7 +134,7 @@ public class SupplierResource {
     }
 
     /**
-     * DELETE  /suppliers/:id : delete the "id" supplier.
+     * DELETE /suppliers/:id : delete the "id" supplier.
      *
      * @param id the id of the supplier to delete
      * @return the ResponseEntity with status 200 (OK)
@@ -131,15 +143,19 @@ public class SupplierResource {
     @Timed
     public ResponseEntity<Void> deleteSupplier(@PathVariable Long id) {
         log.debug("REST request to delete Supplier : {}", id);
-        supplierService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        try {
+            supplierService.delete(id);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        } catch (ServiceException e) {
+            throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, e.getKeyCode());
+        }
     }
 
     /**
-     * SEARCH  /_search/suppliers?query=:query : search for the supplier corresponding
-     * to the query.
+     * SEARCH /_search/suppliers?query=:query : search for the supplier
+     * corresponding to the query.
      *
-     * @param query the query of the supplier search
+     * @param query    the query of the supplier search
      * @param pageable the pagination information
      * @return the result of the search
      */

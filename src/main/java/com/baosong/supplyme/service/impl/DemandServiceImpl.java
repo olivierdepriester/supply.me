@@ -266,7 +266,9 @@ public class DemandServiceImpl implements DemandService {
             demand = findOne(id).get();
         } catch (NoSuchElementException e) {
             // Demand not found
-            throw new ServiceException(String.format("No demand found for id %d", id));
+            throw new ServiceException(
+                String.format("No demand found for id %d", id),
+                "notFound");
         }
         if (status.equals(demand.getStatus())) {
             // If the current status is the same as the new status, nothing to be done
@@ -275,11 +277,13 @@ public class DemandServiceImpl implements DemandService {
 
         if (!DEMAND_WORKFLOW_RULES.containsKey(status)) {
             // The wanted status can never be set
-            throw new ServiceException(String.format("The status %s can never be directly set", status));
+            throw new ServiceException(String.format("The status %s can never be directly set", status),
+                "demand.status.forbidden");
         } else if (!DEMAND_WORKFLOW_RULES.get(status).contains(demand.getStatus())) {
             // The current status prevent the new status of being set
             throw new ServiceException(String.format("The status %s can not be set on demand %d (current is %s)",
-                    status, id, demand.getStatus()));
+                    status, id, demand.getStatus()),
+                    "demand.status.forbidden");
         }
         DemandStatus targetStatus = status;
         DemandStatusChange demandStatusChange = new DemandStatusChange(demand, targetStatus, currentUser);
@@ -292,7 +296,8 @@ public class DemandServiceImpl implements DemandService {
                 if (!this.isDemandEditable(demand)) {
                     // Can not be edited -> Error
                     throw new ServiceException(
-                            String.format("The current user can not edit nor send it to approval the demand %d", id));
+                            String.format("The current user can not edit nor send it to approval the demand %d", id),
+                        "demand.edit.forbidden");
                 }
                 demand.setStatus(targetStatus);
                 demand.setValidationAuthority(this.getValidationAuthorityToSet(demand));

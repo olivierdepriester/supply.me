@@ -1,10 +1,11 @@
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
-import { UserRouteAccessService, Principal } from 'app/core';
-import { Demand, IDemand, DemandStatus, DemandSearchCriteria } from 'app/shared/model/demand.model';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UserRouteAccessService, Principal } from 'app/core';
+import { Demand, IDemand, DemandStatus, DemandSearchCriteria } from 'app/shared/model/demand.model';
+import { IAttachmentFile } from 'app/shared/model/attachment-file.model';
 import { DemandDeletePopupComponent } from './demand-delete-dialog.component';
 import { DemandDetailComponent } from './demand-detail.component';
 import { DemandUpdateComponent } from './demand-update.component';
@@ -12,7 +13,9 @@ import { DemandComponent } from './demand.component';
 import { DemandService } from './demand.service';
 import { MaterialTemporaryPopupComponent } from './material-temporary-dialog.component';
 import { DemandChangeStatusPopupComponent } from './demand-change-status-dialog.component';
-import { IAttachmentFile } from 'app/shared/model/attachment-file.model';
+import { SupplierTemporaryPopupComponent } from './supplier-temporary-dialog.component';
+import { SupplierResolve } from '../supplier';
+import { MaterialResolve } from '../material';
 
 @Injectable({ providedIn: 'root' })
 export class DemandResolve implements Resolve<IDemand> {
@@ -221,7 +224,20 @@ export const demandPopupRoute: Routes = [
         path: 'demand/material/new',
         component: MaterialTemporaryPopupComponent,
         resolve: {
-            demand: DemandResolve
+            material: MaterialResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'supplyMeApp.demand.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
+    {
+        path: 'demand/supplier/new',
+        component: SupplierTemporaryPopupComponent,
+        resolve: {
+            supplier: SupplierResolve
         },
         data: {
             authorities: ['ROLE_USER'],

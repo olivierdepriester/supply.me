@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * Spring Data  repository for the Demand entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface DemandRepository extends JpaRepository<Demand, Long> {
 

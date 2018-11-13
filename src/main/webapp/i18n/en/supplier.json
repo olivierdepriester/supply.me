@@ -12,13 +12,14 @@
             "updated": "A Supplier is updated with identifier {{ param }}",
             "deleted": "A Supplier is deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Supplier {{ id }}?"
+                "question": "Are you sure you want to delete supplier <strong>{{ supplier }}</strong> ?"
             },
             "detail": {
                 "title": "Supplier"
             },
             "referenceNumber": "Reference Number",
             "name": "Name",
+            "temporary": "Temporary",
             "rating": "Rating"
         }
     }

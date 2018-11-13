@@ -53,7 +53,7 @@ public final class AuthoritiesConstants {
     public static final String MATERIAL_MANAGER = "ROLE_MATERIAL_MANAGER";
 
     /**
-     * Delivery note manager : can create and edit delivery notes
+     * Supplier manager : can create and edit suppliers
      */
     public static final String SUPPLIER_MANAGER = "ROLE_SUPPLIER_MANAGER";
 
@@ -63,9 +63,16 @@ public final class AuthoritiesConstants {
     public static final String PROJECT_MANAGER = "ROLE_PROJECT_MANAGER";
 
     /**
-     * Dlivery note manager : can create and edit delivery notes
+     * Delivery note manager : can create and edit delivery notes
      */
     public static final String DELIVERY_MANAGER = "ROLE_DELIVERY_MANAGER";
+
+    /**
+     * Department manager : can create and edit departments
+     */
+    public static final String DEPARTMENT_MANAGER = "ROLE_DEPARTMENT_MANAGER";
+
+
 
     private AuthoritiesConstants() {
     }

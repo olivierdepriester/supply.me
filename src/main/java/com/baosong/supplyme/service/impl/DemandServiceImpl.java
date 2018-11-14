@@ -419,7 +419,7 @@ public class DemandServiceImpl implements DemandService {
             missingFields.add(MessageParameterBean.of("NotNull", "supplier", "detail.title"));
         }
         if (!missingFields.isEmpty()) {
-            throw new ParameterizedServiceException(String.format("Missing fiedlds on demand %s", demand.getId()),
+            throw new ParameterizedServiceException(String.format("Missing fields on demand %s", demand.getId()),
                     missingFields);
         }
         return missingFields.isEmpty();

@@ -3,27 +3,65 @@
     "supplyMeApp": {
         "demand" : {
             "home": {
-                "title": "Demands",
-                "createLabel": "创建新 Demand",
-                "createOrEditLabel": "创建或编辑 Demand",
-                "search": "查找 Demand"
+                "title": "采购申请单",
+                "createLabel": "创建新 采购申请单",
+                "createOrEditLabel": "创建或编辑 采购申请单",
+                "search": "查找 采购申请单"
             },
-            "created": "Demand {{ param }} 创建成功",
-            "updated": "Demand {{ param }} 更新成功",
-            "deleted": "Demand {{ param }} 删除成功",
+            "created": "采购申请单 {{ param }} 创建成功",
+            "updated": "采购申请单 {{ param }} 更新成功",
+            "deleted": "采购申请单 {{ param }} 删除成功",
             "delete": {
-                "question": "你确定要删除 Demand {{ id }} 吗？"
+                "question": "你确定要删除 采购申请单 {{ id }} 吗？"
             },
             "detail": {
-                "title": "Demand"
+                "title": "采购申请单"
             },
-            "quantity": "Quantity",
+            "code": "申请单号",
+            "supplier": "供应商",
+            "quantity": "申购数量",
             "status": "Status",
-            "expectedDate": "Expected Date",
-            "creationDate": "Creation Date",
+            "description": "购买原因说明",
+            "expectedDate": "希望到货日期",
             "material": "Material",
-            "project": "Project",
-            "creationUser": "Creation User"
+            "department": "申请部门",
+            "project": "采购项目名称",
+            "category": "采购项目类型",
+            "unit": "计量单位",
+            "planned": "杂项计划性采购",
+            "urgent": "紧急采购",
+            "urgencyWarning": "This request has been marked as urgent",
+            "useAnnualBudget": "年度预算采购",
+            "vat": "税率％",
+            "whereUse": "使用地点",
+            "estimatedPrice": "预估单价（不含税）",
+            "estimatedPriceWithVat": "预估单价（含税）",
+            "amountWithVat": "预估总价（含税）",
+            "amount": "预估总价",
+            "usage": "Usage",
+            "attachments": "Attachments",
+            "pricing": "Pricing",
+            "statusChange": {
+                "title": "历史",
+                "comment": "Comment"
+            },
+            "commentPopup": {
+                "title": "Request {{ id }} status change",
+                "placeholder": "Please fill your comment here."
+            },
+            "button" : {
+                "sendToApproval": "Send the request to approval",
+                "reject": "Reject the request",
+                "approve": "Approve the request",
+                "copy": "Copy",
+                "createMaterial": "Create a new material for this request",
+                "createSupplier": "Create a new supplier for this request",
+                "uploader" : {
+                    "choose": "选择",
+                    "upload": "上传",
+                    "cancel": "取消"
+                }
+            }
         }
     }
 }

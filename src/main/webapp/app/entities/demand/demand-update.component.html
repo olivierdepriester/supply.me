@@ -40,63 +40,13 @@
                         </small>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.useAnnualBudget" for="field_useAnnualBudget_yes">Planned</label>
-                    <div class="radio">
-                        <label class="radio-inline" for="field_useAnnualBudget_yes">
-                            <input type="radio" name="useAnnualBudget" id="field_useAnnualBudget_yes" required [value]="true" [(ngModel)]="demand.useAnnualBudget"/>
-                            <span jhiTranslate="global.field.yes" ></span>
-                        </label>
-                        <label class="radio-inline" for="field_useAnnualBudget_no">
-                            <input type="radio"  name="useAnnualBudget" id="field_useAnnualBudget_no" [value]="false" [(ngModel)]="demand.useAnnualBudget"/>
-                            <span jhiTranslate="global.field.no" ></span>
-                        </label>
-                    </div>
-                    <div [hidden]="!editForm.controls.planned?.invalid">
-                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
-                        This field is required.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.planned" for="field_planned_yes">Planned</label>
-                    <div class="radio">
-                        <label class="radio-inline" for="field_planned_yes">
-                            <input type="radio" name="planned" id="field_planned_yes" required [value]="true" [(ngModel)]="demand.planned"/>
-                            <span jhiTranslate="global.field.yes" ></span>
-                        </label>
-                        <label class="radio-inline" for="field_planned_no">
-                            <input type="radio"  name="planned" id="field_planned_no" [value]="false" [(ngModel)]="demand.planned"/>
-                            <span jhiTranslate="global.field.no" ></span>
-                        </label>
-                    </div>
-                    <div [hidden]="!editForm.controls.planned?.invalid">
-                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
-                        This field is required.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.urgent" for="field_urgent_yes">Urgent</label>
-                    <div class="radio">
-                        <label class="radio-inline" for="field_urgent_yes">
-                            <input type="radio" name="urgent" id="field_urgent_yes" [value]="true" [(ngModel)]="demand.urgent"/>
-                            <span jhiTranslate="global.field.yes" ></span>
-                        </label>
-                        <label class="radio-inline" for="field_urgent_no">
-                            <input type="radio"  name="urgent" id="field_urgent_no" [value]="false" [(ngModel)]="demand.urgent"/>
-                            <span jhiTranslate="global.field.no" ></span>
-                        </label>
-                    </div>
-                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.quantity" for="field_quantity">Quantity</label>
                     <input type="number" class="form-control" name="quantity" id="field_quantity" min="0" [(ngModel)]="demand.quantity" required/>
                     <div [hidden]="!(editForm.controls.quantity?.dirty && editForm.controls.quantity?.invalid)">
                         <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.quantity?.errors?.required" jhiTranslate="entity.validation.required">
-                        This field is required.
+                            [hidden]="!editForm.controls.quantity?.errors?.required" jhiTranslate="entity.validation.required">
+                            This field is required.
                         </small>
                         <small class="form-text text-danger"
                             [hidden]="!editForm.controls.quantity?.errors?.number" jhiTranslate="entity.validation.number">
@@ -104,7 +54,19 @@
                         </small>
                     </div>
                 </div>
-
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.urgent" for="field_urgent_yes">Urgent</label>
+                    <div class="btn-group-toggle btn-group" style="display: flex" ngbRadioGroup name="urgent" [(ngModel)]="demand.urgent">
+                        <label class="btn-info" for="field_urgent_yes" ngbButtonLabel>
+                            <input ngbButton type="radio" id="field_urgent_yes" required [value]="true" />
+                            <span jhiTranslate="global.field.yes" ></span>
+                        </label>
+                        <label class="btn-info" for="field_urgent_no" ngbButtonLabel >
+                            <input ngbButton type="radio"  id="field_urgent_no" [value]="false" />
+                            <span jhiTranslate="global.field.no" ></span>
+                        </label>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.expectedDate" for="field_expectedDate">Expected Date</label>
                     <div class="d-flex">
@@ -149,6 +111,32 @@
                         <small class="form-text text-danger" jhiTranslate="entity.validation.required">
                         This field is required.
                         </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.useAnnualBudget" for="field_useAnnualBudget_yes">Use Annual Budget</label>
+                    <div class="btn-group-toggle btn-group" style="display: flex" ngbRadioGroup required name="useAnnualBudget" [(ngModel)]="demand.useAnnualBudget">
+                        <label class="btn-info" for="field_useAnnualBudget_yes" ngbButtonLabel>
+                            <input ngbButton type="radio" id="field_useAnnualBudget_yes" [value]="true" />
+                            <span jhiTranslate="global.field.yes" ></span>
+                        </label>
+                        <label class="btn-info" for="field_useAnnualBudget_no" ngbButtonLabel >
+                            <input ngbButton type="radio"  id="field_useAnnualBudget_no" [value]="false" />
+                            <span jhiTranslate="global.field.no" ></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="supplyMeApp.demand.planned" for="field_planned_yes">Planned</label>
+                    <div class="btn-group-toggle btn-group" style="display: flex" required ngbRadioGroup  name="planned" [(ngModel)]="demand.planned">
+                        <label class="btn-info" for="field_planned_yes" ngbButtonLabel>
+                            <input ngbButton type="radio" id="field_planned_yes" [value]="true" />
+                            <span jhiTranslate="global.field.yes" ></span>
+                        </label>
+                        <label class="btn-info" for="field_planned_no" ngbButtonLabel >
+                            <input ngbButton type="radio"  id="field_planned_no" [value]="false" />
+                            <span jhiTranslate="global.field.no" ></span>
+                        </label>
                     </div>
                 </div>
                 <div class="form-group">

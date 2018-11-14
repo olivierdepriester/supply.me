@@ -346,3 +346,18 @@ demand status
     background-color: $success;
     border-color: $success;
 }
+
+.ui-fileupload {
+    & .ui-button {
+        background-color: $primary;
+    }
+}
+/* ===========================*/
+
+.btn-group-toggle {
+    display: block;
+    padding-left: 1rem;
+    & .active {
+        font-weight: 700;
+    }
+}

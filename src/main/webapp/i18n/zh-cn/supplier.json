@@ -3,22 +3,24 @@
     "supplyMeApp": {
         "supplier" : {
             "home": {
-                "title": "Suppliers",
-                "createLabel": "创建新 Supplier",
-                "createOrEditLabel": "创建或编辑 Supplier",
-                "search": "查找 Supplier"
+                "title": "供应商",
+                "createLabel": "创建新 供应商",
+                "createOrEditLabel": "创建或编辑 供应商",
+                "search": "查找 供应商"
             },
-            "created": "Supplier {{ param }} 创建成功",
-            "updated": "Supplier {{ param }} 更新成功",
-            "deleted": "Supplier {{ param }} 删除成功",
+            "created": "供应商 {{ param }} 创建成功",
+            "updated": "供应商 {{ param }} 更新成功",
+            "deleted": "供应商 {{ param }} 删除成功",
             "delete": {
-                "question": "你确定要删除 Supplier {{ id }} 吗？"
+                "question": "你确定要删除 供应商 <strong>{{ supplier }}</strong> 吗？"
             },
             "detail": {
-                "title": "Supplier"
+                "title": "供应商"
             },
-            "referenceNumber": "Reference Number",
-            "name": "Name"
+            "referenceNumber": "参考编号",
+            "name": "名字",
+            "temporary": "临时",
+            "rating": "历史供应商质量与服务评价"
         }
     }
 }

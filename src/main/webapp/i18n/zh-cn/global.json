@@ -180,7 +180,11 @@
             }
         },
         "field": {
-            "id" : "ID"
+            "id" : "ID",
+            "yes": "是",
+            "no": "不",
+            "creationDate": "创建日期",
+            "creationUser": "作者"
         },
         "ribbon": {
             "dev":"Development"
@@ -230,5 +234,39 @@
         "idexists": "新建的 {{entityName}} 不能包含ID",
         "idnull": "Invalid ID"
     },
-    "footer": "这里是页脚"
+    "footer": "这里是页脚",
+    "selector": {
+        "demand": {
+            "placeholder": "Type here to select a request"
+        },
+        "status": {
+            "placeholder": "Select one or more status here",
+            "selectedItemsLabel": "{0} status selected"
+        },
+        "material": {
+            "placeholder": "Type here to select a material"
+        },
+        "project": {
+            "placeholder": "Type here to select a project"
+        },
+        "supplier": {
+            "placeholder": "Type here to select a supplier"
+        },
+        "user": {
+            "placeholder": "Type here to select a user"
+        },
+        "category": {
+            "placeholder": "Type here to select a category"
+        },
+        "department": {
+            "placeholder": "Type here to select a department"
+        },
+        "purchaseorderline": {
+            "placeholder": "Type here to select a material in a purchase order"
+        }
+    },
+    "search": {
+        "showAdvancedFilters": "显示高级搜索条件",
+        "hideAdvancedFilters": "隐藏高级搜索条件"
+    }
 }

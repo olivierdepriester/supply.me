@@ -23,7 +23,7 @@
             "status": "Status",
             "description": "购买原因说明",
             "expectedDate": "希望到货日期",
-            "material": "Material",
+            "material": "部件",
             "department": "申请部门",
             "project": "采购项目名称",
             "category": "采购项目类型",
@@ -38,9 +38,9 @@
             "estimatedPriceWithVat": "预估单价（含税）",
             "amountWithVat": "预估总价（含税）",
             "amount": "预估总价",
-            "usage": "Usage",
-            "attachments": "Attachments",
-            "pricing": "Pricing",
+            "usage": "用法",
+            "attachments": "附件",
+            "pricing": "成本核算",
             "statusChange": {
                 "title": "历史",
                 "comment": "Comment"

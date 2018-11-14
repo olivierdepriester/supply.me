@@ -8936,9 +8936,9 @@ primeng-extensions@0.0.39:
   integrity sha512-jFlx3BhRhTUcBSmv3xYW9DofcgIrdi36CxIAOFlqu/rpovlzSV2aOlyCquv+vr/8OoyPdjJeXcOBcycuy4nicw==
 
 primeng@^6.1.5:
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/primeng/-/primeng-6.1.5.tgz#915cb29ea299b1f9d299d2557410c9ab1769cb58"
-  integrity sha512-tsGm1aMfjMYHJHCBgkDBtsyKkG+luW8VgPwHpK9UjXgmr28kx/UDYM2bQbuC94YgtbG9rhh74QbwLEHWUMV5fg==
+  version "6.1.6"
+  resolved "https://registry.yarnpkg.com/primeng/-/primeng-6.1.6.tgz#3a699a02507fcd5befb2fb9fe18fcc5d385f810e"
+  integrity sha512-9QYkXfBuSwx5zZej5QiEWhdAFJPc+f9h6PXuFtw4PzUfOhPmnoUxR5K04xeFreCNP13WwP3Uh/U3o7mY0PZtQA==
 
 private@^0.1.6, private@^0.1.8, private@~0.1.5:
   version "0.1.8"

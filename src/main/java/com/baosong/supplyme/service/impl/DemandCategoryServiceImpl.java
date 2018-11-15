@@ -1,12 +1,15 @@
 package com.baosong.supplyme.service.impl;
 
-import com.baosong.supplyme.service.DemandCategoryService;
-import com.baosong.supplyme.service.UserService;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.time.Instant;
+import java.util.Optional;
+
 import com.baosong.supplyme.domain.DemandCategory;
 import com.baosong.supplyme.repository.DemandCategoryRepository;
 import com.baosong.supplyme.repository.search.DemandCategorySearchRepository;
-import com.baosong.supplyme.security.AuthoritiesConstants;
-import com.baosong.supplyme.security.SecurityUtils;
+import com.baosong.supplyme.service.DemandCategoryService;
+import com.baosong.supplyme.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing DemandCategory.

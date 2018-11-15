@@ -114,9 +114,16 @@ export class DemandUpdateComponent implements OnInit, OnDestroy {
     }
 
     save() {
+        // Prevent the save button to be clicked by the user
         this.isSaving = true;
+        // Convert the expected date
         this.demand.expectedDate = moment(this.expectedDate);
+        // Convert the vat ratio
         this.demand.vat = this.vat / 100;
+        if (!this.demand.demandCategory || !this.demand.demandCategory.key) {
+            // Clear the other category description if the selected category is a standard one ( = no key)
+            this.demand.otherCategory = null;
+        }
         if (this.demand.id !== undefined && this.demand.id != null) {
             this.subscribeToSaveResponse(this.demandService.update(this.demand));
         } else {

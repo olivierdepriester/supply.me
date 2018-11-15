@@ -1,17 +1,22 @@
 package com.baosong.supplyme.service.impl;
 
 import com.baosong.supplyme.service.DemandCategoryService;
+import com.baosong.supplyme.service.UserService;
 import com.baosong.supplyme.domain.DemandCategory;
 import com.baosong.supplyme.repository.DemandCategoryRepository;
 import com.baosong.supplyme.repository.search.DemandCategorySearchRepository;
+import com.baosong.supplyme.security.AuthoritiesConstants;
+import com.baosong.supplyme.security.SecurityUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -29,6 +34,9 @@ public class DemandCategoryServiceImpl implements DemandCategoryService {
 
     private final DemandCategorySearchRepository demandCategorySearchRepository;
 
+    @Autowired
+    private UserService userService;
+
     public DemandCategoryServiceImpl(DemandCategoryRepository demandCategoryRepository,
             DemandCategorySearchRepository demandCategorySearchRepository) {
         this.demandCategoryRepository = demandCategoryRepository;
@@ -44,6 +52,9 @@ public class DemandCategoryServiceImpl implements DemandCategoryService {
     @Override
     public DemandCategory save(DemandCategory demandCategory) {
         log.debug("Request to save DemandCategory : {}", demandCategory);
+        if (demandCategory.getId() == null) {
+            demandCategory.creationDate(Instant.now()).setCreationUser(userService.getCurrentUser().get());
+        }
         DemandCategory result = demandCategoryRepository.save(demandCategory);
         demandCategorySearchRepository.save(result);
         return result;

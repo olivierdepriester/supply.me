@@ -113,6 +113,15 @@
                         </small>
                     </div>
                 </div>
+                <div *ngIf="demand.demandCategory && demand.demandCategory.key" class="form-group">
+                    <input required type="text" class="form-control" name="otherCategory" id="field_otherCategory"
+                    placeholder="{{ 'supplyMeApp.demand.otherCategory' | translate }}" [(ngModel)]="demand.otherCategory" maxlength="255" />
+                    <div [hidden]="!(editForm.controls.otherCategory?.dirty && editForm.controls.otherCategory?.invalid)">
+                        <small class="form-text text-danger" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.demand.useAnnualBudget" for="field_useAnnualBudget_yes">Use Annual Budget</label>
                     <div class="btn-group-toggle btn-group" style="display: flex" ngbRadioGroup required name="useAnnualBudget" [(ngModel)]="demand.useAnnualBudget">

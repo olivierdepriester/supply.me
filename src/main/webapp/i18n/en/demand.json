@@ -26,6 +26,7 @@
             "department": "Department",
             "project": "Project",
             "category": "Category",
+            "otherCategory" : "Fill here your category description",
             "unit": "Unit",
             "planned": "Is planned ?",
             "urgent": "Is urgent ?",

@@ -102,18 +102,22 @@ public class Demand implements Serializable {
     @Column(name = "vat", nullable = true)
     private Double vat;
 
+    @Size(max = 255)
+    @Column(name = "other_category", nullable = true)
+    private String otherCategory;
+
     @NotNull
     @ManyToOne(optional = false)
     private Material material;
 
     @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("creationUser")
+    @JsonIgnoreProperties("creationUser,creationDate")
     private Department department;
 
     @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("creationUser")
+    @JsonIgnoreProperties("creationUser,creationDate")
     private Project project;
 
     @ManyToOne(optional = true)
@@ -122,7 +126,7 @@ public class Demand implements Serializable {
 
     @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("creationUser")
+    @JsonIgnoreProperties("creationUser,creationDate")
     private DemandCategory demandCategory;
 
     @ManyToOne(optional = false)
@@ -498,6 +502,20 @@ public class Demand implements Serializable {
     public Demand estimatedPrice(Double estimatedPrice) {
         this.setEstimatedPrice(estimatedPrice);
         return this;
+    }
+
+    /**
+     * @return the otherCategory
+     */
+    public String getOtherCategory() {
+        return otherCategory;
+    }
+
+    /**
+     * @param otherCategory the otherCategory to set
+     */
+    public void setOtherCategory(String otherCategory) {
+        this.otherCategory = otherCategory;
     }
 
     public DemandCategory getDemandCategory() {

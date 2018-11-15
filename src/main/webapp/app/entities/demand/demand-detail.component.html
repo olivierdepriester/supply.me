@@ -102,7 +102,12 @@
                                     <span jhiTranslate="supplyMeApp.demand.category">Category</span>
                                 </div>
                                 <div class="col-xs-7 col-sm-8 col-lg-9">
-                                    <span>{{demand.demandCategory?.name | nullToDash }}</span>
+                                    <ng-container *ngIf="demand.demandCategory && demand.demandCategory.key; else elseTemplate">
+                                        <span>{{demand.demandCategory?.name + ' : ' + demand.otherCategory }}</span>
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                        <span>{{demand.demandCategory?.name | nullToDash }}</span>
+                                    </ng-template>
                                 </div>
                             </div>
                             <div class="row">

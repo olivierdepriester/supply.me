@@ -32,8 +32,6 @@
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="name"><span jhiTranslate="supplyMeApp.demandCategory.name">Name</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="description"><span jhiTranslate="supplyMeApp.demandCategory.description">Description</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.demandCategory.creationDate">Creation Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="creationUser.login"><span jhiTranslate="supplyMeApp.demandCategory.creationUser">Creation User</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
@@ -41,11 +39,7 @@
             <tr *ngFor="let demandCategory of demandCategories ;trackBy: trackId">
                 <td><a [routerLink]="['/demand-category', demandCategory.id, 'view' ]">{{demandCategory.id}}</a></td>
                 <td>{{demandCategory.name}}</td>
-                <td>{{demandCategory.description}}</td>
-                <td>{{demandCategory.creationDate | date:'medium'}}</td>
-                <td>
-                    {{demandCategory.creationUser?.login}}
-                </td>
+                <td>{{demandCategory.description | nullToDash }}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
@@ -60,7 +54,7 @@
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
-                        <button type="submit"
+                        <button *ngIf="!demandCategory.key" type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'demand-category/'+ demandCategory.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"

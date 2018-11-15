@@ -42,6 +42,11 @@
         <dropDefaultValue tableName="demand_category" columnName="creation_date" columnDataType="datetime"/>
 
     </changeSet>
+    <changeSet id="20181116180000" author="olivier">
+      <addColumn tableName="demand_category">
+          <column name="key" type="varchar(50)"/>
+      </addColumn>
+    </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

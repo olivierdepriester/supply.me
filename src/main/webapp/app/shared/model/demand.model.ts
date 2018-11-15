@@ -48,6 +48,7 @@ export interface IDemand {
     creationUser?: IUser;
     supplier?: ISupplier;
     demandCategory?: IDemandCategory;
+    otherCategory?: string;
     quantityOrdered?: number;
     quantityDelivered?: number;
     estimatedPrice?: number;
@@ -79,6 +80,7 @@ export class Demand implements IDemand {
         public creationUser?: IUser,
         public supplier?: ISupplier,
         public demandCategory?: IDemandCategory,
+        public otherCategory?: string,
         public quantityOrdered?: number,
         public quantityDelivered?: number,
         public estimatedPrice?: number,

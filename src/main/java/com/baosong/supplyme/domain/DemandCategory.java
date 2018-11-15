@@ -1,5 +1,6 @@
 package com.baosong.supplyme.domain;
 
+import com.baosong.supplyme.domain.enumeration.DemandCategoryKey;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -36,12 +37,13 @@ public class DemandCategory implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @NotNull
     @Column(name = "creation_date", nullable = false)
     private Instant creationDate;
 
+    @Column(name = "key", nullable = true)
+    private DemandCategoryKey key;
+
     @ManyToOne(optional = false)
-    @NotNull
     @JsonIgnoreProperties("")
     private User creationUser;
 
@@ -105,6 +107,26 @@ public class DemandCategory implements Serializable {
     public void setCreationUser(User user) {
         this.creationUser = user;
     }
+
+    /**
+     * @return the key
+     */
+    public DemandCategoryKey getKey() {
+        return key;
+    }
+
+    public DemandCategory key(DemandCategoryKey key) {
+        this.key = key;
+        return this;
+    }
+
+    /**
+     * @param key the key to set
+     */
+    public void setKey(DemandCategoryKey key) {
+        this.key = key;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

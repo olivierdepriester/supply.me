@@ -191,6 +191,8 @@
             "yes": "Yes",
             "no": "No",
             "creationDate": "Creation Date",
+            "from": "From",
+            "to": " to ",
             "creationUser": "Author"
         },
         "ribbon": {

@@ -59,7 +59,24 @@
                             <span jhiTranslate="{{ 'supplyMeApp.DemandStatus.' + statusItem.value }}"></span>
                         </ng-template>
                     </p-multiSelect>
-
+                    <label class="criteria-label w10" jhiTranslate="global.field.creationDate" for="field_creationDateFrom">Creation Date</label>
+                    <div style="display: inline-flex">
+                    <div class="input-group">
+                        <input class="form-control" style="width:10rem" placeholder="yyyy-mm-dd" id="field_creationDateFrom"
+                               name="dpFrom" [(ngModel)]="searchCriteria.creationDateFrom" ngbDatepicker #dpFrom="ngbDatepicker">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary calendar" (click)="dpFrom.toggle()" type="button"></button>
+                        </div>
+                    </div>
+                    <label jhiTranslate="global.field.to" for="field_creationDateFrom" style="margin-left: 0.5rem;margin-right: 0.5rem">To</label>
+                    <div class="input-group">
+                        <input class="form-control" style="width:10rem" placeholder="yyyy-mm-dd" id="field_creationDateTo"
+                               name="dpTo" [(ngModel)]="searchCriteria.creationDateTo" ngbDatepicker #dpTo="ngbDatepicker">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary calendar" (click)="dpTo.toggle()" type="button"></button>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </form>
         </div>

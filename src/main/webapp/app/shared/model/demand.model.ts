@@ -1,10 +1,11 @@
+import { NgbDateStruct, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { IUser } from 'app/core/user/user.model';
 import { IMaterial } from 'app/shared/model//material.model';
 import { IProject } from 'app/shared/model//project.model';
-import { Moment } from 'moment';
-import { ISupplier } from './supplier.model';
-import { IDepartment } from './department.model';
+import * as moment from 'moment';
 import { IDemandCategory } from './demand-category.model';
+import { IDepartment } from './department.model';
+import { ISupplier } from './supplier.model';
 
 export enum DemandStatus {
     NEW = 'NEW',
@@ -20,7 +21,7 @@ export interface IDemandStatusChange {
     id?: number;
     status?: DemandStatus;
     comment?: string;
-    creationDate?: Moment;
+    creationDate?: moment.Moment;
     creationUser?: IUser;
 }
 
@@ -29,7 +30,7 @@ export class DemandStatusChange implements IDemandStatusChange {
         public id?: number,
         public status?: DemandStatus,
         public comment?: string,
-        public creationDate?: Moment,
+        public creationDate?: moment.Moment,
         public creationUser?: IUser
     ) {}
 }
@@ -40,8 +41,8 @@ export interface IDemand {
     quantity?: number;
     status?: DemandStatus;
     description?: string;
-    expectedDate?: Moment;
-    creationDate?: Moment;
+    expectedDate?: moment.Moment;
+    creationDate?: moment.Moment;
     material?: IMaterial;
     project?: IProject;
     department?: IDepartment;
@@ -72,8 +73,8 @@ export class Demand implements IDemand {
         public quantity?: number,
         public status?: DemandStatus,
         public description?: string,
-        public expectedDate?: Moment,
-        public creationDate?: Moment,
+        public expectedDate?: moment.Moment,
+        public creationDate?: moment.Moment,
         public material?: IMaterial,
         public project?: IProject,
         public department?: IDepartment,
@@ -142,7 +143,9 @@ export class DemandSearchCriteria {
         public material?: IMaterial,
         public project?: IProject,
         public department?: IDepartment,
-        public creationUser?: IUser
+        public creationUser?: IUser,
+        public creationDateFrom?: NgbDateStruct,
+        public creationDateTo?: NgbDateStruct
     ) {
         this.status = [];
     }
@@ -160,7 +163,9 @@ export class DemandSearchCriteria {
             materialId: this.material != null ? this.material.id : null,
             projectId: this.project != null ? this.project.id : null,
             creationUserId: this.creationUser != null ? this.creationUser.id : null,
-            departmentId: this.department != null ? this.department.id : null
+            departmentId: this.department != null ? this.department.id : null,
+            creationDateFrom: this.creationDateFrom != null ? moment(this.creationDateFrom).toJSON() : null,
+            creationDateTo: this.creationDateTo != null ? moment(this.creationDateTo).toJSON() : null
         };
     }
     /**
@@ -174,6 +179,7 @@ export class DemandSearchCriteria {
         this.material = null;
         this.project = null;
         this.creationUser = null;
+        this.creationDateFrom = null;
         this.department = null;
     }
 

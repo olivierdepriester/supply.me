@@ -3,6 +3,7 @@ package com.baosong.supplyme.web.rest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -195,12 +196,17 @@ public class DemandResource {
     public List<Demand> searchDemands(@RequestParam Optional<String> query, @RequestParam Optional<Long> materialId,
             @RequestParam Optional<Long> projectId, @RequestParam Optional<Long> creationUserId,
             @RequestParam Optional<Long> departmentId,
+            @RequestParam Optional<Instant> creationDateFrom,
+            @RequestParam Optional<Instant> creationDateTo,
             @RequestParam Optional<List<DemandStatus>> status, Pageable pageable) {
-        log.debug(String.format("REST request to search Demands for query : [%s, %s, %s, %s, %s, %s]", query, materialId,
-                departmentId, projectId, creationUserId, status));
+        log.debug(String.format("REST request to search Demands for query : [%s, %s, %s, %s, %s, %s, %s, %s]", query, materialId,
+                departmentId, projectId, creationUserId, status, creationDateFrom, creationDateTo));
         return demandService.search(new DemandSearchCriteria().query(query.orElse(null))
                 .materialId(materialId.orElse(null)).projectId(projectId.orElse(null)).departmentId(departmentId.orElse(null))
-                .creationUserId(creationUserId.orElse(null)).demandStatus(status.orElse(null)), pageable);
+                .creationUserId(creationUserId.orElse(null))
+                .creationDateFrom(creationDateFrom.orElse(null))
+                .creationDateTo(creationDateTo.orElse(null))
+                .demandStatus(status.orElse(null)), pageable);
     }
 
     @PostMapping("/_search/demands/rebuild")

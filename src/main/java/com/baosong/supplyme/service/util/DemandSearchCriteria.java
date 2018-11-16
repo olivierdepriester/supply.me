@@ -1,5 +1,6 @@
 package com.baosong.supplyme.service.util;
 
+import java.time.Instant;
 import java.util.List;
 
 import com.baosong.supplyme.domain.enumeration.DemandStatus;
@@ -16,6 +17,10 @@ public class DemandSearchCriteria {
     private Long creationUserId;
 
     private String query;
+
+    private Instant creationDateFrom;
+
+    private Instant creationDateTo;
 
 
     /**
@@ -102,6 +107,34 @@ public class DemandSearchCriteria {
         this.departmentId = departmentId;
     }
 
+    /**
+     * @return the creationDate
+     */
+    public Instant getCreationDateFrom() {
+        return creationDateFrom;
+    }
+
+    /**
+     * @param creationDateFrom the creationDate to set
+     */
+    public void setCreationDateFrom(Instant creationDateFrom) {
+        this.creationDateFrom = creationDateFrom;
+    }
+
+    /**
+     * @return the creationDateTo
+     */
+    public Instant getCreationDateTo() {
+        return creationDateTo;
+    }
+
+    /**
+     * @param creationDateTo the creationDateTo to set
+     */
+    public void setCreationDateTo(Instant creationDateTo) {
+        this.creationDateTo = creationDateTo;
+    }
+
     public DemandSearchCriteria creationUserId(Long creationUserId) {
         this.setCreationUserId(creationUserId);
         return this;
@@ -132,14 +165,26 @@ public class DemandSearchCriteria {
         return this;
     }
 
+    public DemandSearchCriteria creationDateFrom(Instant creationDate) {
+        this.setCreationDateFrom(creationDate);
+        return this;
+    }
+
+    public DemandSearchCriteria creationDateTo(Instant creationDateTo) {
+        this.setCreationDateTo(creationDateTo);
+        return this;
+    }
+
     @Override
     public String toString() {
         return new StringBuilder("DemandSearchCriteria{")
         .append("query:").append(this.query)
+        .append(", status:").append(this.demandStatus == null ? "": this.demandStatus.toString())
         .append(", materialId:").append(this.materialId)
+        .append(", departmentId:").append(this.departmentId)
         .append(", projectId:").append(this.projectId)
         .append(", creationUserId:").append(this.creationUserId)
-        .append(", status:").append(this.demandStatus == null ? "": this.demandStatus.toString())
+        .append(", creationDate: {").append(this.creationDateFrom).append(",").append(this.creationDateTo).append("}")
         .append("}").toString();
     }
 

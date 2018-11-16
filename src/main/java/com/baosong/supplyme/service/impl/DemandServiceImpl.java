@@ -40,6 +40,7 @@ import com.google.common.collect.Sets;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -230,6 +231,16 @@ public class DemandServiceImpl implements DemandService {
             criteria.getDemandStatus().forEach(
                     status -> statusQueryBuilder.should(QueryBuilders.matchQuery("status", status.toString())));
             booleanQueryBuilder.must(statusQueryBuilder);
+        }
+        if (criteria.getCreationDateFrom() != null || criteria.getCreationDateTo() != null) {
+            RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("creationDate");
+            if (criteria.getCreationDateFrom() != null) {
+                rangeQueryBuilder = rangeQueryBuilder.gte(criteria.getCreationDateFrom().toString());
+            }
+            if (criteria.getCreationDateTo() != null) {
+                rangeQueryBuilder = rangeQueryBuilder.lt(criteria.getCreationDateTo().toString());
+            }
+            booleanQueryBuilder.must(rangeQueryBuilder);
         }
         return StreamSupport.stream(demandSearchRepository.search(booleanQueryBuilder, pageable).spliterator(), false)
                 .collect(Collectors.toList());

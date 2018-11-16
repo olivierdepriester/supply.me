@@ -30,6 +30,7 @@
                 <dt><span jhiTranslate="supplyMeApp.demand.quantity">Quantity</span></dt>
                 <dd>
                     <span>{{demand.quantity | number }}</span>
+                    <span *ngIf="demand.unit">{{ demand.unit }}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.demand.expectedDate">Expected Date</span></dt>
                 <dd>

@@ -1,0 +1,9 @@
+{
+    "supplyMeApp": {
+        "InvoiceStatus" : {
+            "null": "",
+            "NEW": "NEW",
+            "PAID": "PAID"
+        }
+    }
+}

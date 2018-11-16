@@ -1,0 +1,49 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="invoice">
+            <h2><span jhiTranslate="supplyMeApp.invoice.detail.title">Invoice</span> {{invoice.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.invoice.code">Code</span></dt>
+                <dd>
+                    <span>{{invoice.code}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.invoice.status">Status</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'supplyMeApp.InvoiceStatus.' + invoice.status}}">{{invoice.status}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.invoice.sendingDate">Sending Date</span></dt>
+                <dd>
+                    <span>{{invoice.sendingDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.invoice.dueDate">Due Date</span></dt>
+                <dd>
+                    <span>{{invoice.dueDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.invoice.supplier">Supplier</span></dt>
+                <dd>
+                    <div *ngIf="invoice.supplier">
+                        <a [routerLink]="['/supplier', invoice.supplier?.id, 'view']">{{invoice.supplier?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.invoice.creationUser">Creation User</span></dt>
+                <dd>
+                    {{invoice.creationUser?.id}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/invoice', invoice.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

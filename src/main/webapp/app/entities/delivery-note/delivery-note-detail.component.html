@@ -1,0 +1,49 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="deliveryNote">
+            <h2><span jhiTranslate="supplyMeApp.deliveryNote.detail.title">Delivery Note</span> {{deliveryNote.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="supplyMeApp.deliveryNote.code">Code</span></dt>
+                <dd>
+                    <span>{{deliveryNote.code}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.deliveryNote.deliveryDate">Delivery Date</span></dt>
+                <dd>
+                    <span>{{deliveryNote.deliveryDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.deliveryNote.status">Status</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'supplyMeApp.DeliveryNoteStatus.' + deliveryNote.status}}">{{deliveryNote.status}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.deliveryNote.creationDate">Creation Date</span></dt>
+                <dd>
+                    <span>{{deliveryNote.creationDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.deliveryNote.supplier">Supplier</span></dt>
+                <dd>
+                    <div *ngIf="deliveryNote.supplier">
+                        <a [routerLink]="['/supplier', deliveryNote.supplier?.id, 'view']">{{deliveryNote.supplier?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.deliveryNote.creationUser">Creation User</span></dt>
+                <dd>
+                    {{deliveryNote.creationUser?.id}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/delivery-note', deliveryNote.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

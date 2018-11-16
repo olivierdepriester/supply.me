@@ -1,0 +1,27 @@
+
+{
+    "supplyMeApp": {
+        "materialAvailability" : {
+            "home": {
+                "title": "Material Availabilities",
+                "createLabel": "创建新 Material Availability",
+                "createOrEditLabel": "创建或编辑 Material Availability",
+                "search": "查找 Material Availability"
+            },
+            "created": "Material Availability {{ param }} 创建成功",
+            "updated": "Material Availability {{ param }} 更新成功",
+            "deleted": "Material Availability {{ param }} 删除成功",
+            "delete": {
+                "question": "你确定要删除 Material Availability {{ id }} 吗？"
+            },
+            "detail": {
+                "title": "Material Availability"
+            },
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "purchasePrice": "Purchase Price",
+            "material": "Material",
+            "supplier": "Supplier"
+        }
+    }
+}

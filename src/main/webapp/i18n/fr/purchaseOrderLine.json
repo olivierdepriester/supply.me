@@ -1,0 +1,27 @@
+
+{
+    "supplyMeApp": {
+        "purchaseOrderLine" : {
+            "home": {
+                "title": "PurchaseOrderLines",
+                "createLabel": "Créer un nouveau Purchase Order Line",
+                "createOrEditLabel": "Créer ou éditer un Purchase Order Line",
+                "search": "Recherche pour Purchase Order Line"
+            },
+            "created": "Un nouveau Purchase Order Line a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Purchase Order Line avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Purchase Order Line avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Purchase Order Line {{ id }} ?"
+            },
+            "detail": {
+                "title": "Purchase Order Line"
+            },
+            "lineNumber": "Line Number",
+            "quantity": "Quantity",
+            "orderPrice": "Order Price",
+            "purchaseOrder": "Purchase Order",
+            "demand": "Demand"
+        }
+    }
+}

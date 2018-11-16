@@ -1,0 +1,28 @@
+
+{
+    "supplyMeApp": {
+        "material" : {
+            "home": {
+                "title": "Materials",
+                "createLabel": "Créer un nouveau Material",
+                "createOrEditLabel": "Créer ou éditer un Material",
+                "search": "Recherche pour Material"
+            },
+            "created": "Un nouveau Material a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Material avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Material avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Material {{ id }} ?"
+            },
+            "detail": {
+                "title": "Material"
+            },
+            "partNumber": "Part Number",
+            "name": "Name",
+            "description": "Description",
+            "creationDate": "Creation Date",
+            "code": "Code",
+            "demand": "Demand"
+        }
+    }
+}

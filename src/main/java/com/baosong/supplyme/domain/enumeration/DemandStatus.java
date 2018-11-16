@@ -1,0 +1,8 @@
+package com.baosong.supplyme.domain.enumeration;
+
+/**
+ * The DemandStatus enumeration.
+ */
+public enum DemandStatus {
+    NEW, ORDERED, PARTIALLY_DELIVERED, FULLY_DELIVERED
+}

@@ -1,0 +1,28 @@
+
+{
+    "supplyMeApp": {
+        "purchaseOrder" : {
+            "home": {
+                "title": "PurchaseOrders",
+                "createLabel": "Créer un nouveau Purchase Order",
+                "createOrEditLabel": "Créer ou éditer un Purchase Order",
+                "search": "Recherche pour Purchase Order"
+            },
+            "created": "Un nouveau Purchase Order a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Purchase Order avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Purchase Order avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Purchase Order {{ id }} ?"
+            },
+            "detail": {
+                "title": "Purchase Order"
+            },
+            "code": "Code",
+            "expectedDate": "Expected Date",
+            "status": "Status",
+            "creationDate": "Creation Date",
+            "supplier": "Supplier",
+            "creationUser": "Creation User"
+        }
+    }
+}

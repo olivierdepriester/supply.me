@@ -1,0 +1,41 @@
+{
+    "name": "Supplier",
+    "fields": [
+        {
+            "fieldName": "referenceNumber",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 10
+        },
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 255
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "name",
+            "otherEntityName": "materialAvailability",
+            "otherEntityRelationshipName": "supplier"
+        }
+    ],
+    "changelogDate": "20180912014616",
+    "javadoc": "Supplier",
+    "entityTableName": "supplier",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

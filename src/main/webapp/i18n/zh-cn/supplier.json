@@ -1,0 +1,25 @@
+
+{
+    "supplyMeApp": {
+        "supplier" : {
+            "home": {
+                "title": "Suppliers",
+                "createLabel": "创建新 Supplier",
+                "createOrEditLabel": "创建或编辑 Supplier",
+                "search": "查找 Supplier"
+            },
+            "created": "Supplier {{ param }} 创建成功",
+            "updated": "Supplier {{ param }} 更新成功",
+            "deleted": "Supplier {{ param }} 删除成功",
+            "delete": {
+                "question": "你确定要删除 Supplier {{ id }} 吗？"
+            },
+            "detail": {
+                "title": "Supplier"
+            },
+            "referenceNumber": "Reference Number",
+            "name": "Name",
+            "name": "Name"
+        }
+    }
+}

@@ -1,0 +1,27 @@
+
+{
+    "supplyMeApp": {
+        "materialCategory" : {
+            "home": {
+                "title": "Material Categories",
+                "createLabel": "Create a new Material Category",
+                "createOrEditLabel": "Create or edit a Material Category",
+                "search": "Search for Material Category"
+            },
+            "created": "A new Material Category is created with identifier {{ param }}",
+            "updated": "A Material Category is updated with identifier {{ param }}",
+            "deleted": "A Material Category is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Material Category {{ id }}?"
+            },
+            "detail": {
+                "title": "Material Category"
+            },
+            "name": "Name",
+            "description": "Description",
+            "creationDate": "Creation Date",
+            "parentMaterialCategory": "Parent Material Category",
+            "creationUser": "Creation User"
+        }
+    }
+}

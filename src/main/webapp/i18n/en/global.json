@@ -191,7 +191,7 @@
             "yes": "Yes",
             "no": "No",
             "creationDate": "Creation Date",
-            "creationUser": "Creation User"
+            "creationUser": "Author"
         },
         "ribbon": {
             "dev":"Development"

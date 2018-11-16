@@ -17,7 +17,7 @@ import { IUser, UserService } from 'app/core';
     templateUrl: './delivery-note-update.component.html'
 })
 export class DeliveryNoteUpdateComponent implements OnInit {
-    private _deliveryNote: IDeliveryNote;
+    deliveryNote: IDeliveryNote;
     isSaving: boolean;
 
     suppliers: ISupplier[];
@@ -38,6 +38,8 @@ export class DeliveryNoteUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ deliveryNote }) => {
             this.deliveryNote = deliveryNote;
+            this.deliveryDate = this.deliveryNote.deliveryDate != null ? this.deliveryNote.deliveryDate.format(DATE_TIME_FORMAT) : null;
+            this.creationDate = this.deliveryNote.creationDate != null ? this.deliveryNote.creationDate.format(DATE_TIME_FORMAT) : null;
         });
         this.supplierService.query().subscribe(
             (res: HttpResponse<ISupplier[]>) => {
@@ -59,8 +61,8 @@ export class DeliveryNoteUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.deliveryNote.deliveryDate = moment(this.deliveryDate, DATE_TIME_FORMAT);
-        this.deliveryNote.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.deliveryNote.deliveryDate = this.deliveryDate != null ? moment(this.deliveryDate, DATE_TIME_FORMAT) : null;
+        this.deliveryNote.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         if (this.deliveryNote.id !== undefined) {
             this.subscribeToSaveResponse(this.deliveryNoteService.update(this.deliveryNote));
         } else {
@@ -91,14 +93,5 @@ export class DeliveryNoteUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
-    }
-    get deliveryNote() {
-        return this._deliveryNote;
-    }
-
-    set deliveryNote(deliveryNote: IDeliveryNote) {
-        this._deliveryNote = deliveryNote;
-        this.deliveryDate = moment(deliveryNote.deliveryDate).format(DATE_TIME_FORMAT);
-        this.creationDate = moment(deliveryNote.creationDate).format(DATE_TIME_FORMAT);
     }
 }

@@ -62,8 +62,6 @@ public class DemandResourceIntTest {
     @Autowired
     private DemandRepository demandRepository;
 
-    
-
     @Autowired
     private DemandService demandService;
 
@@ -239,7 +237,6 @@ public class DemandResourceIntTest {
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getDemand() throws Exception {
@@ -256,6 +253,7 @@ public class DemandResourceIntTest {
             .andExpect(jsonPath("$.expectedDate").value(DEFAULT_EXPECTED_DATE.toString()))
             .andExpect(jsonPath("$.creationDate").value(DEFAULT_CREATION_DATE.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingDemand() throws Exception {
@@ -309,7 +307,7 @@ public class DemandResourceIntTest {
 
         // Create the Demand
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restDemandMockMvc.perform(put("/api/demands")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(demand)))

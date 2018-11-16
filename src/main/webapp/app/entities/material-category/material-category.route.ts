@@ -3,8 +3,8 @@ import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { MaterialCategory } from 'app/shared/model/material-category.model';
 import { MaterialCategoryService } from './material-category.service';
 import { MaterialCategoryComponent } from './material-category.component';
@@ -17,10 +17,13 @@ import { IMaterialCategory } from 'app/shared/model/material-category.model';
 export class MaterialCategoryResolve implements Resolve<IMaterialCategory> {
     constructor(private service: MaterialCategoryService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<MaterialCategory> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((materialCategory: HttpResponse<MaterialCategory>) => materialCategory.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<MaterialCategory>) => response.ok),
+                map((materialCategory: HttpResponse<MaterialCategory>) => materialCategory.body)
+            );
         }
         return of(new MaterialCategory());
     }

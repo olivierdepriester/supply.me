@@ -11,8 +11,8 @@ type EntityArrayResponseType = HttpResponse<IDeliveryNoteLine[]>;
 
 @Injectable({ providedIn: 'root' })
 export class DeliveryNoteLineService {
-    private resourceUrl = SERVER_API_URL + 'api/delivery-note-lines';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/delivery-note-lines';
+    public resourceUrl = SERVER_API_URL + 'api/delivery-note-lines';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/delivery-note-lines';
 
     constructor(private http: HttpClient) {}
 

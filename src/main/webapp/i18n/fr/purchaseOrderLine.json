@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "purchaseOrderLine" : {
+        "purchaseOrderLine": {
             "home": {
                 "title": "PurchaseOrderLines",
                 "createLabel": "Créer un nouveau Purchase Order Line",

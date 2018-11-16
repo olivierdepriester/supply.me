@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,7 +43,8 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public Project save(Project project) {
-        log.debug("Request to save Project : {}", project);        Project result = projectRepository.save(project);
+        log.debug("Request to save Project : {}", project);
+        Project result = projectRepository.save(project);
         projectSearchRepository.save(result);
         return result;
     }

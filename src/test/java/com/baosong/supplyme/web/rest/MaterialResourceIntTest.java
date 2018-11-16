@@ -63,8 +63,6 @@ public class MaterialResourceIntTest {
     @Autowired
     private MaterialRepository materialRepository;
 
-    
-
     @Autowired
     private MaterialService materialService;
 
@@ -222,7 +220,6 @@ public class MaterialResourceIntTest {
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getMaterial() throws Exception {
@@ -239,6 +236,7 @@ public class MaterialResourceIntTest {
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.creationDate").value(DEFAULT_CREATION_DATE.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingMaterial() throws Exception {
@@ -292,7 +290,7 @@ public class MaterialResourceIntTest {
 
         // Create the Material
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restMaterialMockMvc.perform(put("/api/materials")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(material)))
@@ -339,9 +337,9 @@ public class MaterialResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(material.getId().intValue())))
-            .andExpect(jsonPath("$.[*].partNumber").value(hasItem(DEFAULT_PART_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].partNumber").value(hasItem(DEFAULT_PART_NUMBER)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
 

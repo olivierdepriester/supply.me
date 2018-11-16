@@ -14,8 +14,8 @@ type EntityArrayResponseType = HttpResponse<IDemandCategory[]>;
 
 @Injectable({ providedIn: 'root' })
 export class DemandCategoryService {
-    private resourceUrl = SERVER_API_URL + 'api/demand-categories';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/demand-categories';
+    public resourceUrl = SERVER_API_URL + 'api/demand-categories';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/demand-categories';
 
     constructor(private http: HttpClient) {}
 
@@ -57,7 +57,7 @@ export class DemandCategoryService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertDateFromClient(demandCategory: IDemandCategory): IDemandCategory {
+    protected convertDateFromClient(demandCategory: IDemandCategory): IDemandCategory {
         const copy: IDemandCategory = Object.assign({}, demandCategory, {
             creationDate:
                 demandCategory.creationDate != null && demandCategory.creationDate.isValid() ? demandCategory.creationDate.toJSON() : null
@@ -65,15 +65,19 @@ export class DemandCategoryService {
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((demandCategory: IDemandCategory) => {
-            demandCategory.creationDate = demandCategory.creationDate != null ? moment(demandCategory.creationDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((demandCategory: IDemandCategory) => {
+                demandCategory.creationDate = demandCategory.creationDate != null ? moment(demandCategory.creationDate) : null;
+            });
+        }
         return res;
     }
 }

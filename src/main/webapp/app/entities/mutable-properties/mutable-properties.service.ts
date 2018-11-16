@@ -11,8 +11,8 @@ type EntityArrayResponseType = HttpResponse<IMutableProperties[]>;
 
 @Injectable({ providedIn: 'root' })
 export class MutablePropertiesService {
-    private resourceUrl = SERVER_API_URL + 'api/mutable-properties';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/mutable-properties';
+    public resourceUrl = SERVER_API_URL + 'api/mutable-properties';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/mutable-properties';
 
     constructor(private http: HttpClient) {}
 

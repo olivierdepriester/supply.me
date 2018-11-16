@@ -58,8 +58,6 @@ public class ProjectResourceIntTest {
     @Autowired
     private ProjectRepository projectRepository;
 
-    
-
     @Autowired
     private ProjectService projectService;
 
@@ -214,7 +212,6 @@ public class ProjectResourceIntTest {
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getProject() throws Exception {
@@ -230,6 +227,7 @@ public class ProjectResourceIntTest {
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.creationDate").value(DEFAULT_CREATION_DATE.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingProject() throws Exception {
@@ -281,7 +279,7 @@ public class ProjectResourceIntTest {
 
         // Create the Project
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProjectMockMvc.perform(put("/api/projects")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(project)))
@@ -328,8 +326,8 @@ public class ProjectResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(project.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
 

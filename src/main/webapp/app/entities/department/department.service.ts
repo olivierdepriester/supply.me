@@ -14,8 +14,8 @@ type EntityArrayResponseType = HttpResponse<IDepartment[]>;
 
 @Injectable({ providedIn: 'root' })
 export class DepartmentService {
-    private resourceUrl = SERVER_API_URL + 'api/departments';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/departments';
+    public resourceUrl = SERVER_API_URL + 'api/departments';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/departments';
 
     constructor(private http: HttpClient) {}
 
@@ -57,22 +57,26 @@ export class DepartmentService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertDateFromClient(department: IDepartment): IDepartment {
+    protected convertDateFromClient(department: IDepartment): IDepartment {
         const copy: IDepartment = Object.assign({}, department, {
             creationDate: department.creationDate != null && department.creationDate.isValid() ? department.creationDate.toJSON() : null
         });
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((department: IDepartment) => {
-            department.creationDate = department.creationDate != null ? moment(department.creationDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((department: IDepartment) => {
+                department.creationDate = department.creationDate != null ? moment(department.creationDate) : null;
+            });
+        }
         return res;
     }
 }

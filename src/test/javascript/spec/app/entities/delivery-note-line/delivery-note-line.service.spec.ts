@@ -1,16 +1,18 @@
 /* tslint:disable max-line-length */
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { of } from 'rxjs';
+import { take, map } from 'rxjs/operators';
 import { DeliveryNoteLineService } from 'app/entities/delivery-note-line/delivery-note-line.service';
-import { DeliveryNoteLine } from 'app/shared/model/delivery-note-line.model';
-import { SERVER_API_URL } from 'app/app.constants';
+import { IDeliveryNoteLine, DeliveryNoteLine } from 'app/shared/model/delivery-note-line.model';
 
 describe('Service Tests', () => {
     describe('DeliveryNoteLine Service', () => {
         let injector: TestBed;
         let service: DeliveryNoteLineService;
         let httpMock: HttpTestingController;
-
+        let elemDefault: IDeliveryNoteLine;
         beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [HttpClientTestingModule]
@@ -18,73 +20,82 @@ describe('Service Tests', () => {
             injector = getTestBed();
             service = injector.get(DeliveryNoteLineService);
             httpMock = injector.get(HttpTestingController);
+
+            elemDefault = new DeliveryNoteLine(0, 0, 0);
         });
 
-        describe('Service methods', () => {
-            it('should call correct URL', () => {
-                service.find(123).subscribe(() => {});
+        describe('Service methods', async () => {
+            it('should find an element', async () => {
+                const returnedFromService = Object.assign({}, elemDefault);
+                service
+                    .find(123)
+                    .pipe(take(1))
+                    .subscribe(resp => expect(resp).toMatchObject({ body: elemDefault }));
 
                 const req = httpMock.expectOne({ method: 'GET' });
-
-                const resourceUrl = SERVER_API_URL + 'api/delivery-note-lines';
-                expect(req.request.url).toEqual(resourceUrl + '/' + 123);
+                req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should create a DeliveryNoteLine', () => {
-                service.create(new DeliveryNoteLine(null)).subscribe(received => {
-                    expect(received.body.id).toEqual(null);
-                });
-
+            it('should create a DeliveryNoteLine', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        id: 0
+                    },
+                    elemDefault
+                );
+                const expected = Object.assign({}, returnedFromService);
+                service
+                    .create(new DeliveryNoteLine(null))
+                    .pipe(take(1))
+                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
                 const req = httpMock.expectOne({ method: 'POST' });
-                req.flush({ id: null });
+                req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should update a DeliveryNoteLine', () => {
-                service.update(new DeliveryNoteLine(123)).subscribe(received => {
-                    expect(received.body.id).toEqual(123);
-                });
+            it('should update a DeliveryNoteLine', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        lineNumber: 1,
+                        quantity: 1
+                    },
+                    elemDefault
+                );
 
+                const expected = Object.assign({}, returnedFromService);
+                service
+                    .update(expected)
+                    .pipe(take(1))
+                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
                 const req = httpMock.expectOne({ method: 'PUT' });
-                req.flush({ id: 123 });
+                req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should return a DeliveryNoteLine', () => {
-                service.find(123).subscribe(received => {
-                    expect(received.body.id).toEqual(123);
-                });
-
+            it('should return a list of DeliveryNoteLine', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        lineNumber: 1,
+                        quantity: 1
+                    },
+                    elemDefault
+                );
+                const expected = Object.assign({}, returnedFromService);
+                service
+                    .query(expected)
+                    .pipe(
+                        take(1),
+                        map(resp => resp.body)
+                    )
+                    .subscribe(body => expect(body).toContainEqual(expected));
                 const req = httpMock.expectOne({ method: 'GET' });
-                req.flush({ id: 123 });
+                req.flush(JSON.stringify([returnedFromService]));
+                httpMock.verify();
             });
 
-            it('should return a list of DeliveryNoteLine', () => {
-                service.query(null).subscribe(received => {
-                    expect(received.body[0].id).toEqual(123);
-                });
-
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush([new DeliveryNoteLine(123)]);
-            });
-
-            it('should delete a DeliveryNoteLine', () => {
-                service.delete(123).subscribe(received => {
-                    expect(received.url).toContain('/' + 123);
-                });
+            it('should delete a DeliveryNoteLine', async () => {
+                const rxPromise = service.delete(123).subscribe(resp => expect(resp.ok));
 
                 const req = httpMock.expectOne({ method: 'DELETE' });
-                req.flush(null);
-            });
-
-            it('should propagate not found response', () => {
-                service.find(123).subscribe(null, (_error: any) => {
-                    expect(_error.status).toEqual(404);
-                });
-
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush('Invalid request parameters', {
-                    status: 404,
-                    statusText: 'Bad Request'
-                });
+                req.flush({ status: 200 });
             });
         });
 

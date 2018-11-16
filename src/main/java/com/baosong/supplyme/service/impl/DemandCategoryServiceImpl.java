@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -43,7 +42,8 @@ public class DemandCategoryServiceImpl implements DemandCategoryService {
      */
     @Override
     public DemandCategory save(DemandCategory demandCategory) {
-        log.debug("Request to save DemandCategory : {}", demandCategory);        DemandCategory result = demandCategoryRepository.save(demandCategory);
+        log.debug("Request to save DemandCategory : {}", demandCategory);
+        DemandCategory result = demandCategoryRepository.save(demandCategory);
         demandCategorySearchRepository.save(result);
         return result;
     }

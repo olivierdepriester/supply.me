@@ -3,8 +3,8 @@ import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { PurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 import { PurchaseOrderLineService } from './purchase-order-line.service';
 import { PurchaseOrderLineComponent } from './purchase-order-line.component';
@@ -17,10 +17,13 @@ import { IPurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 export class PurchaseOrderLineResolve implements Resolve<IPurchaseOrderLine> {
     constructor(private service: PurchaseOrderLineService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<PurchaseOrderLine> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((purchaseOrderLine: HttpResponse<PurchaseOrderLine>) => purchaseOrderLine.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<PurchaseOrderLine>) => response.ok),
+                map((purchaseOrderLine: HttpResponse<PurchaseOrderLine>) => purchaseOrderLine.body)
+            );
         }
         return of(new PurchaseOrderLine());
     }

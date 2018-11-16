@@ -13,7 +13,7 @@ import { ProjectService } from './project.service';
     templateUrl: './project-update.component.html'
 })
 export class ProjectUpdateComponent implements OnInit {
-    private _project: IProject;
+    project: IProject;
     isSaving: boolean;
     creationDate: string;
 
@@ -23,6 +23,7 @@ export class ProjectUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ project }) => {
             this.project = project;
+            this.creationDate = this.project.creationDate != null ? this.project.creationDate.format(DATE_TIME_FORMAT) : null;
         });
     }
 
@@ -32,7 +33,7 @@ export class ProjectUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.project.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.project.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         if (this.project.id !== undefined) {
             this.subscribeToSaveResponse(this.projectService.update(this.project));
         } else {
@@ -51,13 +52,5 @@ export class ProjectUpdateComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-    get project() {
-        return this._project;
-    }
-
-    set project(project: IProject) {
-        this._project = project;
-        this.creationDate = moment(project.creationDate).format(DATE_TIME_FORMAT);
     }
 }

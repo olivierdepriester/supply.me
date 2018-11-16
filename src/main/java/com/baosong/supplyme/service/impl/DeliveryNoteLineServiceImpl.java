@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -43,7 +42,8 @@ public class DeliveryNoteLineServiceImpl implements DeliveryNoteLineService {
      */
     @Override
     public DeliveryNoteLine save(DeliveryNoteLine deliveryNoteLine) {
-        log.debug("Request to save DeliveryNoteLine : {}", deliveryNoteLine);        DeliveryNoteLine result = deliveryNoteLineRepository.save(deliveryNoteLine);
+        log.debug("Request to save DeliveryNoteLine : {}", deliveryNoteLine);
+        DeliveryNoteLine result = deliveryNoteLineRepository.save(deliveryNoteLine);
         deliveryNoteLineSearchRepository.save(result);
         return result;
     }

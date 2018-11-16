@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { PurchaseOrder } from 'app/shared/model/purchase-order.model';
 import { PurchaseOrderService } from './purchase-order.service';
 import { PurchaseOrderComponent } from './purchase-order.component';
@@ -16,10 +16,13 @@ import { IPurchaseOrder } from 'app/shared/model/purchase-order.model';
 export class PurchaseOrderResolve implements Resolve<IPurchaseOrder> {
     constructor(private service: PurchaseOrderService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<PurchaseOrder> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((purchaseOrder: HttpResponse<PurchaseOrder>) => purchaseOrder.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<PurchaseOrder>) => response.ok),
+                map((purchaseOrder: HttpResponse<PurchaseOrder>) => purchaseOrder.body)
+            );
         }
         return of(new PurchaseOrder());
     }

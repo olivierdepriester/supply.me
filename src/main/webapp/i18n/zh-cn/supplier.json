@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "supplier" : {
+        "supplier": {
             "home": {
                 "title": "Suppliers",
                 "createLabel": "创建新 Supplier",

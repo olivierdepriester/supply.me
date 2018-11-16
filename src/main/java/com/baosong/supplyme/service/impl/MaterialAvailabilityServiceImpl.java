@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -43,7 +42,8 @@ public class MaterialAvailabilityServiceImpl implements MaterialAvailabilityServ
      */
     @Override
     public MaterialAvailability save(MaterialAvailability materialAvailability) {
-        log.debug("Request to save MaterialAvailability : {}", materialAvailability);        MaterialAvailability result = materialAvailabilityRepository.save(materialAvailability);
+        log.debug("Request to save MaterialAvailability : {}", materialAvailability);
+        MaterialAvailability result = materialAvailabilityRepository.save(materialAvailability);
         materialAvailabilitySearchRepository.save(result);
         return result;
     }

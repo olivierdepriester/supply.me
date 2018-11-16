@@ -57,8 +57,6 @@ public class MutablePropertiesResourceIntTest {
     @Autowired
     private MutablePropertiesRepository mutablePropertiesRepository;
 
-    
-
     @Autowired
     private MutablePropertiesService mutablePropertiesService;
 
@@ -231,7 +229,6 @@ public class MutablePropertiesResourceIntTest {
             .andExpect(jsonPath("$.[*].valueType").value(hasItem(DEFAULT_VALUE_TYPE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getMutableProperties() throws Exception {
@@ -247,6 +244,7 @@ public class MutablePropertiesResourceIntTest {
             .andExpect(jsonPath("$.value").value(DEFAULT_VALUE.toString()))
             .andExpect(jsonPath("$.valueType").value(DEFAULT_VALUE_TYPE.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingMutableProperties() throws Exception {
@@ -298,7 +296,7 @@ public class MutablePropertiesResourceIntTest {
 
         // Create the MutableProperties
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restMutablePropertiesMockMvc.perform(put("/api/mutable-properties")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(mutableProperties)))
@@ -346,8 +344,8 @@ public class MutablePropertiesResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(mutableProperties.getId().intValue())))
             .andExpect(jsonPath("$.[*].key").value(hasItem(DEFAULT_KEY.toString())))
-            .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE.toString())))
-            .andExpect(jsonPath("$.[*].valueType").value(hasItem(DEFAULT_VALUE_TYPE.toString())));
+            .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE)))
+            .andExpect(jsonPath("$.[*].valueType").value(hasItem(DEFAULT_VALUE_TYPE)));
     }
 
     @Test

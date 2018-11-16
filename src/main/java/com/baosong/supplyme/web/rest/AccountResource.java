@@ -7,6 +7,7 @@ import com.baosong.supplyme.repository.UserRepository;
 import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.MailService;
 import com.baosong.supplyme.service.UserService;
+import com.baosong.supplyme.service.dto.PasswordChangeDTO;
 import com.baosong.supplyme.service.dto.UserDTO;
 import com.baosong.supplyme.web.rest.errors.*;
 import com.baosong.supplyme.web.rest.vm.KeyAndPasswordVM;
@@ -20,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import com.baosong.supplyme.service.dto.PasswordChangeDTO;
 import java.util.*;
+
 
 /**
  * REST controller for managing the current user's account.
@@ -60,8 +61,6 @@ public class AccountResource {
         if (!checkPasswordLength(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
-        userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase()).ifPresent(u -> {throw new LoginAlreadyUsedException();});
-        userRepository.findOneByEmailIgnoreCase(managedUserVM.getEmail()).ifPresent(u -> {throw new EmailAlreadyUsedException();});
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
         mailService.sendActivationEmail(user);
     }
@@ -129,7 +128,7 @@ public class AccountResource {
         }
         userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(),
             userDTO.getLangKey(), userDTO.getImageUrl());
-   }
+    }
 
     /**
      * POST  /account/change-password : changes the current user's password
@@ -144,7 +143,7 @@ public class AccountResource {
             throw new InvalidPasswordException();
         }
         userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
-   }
+    }
 
     /**
      * POST   /account/reset-password/init : Send an email to reset the password of the user

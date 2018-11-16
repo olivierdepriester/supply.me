@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { DemandCategory } from 'app/shared/model/demand-category.model';
 import { DemandCategoryService } from './demand-category.service';
 import { DemandCategoryComponent } from './demand-category.component';
@@ -16,10 +16,13 @@ import { IDemandCategory } from 'app/shared/model/demand-category.model';
 export class DemandCategoryResolve implements Resolve<IDemandCategory> {
     constructor(private service: DemandCategoryService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<DemandCategory> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((demandCategory: HttpResponse<DemandCategory>) => demandCategory.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<DemandCategory>) => response.ok),
+                map((demandCategory: HttpResponse<DemandCategory>) => demandCategory.body)
+            );
         }
         return of(new DemandCategory());
     }

@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "demand" : {
+        "demand": {
             "home": {
                 "title": "Demands",
                 "createLabel": "创建新 Demand",

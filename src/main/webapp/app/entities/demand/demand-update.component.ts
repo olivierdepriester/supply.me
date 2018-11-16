@@ -19,7 +19,7 @@ import { IUser, UserService } from 'app/core';
     templateUrl: './demand-update.component.html'
 })
 export class DemandUpdateComponent implements OnInit {
-    private _demand: IDemand;
+    demand: IDemand;
     isSaving: boolean;
 
     materials: IMaterial[];
@@ -43,6 +43,8 @@ export class DemandUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ demand }) => {
             this.demand = demand;
+            this.expectedDate = this.demand.expectedDate != null ? this.demand.expectedDate.format(DATE_TIME_FORMAT) : null;
+            this.creationDate = this.demand.creationDate != null ? this.demand.creationDate.format(DATE_TIME_FORMAT) : null;
         });
         this.materialService.query().subscribe(
             (res: HttpResponse<IMaterial[]>) => {
@@ -70,8 +72,8 @@ export class DemandUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.demand.expectedDate = moment(this.expectedDate, DATE_TIME_FORMAT);
-        this.demand.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.demand.expectedDate = this.expectedDate != null ? moment(this.expectedDate, DATE_TIME_FORMAT) : null;
+        this.demand.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         if (this.demand.id !== undefined) {
             this.subscribeToSaveResponse(this.demandService.update(this.demand));
         } else {
@@ -106,14 +108,5 @@ export class DemandUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
-    }
-    get demand() {
-        return this._demand;
-    }
-
-    set demand(demand: IDemand) {
-        this._demand = demand;
-        this.expectedDate = moment(demand.expectedDate).format(DATE_TIME_FORMAT);
-        this.creationDate = moment(demand.creationDate).format(DATE_TIME_FORMAT);
     }
 }

@@ -1,7 +1,8 @@
 {
     "global": {
         "title": "SupplyMe",
-        "browsehappy": "您目前使用<strong>过于老旧</strong>的浏览器, 建议您<a href=\"http://browsehappy.com/?locale=en\">升级浏览器</a>让您有更佳的上网体验.",
+        "browsehappy":
+            "您目前使用<strong>过于老旧</strong>的浏览器, 建议您<a href=\"http://browsehappy.com/?locale=en\">升级浏览器</a>让您有更佳的上网体验.",
         "menu": {
             "home": "首页",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
@@ -51,6 +52,8 @@
         "form": {
             "username": "账号",
             "username.placeholder": "您的账号",
+            "currentpassword": "当前密码",
+            "currentpassword.placeholder": "您的当前密码",
             "newpassword": "新密码",
             "newpassword.placeholder": "您的新密码",
             "confirmpassword": "新密码确认",
@@ -63,7 +66,8 @@
                 "authenticated": {
                     "prefix": "如果您要",
                     "link": "登录",
-                    "suffix": ", 您可以使用默认账号:<br/>- 管理员 (账号=\"admin\"和密码=\"admin\") <br/>- 普通用户 (账号=\"user\"和密码=\"user\")."
+                    "suffix":
+                        ", 您可以使用默认账号:<br/>- 管理员 (账号=\"admin\"和密码=\"admin\") <br/>- 普通用户 (账号=\"user\"和密码=\"user\")."
                 },
                 "register": {
                     "noaccount": "您还没有账号",
@@ -71,7 +75,7 @@
                 }
             },
             "error": {
-                "dontmatch" : "您输入的密码和确认密码不匹配!"
+                "dontmatch": "您输入的密码和确认密码不匹配!"
             },
             "validate": {
                 "newpassword": {
@@ -94,10 +98,10 @@
             }
         },
         "field": {
-            "id" : "ID"
+            "id": "ID"
         },
         "ribbon": {
-            "dev":"Development"
+            "dev": "Development"
         },
         "item-count": "显示第 {{first}} - {{second}} 条，共 {{total}} 条"
     },

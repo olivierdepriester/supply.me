@@ -55,8 +55,6 @@ public class DeliveryNoteLineResourceIntTest {
     @Autowired
     private DeliveryNoteLineRepository deliveryNoteLineRepository;
 
-    
-
     @Autowired
     private DeliveryNoteLineService deliveryNoteLineService;
 
@@ -208,7 +206,6 @@ public class DeliveryNoteLineResourceIntTest {
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.doubleValue())));
     }
     
-
     @Test
     @Transactional
     public void getDeliveryNoteLine() throws Exception {
@@ -223,6 +220,7 @@ public class DeliveryNoteLineResourceIntTest {
             .andExpect(jsonPath("$.lineNumber").value(DEFAULT_LINE_NUMBER))
             .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY.doubleValue()));
     }
+
     @Test
     @Transactional
     public void getNonExistingDeliveryNoteLine() throws Exception {
@@ -272,7 +270,7 @@ public class DeliveryNoteLineResourceIntTest {
 
         // Create the DeliveryNoteLine
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restDeliveryNoteLineMockMvc.perform(put("/api/delivery-note-lines")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(deliveryNoteLine)))

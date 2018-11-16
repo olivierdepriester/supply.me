@@ -16,7 +16,7 @@ import { MaterialService } from 'app/entities/material';
     templateUrl: './invoice-line-update.component.html'
 })
 export class InvoiceLineUpdateComponent implements OnInit {
-    private _invoiceLine: IInvoiceLine;
+    invoiceLine: IInvoiceLine;
     isSaving: boolean;
 
     purchaseorders: IPurchaseOrder[];
@@ -86,12 +86,5 @@ export class InvoiceLineUpdateComponent implements OnInit {
 
     trackMaterialById(index: number, item: IMaterial) {
         return item.id;
-    }
-    get invoiceLine() {
-        return this._invoiceLine;
-    }
-
-    set invoiceLine(invoiceLine: IInvoiceLine) {
-        this._invoiceLine = invoiceLine;
     }
 }

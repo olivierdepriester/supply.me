@@ -49,11 +49,9 @@ public class Material implements Serializable {
     @OneToMany(mappedBy = "material")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<MaterialAvailability> codes = new HashSet<>();
-
     @OneToMany(mappedBy = "material")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Demand> demands = new HashSet<>();
-
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;

@@ -65,8 +65,6 @@ public class DepartmentResourceIntTest {
     @Autowired
     private DepartmentRepository departmentRepository;
 
-    
-
     @Autowired
     private DepartmentService departmentService;
 
@@ -231,7 +229,6 @@ public class DepartmentResourceIntTest {
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
     }
     
-
     @Test
     @Transactional
     public void getDepartment() throws Exception {
@@ -248,6 +245,7 @@ public class DepartmentResourceIntTest {
             .andExpect(jsonPath("$.creationDate").value(DEFAULT_CREATION_DATE.toString()))
             .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()));
     }
+
     @Test
     @Transactional
     public void getNonExistingDepartment() throws Exception {
@@ -301,7 +299,7 @@ public class DepartmentResourceIntTest {
 
         // Create the Department
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restDepartmentMockMvc.perform(put("/api/departments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(department)))
@@ -348,8 +346,8 @@ public class DepartmentResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(department.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())))
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
     }

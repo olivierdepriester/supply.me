@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { DeliveryNote } from 'app/shared/model/delivery-note.model';
 import { DeliveryNoteService } from './delivery-note.service';
 import { DeliveryNoteComponent } from './delivery-note.component';
@@ -16,10 +16,13 @@ import { IDeliveryNote } from 'app/shared/model/delivery-note.model';
 export class DeliveryNoteResolve implements Resolve<IDeliveryNote> {
     constructor(private service: DeliveryNoteService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<DeliveryNote> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((deliveryNote: HttpResponse<DeliveryNote>) => deliveryNote.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<DeliveryNote>) => response.ok),
+                map((deliveryNote: HttpResponse<DeliveryNote>) => deliveryNote.body)
+            );
         }
         return of(new DeliveryNote());
     }

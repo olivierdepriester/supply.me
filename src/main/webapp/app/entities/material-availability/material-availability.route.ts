@@ -3,8 +3,8 @@ import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { MaterialAvailability } from 'app/shared/model/material-availability.model';
 import { MaterialAvailabilityService } from './material-availability.service';
 import { MaterialAvailabilityComponent } from './material-availability.component';
@@ -17,10 +17,13 @@ import { IMaterialAvailability } from 'app/shared/model/material-availability.mo
 export class MaterialAvailabilityResolve implements Resolve<IMaterialAvailability> {
     constructor(private service: MaterialAvailabilityService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<MaterialAvailability> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((materialAvailability: HttpResponse<MaterialAvailability>) => materialAvailability.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<MaterialAvailability>) => response.ok),
+                map((materialAvailability: HttpResponse<MaterialAvailability>) => materialAvailability.body)
+            );
         }
         return of(new MaterialAvailability());
     }

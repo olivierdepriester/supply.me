@@ -6,13 +6,13 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <p jhiTranslate="supplyMeApp.mutableProperties.delete.question" translateValues="{id: '{{mutableProperties.id}}'}">Are you sure you want to delete this Mutable Properties?</p>
+        <p id="jhi-delete-mutableProperties-heading" jhiTranslate="supplyMeApp.mutableProperties.delete.question" translateValues="{id: '{{mutableProperties.id}}'}">Are you sure you want to delete this Mutable Properties?</p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
             <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
-        <button type="submit" class="btn btn-danger">
+        <button id="jhi-confirm-delete-mutableProperties" type="submit" class="btn btn-danger">
             <fa-icon [icon]="'times'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
         </button>
     </div>

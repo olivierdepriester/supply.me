@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "department" : {
+        "department": {
             "home": {
                 "title": "Departments",
                 "createLabel": "Créer un nouveau Department",

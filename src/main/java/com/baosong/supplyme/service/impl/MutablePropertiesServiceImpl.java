@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,7 +43,8 @@ public class MutablePropertiesServiceImpl implements MutablePropertiesService {
      */
     @Override
     public MutableProperties save(MutableProperties mutableProperties) {
-        log.debug("Request to save MutableProperties : {}", mutableProperties);        MutableProperties result = mutablePropertiesRepository.save(mutableProperties);
+        log.debug("Request to save MutableProperties : {}", mutableProperties);
+        MutableProperties result = mutablePropertiesRepository.save(mutableProperties);
         mutablePropertiesSearchRepository.save(result);
         return result;
     }

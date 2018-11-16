@@ -1,6 +1,6 @@
 {
     "supplyMeApp": {
-        "DeliveryNoteStatus" : {
+        "DeliveryNoteStatus": {
             "null": "",
             "NEW": "NEW"
         }

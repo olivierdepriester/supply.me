@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,7 +43,8 @@ public class DemandServiceImpl implements DemandService {
      */
     @Override
     public Demand save(Demand demand) {
-        log.debug("Request to save Demand : {}", demand);        Demand result = demandRepository.save(demand);
+        log.debug("Request to save Demand : {}", demand);
+        Demand result = demandRepository.save(demand);
         demandSearchRepository.save(result);
         return result;
     }

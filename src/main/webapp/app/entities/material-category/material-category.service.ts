@@ -14,8 +14,8 @@ type EntityArrayResponseType = HttpResponse<IMaterialCategory[]>;
 
 @Injectable({ providedIn: 'root' })
 export class MaterialCategoryService {
-    private resourceUrl = SERVER_API_URL + 'api/material-categories';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/material-categories';
+    public resourceUrl = SERVER_API_URL + 'api/material-categories';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/material-categories';
 
     constructor(private http: HttpClient) {}
 
@@ -57,7 +57,7 @@ export class MaterialCategoryService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertDateFromClient(materialCategory: IMaterialCategory): IMaterialCategory {
+    protected convertDateFromClient(materialCategory: IMaterialCategory): IMaterialCategory {
         const copy: IMaterialCategory = Object.assign({}, materialCategory, {
             creationDate:
                 materialCategory.creationDate != null && materialCategory.creationDate.isValid()
@@ -67,15 +67,19 @@ export class MaterialCategoryService {
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((materialCategory: IMaterialCategory) => {
-            materialCategory.creationDate = materialCategory.creationDate != null ? moment(materialCategory.creationDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((materialCategory: IMaterialCategory) => {
+                materialCategory.creationDate = materialCategory.creationDate != null ? moment(materialCategory.creationDate) : null;
+            });
+        }
         return res;
     }
 }

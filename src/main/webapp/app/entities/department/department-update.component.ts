@@ -17,7 +17,7 @@ import { ProjectService } from 'app/entities/project';
     templateUrl: './department-update.component.html'
 })
 export class DepartmentUpdateComponent implements OnInit {
-    private _department: IDepartment;
+    department: IDepartment;
     isSaving: boolean;
 
     users: IUser[];
@@ -37,6 +37,7 @@ export class DepartmentUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ department }) => {
             this.department = department;
+            this.creationDate = this.department.creationDate != null ? this.department.creationDate.format(DATE_TIME_FORMAT) : null;
         });
         this.userService.query().subscribe(
             (res: HttpResponse<IUser[]>) => {
@@ -58,7 +59,7 @@ export class DepartmentUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.department.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.department.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         if (this.department.id !== undefined) {
             this.subscribeToSaveResponse(this.departmentService.update(this.department));
         } else {
@@ -89,13 +90,5 @@ export class DepartmentUpdateComponent implements OnInit {
 
     trackProjectById(index: number, item: IProject) {
         return item.id;
-    }
-    get department() {
-        return this._department;
-    }
-
-    set department(department: IDepartment) {
-        this._department = department;
-        this.creationDate = moment(department.creationDate).format(DATE_TIME_FORMAT);
     }
 }

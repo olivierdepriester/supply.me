@@ -27,10 +27,8 @@ import java.time.temporal.ChronoUnit;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -163,6 +161,8 @@ public class UserServiceIntTest {
         Instant now = Instant.now();
         when(dateTimeProvider.getNow()).thenReturn(Optional.of(now.minus(4, ChronoUnit.DAYS)));
         user.setActivated(false);
+        User dbUser = userRepository.saveAndFlush(user);
+        dbUser.setCreatedDate(now.minus(4, ChronoUnit.DAYS));
         userRepository.saveAndFlush(user);
         List<User> users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(now.minus(3, ChronoUnit.DAYS));
         assertThat(users).isNotEmpty();

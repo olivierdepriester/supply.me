@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -43,7 +42,8 @@ public class SupplierServiceImpl implements SupplierService {
      */
     @Override
     public Supplier save(Supplier supplier) {
-        log.debug("Request to save Supplier : {}", supplier);        Supplier result = supplierRepository.save(supplier);
+        log.debug("Request to save Supplier : {}", supplier);
+        Supplier result = supplierRepository.save(supplier);
         supplierSearchRepository.save(result);
         return result;
     }

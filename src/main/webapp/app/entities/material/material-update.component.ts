@@ -13,7 +13,7 @@ import { MaterialService } from './material.service';
     templateUrl: './material-update.component.html'
 })
 export class MaterialUpdateComponent implements OnInit {
-    private _material: IMaterial;
+    material: IMaterial;
     isSaving: boolean;
     creationDate: string;
 
@@ -23,6 +23,7 @@ export class MaterialUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ material }) => {
             this.material = material;
+            this.creationDate = this.material.creationDate != null ? this.material.creationDate.format(DATE_TIME_FORMAT) : null;
         });
     }
 
@@ -32,7 +33,7 @@ export class MaterialUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.material.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.material.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         if (this.material.id !== undefined) {
             this.subscribeToSaveResponse(this.materialService.update(this.material));
         } else {
@@ -51,13 +52,5 @@ export class MaterialUpdateComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-    get material() {
-        return this._material;
-    }
-
-    set material(material: IMaterial) {
-        this._material = material;
-        this.creationDate = moment(material.creationDate).format(DATE_TIME_FORMAT);
     }
 }

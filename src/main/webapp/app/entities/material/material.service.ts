@@ -14,8 +14,8 @@ type EntityArrayResponseType = HttpResponse<IMaterial[]>;
 
 @Injectable({ providedIn: 'root' })
 export class MaterialService {
-    private resourceUrl = SERVER_API_URL + 'api/materials';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/materials';
+    public resourceUrl = SERVER_API_URL + 'api/materials';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/materials';
 
     constructor(private http: HttpClient) {}
 
@@ -57,22 +57,26 @@ export class MaterialService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertDateFromClient(material: IMaterial): IMaterial {
+    protected convertDateFromClient(material: IMaterial): IMaterial {
         const copy: IMaterial = Object.assign({}, material, {
             creationDate: material.creationDate != null && material.creationDate.isValid() ? material.creationDate.toJSON() : null
         });
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((material: IMaterial) => {
-            material.creationDate = material.creationDate != null ? moment(material.creationDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((material: IMaterial) => {
+                material.creationDate = material.creationDate != null ? moment(material.creationDate) : null;
+            });
+        }
         return res;
     }
 }

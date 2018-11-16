@@ -1,16 +1,21 @@
 /* tslint:disable max-line-length */
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { of } from 'rxjs';
+import { take, map } from 'rxjs/operators';
+import * as moment from 'moment';
+import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { MaterialAvailabilityService } from 'app/entities/material-availability/material-availability.service';
-import { MaterialAvailability } from 'app/shared/model/material-availability.model';
-import { SERVER_API_URL } from 'app/app.constants';
+import { IMaterialAvailability, MaterialAvailability } from 'app/shared/model/material-availability.model';
 
 describe('Service Tests', () => {
     describe('MaterialAvailability Service', () => {
         let injector: TestBed;
         let service: MaterialAvailabilityService;
         let httpMock: HttpTestingController;
-
+        let elemDefault: IMaterialAvailability;
+        let currentDate: moment.Moment;
         beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [HttpClientTestingModule]
@@ -18,73 +23,111 @@ describe('Service Tests', () => {
             injector = getTestBed();
             service = injector.get(MaterialAvailabilityService);
             httpMock = injector.get(HttpTestingController);
+            currentDate = moment();
+
+            elemDefault = new MaterialAvailability(0, currentDate, currentDate, 0);
         });
 
-        describe('Service methods', () => {
-            it('should call correct URL', () => {
-                service.find(123).subscribe(() => {});
+        describe('Service methods', async () => {
+            it('should find an element', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        startDate: currentDate.format(DATE_TIME_FORMAT),
+                        endDate: currentDate.format(DATE_TIME_FORMAT)
+                    },
+                    elemDefault
+                );
+                service
+                    .find(123)
+                    .pipe(take(1))
+                    .subscribe(resp => expect(resp).toMatchObject({ body: elemDefault }));
 
                 const req = httpMock.expectOne({ method: 'GET' });
-
-                const resourceUrl = SERVER_API_URL + 'api/material-availabilities';
-                expect(req.request.url).toEqual(resourceUrl + '/' + 123);
+                req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should create a MaterialAvailability', () => {
-                service.create(new MaterialAvailability(null)).subscribe(received => {
-                    expect(received.body.id).toEqual(null);
-                });
-
+            it('should create a MaterialAvailability', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        id: 0,
+                        startDate: currentDate.format(DATE_TIME_FORMAT),
+                        endDate: currentDate.format(DATE_TIME_FORMAT)
+                    },
+                    elemDefault
+                );
+                const expected = Object.assign(
+                    {
+                        startDate: currentDate,
+                        endDate: currentDate
+                    },
+                    returnedFromService
+                );
+                service
+                    .create(new MaterialAvailability(null))
+                    .pipe(take(1))
+                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
                 const req = httpMock.expectOne({ method: 'POST' });
-                req.flush({ id: null });
+                req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should update a MaterialAvailability', () => {
-                service.update(new MaterialAvailability(123)).subscribe(received => {
-                    expect(received.body.id).toEqual(123);
-                });
+            it('should update a MaterialAvailability', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        startDate: currentDate.format(DATE_TIME_FORMAT),
+                        endDate: currentDate.format(DATE_TIME_FORMAT),
+                        purchasePrice: 1
+                    },
+                    elemDefault
+                );
 
+                const expected = Object.assign(
+                    {
+                        startDate: currentDate,
+                        endDate: currentDate
+                    },
+                    returnedFromService
+                );
+                service
+                    .update(expected)
+                    .pipe(take(1))
+                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
                 const req = httpMock.expectOne({ method: 'PUT' });
-                req.flush({ id: 123 });
+                req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should return a MaterialAvailability', () => {
-                service.find(123).subscribe(received => {
-                    expect(received.body.id).toEqual(123);
-                });
-
+            it('should return a list of MaterialAvailability', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        startDate: currentDate.format(DATE_TIME_FORMAT),
+                        endDate: currentDate.format(DATE_TIME_FORMAT),
+                        purchasePrice: 1
+                    },
+                    elemDefault
+                );
+                const expected = Object.assign(
+                    {
+                        startDate: currentDate,
+                        endDate: currentDate
+                    },
+                    returnedFromService
+                );
+                service
+                    .query(expected)
+                    .pipe(
+                        take(1),
+                        map(resp => resp.body)
+                    )
+                    .subscribe(body => expect(body).toContainEqual(expected));
                 const req = httpMock.expectOne({ method: 'GET' });
-                req.flush({ id: 123 });
+                req.flush(JSON.stringify([returnedFromService]));
+                httpMock.verify();
             });
 
-            it('should return a list of MaterialAvailability', () => {
-                service.query(null).subscribe(received => {
-                    expect(received.body[0].id).toEqual(123);
-                });
-
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush([new MaterialAvailability(123)]);
-            });
-
-            it('should delete a MaterialAvailability', () => {
-                service.delete(123).subscribe(received => {
-                    expect(received.url).toContain('/' + 123);
-                });
+            it('should delete a MaterialAvailability', async () => {
+                const rxPromise = service.delete(123).subscribe(resp => expect(resp.ok));
 
                 const req = httpMock.expectOne({ method: 'DELETE' });
-                req.flush(null);
-            });
-
-            it('should propagate not found response', () => {
-                service.find(123).subscribe(null, (_error: any) => {
-                    expect(_error.status).toEqual(404);
-                });
-
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush('Invalid request parameters', {
-                    status: 404,
-                    statusText: 'Bad Request'
-                });
+                req.flush({ status: 200 });
             });
         });
 

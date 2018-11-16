@@ -17,7 +17,7 @@ import { IUser, UserService } from 'app/core';
     templateUrl: './purchase-order-update.component.html'
 })
 export class PurchaseOrderUpdateComponent implements OnInit {
-    private _purchaseOrder: IPurchaseOrder;
+    purchaseOrder: IPurchaseOrder;
     isSaving: boolean;
 
     suppliers: ISupplier[];
@@ -38,6 +38,8 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ purchaseOrder }) => {
             this.purchaseOrder = purchaseOrder;
+            this.expectedDate = this.purchaseOrder.expectedDate != null ? this.purchaseOrder.expectedDate.format(DATE_TIME_FORMAT) : null;
+            this.creationDate = this.purchaseOrder.creationDate != null ? this.purchaseOrder.creationDate.format(DATE_TIME_FORMAT) : null;
         });
         this.supplierService.query().subscribe(
             (res: HttpResponse<ISupplier[]>) => {
@@ -59,8 +61,8 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.purchaseOrder.expectedDate = moment(this.expectedDate, DATE_TIME_FORMAT);
-        this.purchaseOrder.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.purchaseOrder.expectedDate = this.expectedDate != null ? moment(this.expectedDate, DATE_TIME_FORMAT) : null;
+        this.purchaseOrder.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         if (this.purchaseOrder.id !== undefined) {
             this.subscribeToSaveResponse(this.purchaseOrderService.update(this.purchaseOrder));
         } else {
@@ -91,14 +93,5 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
-    }
-    get purchaseOrder() {
-        return this._purchaseOrder;
-    }
-
-    set purchaseOrder(purchaseOrder: IPurchaseOrder) {
-        this._purchaseOrder = purchaseOrder;
-        this.expectedDate = moment(purchaseOrder.expectedDate).format(DATE_TIME_FORMAT);
-        this.creationDate = moment(purchaseOrder.creationDate).format(DATE_TIME_FORMAT);
     }
 }

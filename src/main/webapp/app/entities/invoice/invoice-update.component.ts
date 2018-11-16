@@ -17,7 +17,7 @@ import { IUser, UserService } from 'app/core';
     templateUrl: './invoice-update.component.html'
 })
 export class InvoiceUpdateComponent implements OnInit {
-    private _invoice: IInvoice;
+    invoice: IInvoice;
     isSaving: boolean;
 
     suppliers: ISupplier[];
@@ -38,6 +38,8 @@ export class InvoiceUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ invoice }) => {
             this.invoice = invoice;
+            this.sendingDate = this.invoice.sendingDate != null ? this.invoice.sendingDate.format(DATE_TIME_FORMAT) : null;
+            this.dueDate = this.invoice.dueDate != null ? this.invoice.dueDate.format(DATE_TIME_FORMAT) : null;
         });
         this.supplierService.query().subscribe(
             (res: HttpResponse<ISupplier[]>) => {
@@ -59,8 +61,8 @@ export class InvoiceUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.invoice.sendingDate = moment(this.sendingDate, DATE_TIME_FORMAT);
-        this.invoice.dueDate = moment(this.dueDate, DATE_TIME_FORMAT);
+        this.invoice.sendingDate = this.sendingDate != null ? moment(this.sendingDate, DATE_TIME_FORMAT) : null;
+        this.invoice.dueDate = this.dueDate != null ? moment(this.dueDate, DATE_TIME_FORMAT) : null;
         if (this.invoice.id !== undefined) {
             this.subscribeToSaveResponse(this.invoiceService.update(this.invoice));
         } else {
@@ -91,14 +93,5 @@ export class InvoiceUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
-    }
-    get invoice() {
-        return this._invoice;
-    }
-
-    set invoice(invoice: IInvoice) {
-        this._invoice = invoice;
-        this.sendingDate = moment(invoice.sendingDate).format(DATE_TIME_FORMAT);
-        this.dueDate = moment(invoice.dueDate).format(DATE_TIME_FORMAT);
     }
 }

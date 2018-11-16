@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "deliveryNoteLine" : {
+        "deliveryNoteLine": {
             "home": {
                 "title": "DeliveryNoteLines",
                 "createLabel": "Créer un nouveau Delivery Note Line",

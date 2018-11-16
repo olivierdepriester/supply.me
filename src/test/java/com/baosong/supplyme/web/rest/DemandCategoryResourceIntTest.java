@@ -61,8 +61,6 @@ public class DemandCategoryResourceIntTest {
     @Autowired
     private DemandCategoryRepository demandCategoryRepository;
 
-    
-
     @Autowired
     private DemandCategoryService demandCategoryService;
 
@@ -222,7 +220,6 @@ public class DemandCategoryResourceIntTest {
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getDemandCategory() throws Exception {
@@ -238,6 +235,7 @@ public class DemandCategoryResourceIntTest {
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.creationDate").value(DEFAULT_CREATION_DATE.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingDemandCategory() throws Exception {
@@ -289,7 +287,7 @@ public class DemandCategoryResourceIntTest {
 
         // Create the DemandCategory
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restDemandCategoryMockMvc.perform(put("/api/demand-categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(demandCategory)))
@@ -336,8 +334,8 @@ public class DemandCategoryResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(demandCategory.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
 

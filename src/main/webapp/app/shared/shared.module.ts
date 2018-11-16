@@ -12,4 +12,10 @@ import { SupplyMeSharedLibsModule, SupplyMeSharedCommonModule, JhiLoginModalComp
     exports: [SupplyMeSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class SupplyMeSharedModule {}
+export class SupplyMeSharedModule {
+    static forRoot() {
+        return {
+            ngModule: SupplyMeSharedModule
+        };
+    }
+}

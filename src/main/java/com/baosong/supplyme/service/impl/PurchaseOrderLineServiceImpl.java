@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -43,7 +42,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
      */
     @Override
     public PurchaseOrderLine save(PurchaseOrderLine purchaseOrderLine) {
-        log.debug("Request to save PurchaseOrderLine : {}", purchaseOrderLine);        PurchaseOrderLine result = purchaseOrderLineRepository.save(purchaseOrderLine);
+        log.debug("Request to save PurchaseOrderLine : {}", purchaseOrderLine);
+        PurchaseOrderLine result = purchaseOrderLineRepository.save(purchaseOrderLine);
         purchaseOrderLineSearchRepository.save(result);
         return result;
     }

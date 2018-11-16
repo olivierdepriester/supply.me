@@ -11,8 +11,8 @@ type EntityArrayResponseType = HttpResponse<IPurchaseOrderLine[]>;
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseOrderLineService {
-    private resourceUrl = SERVER_API_URL + 'api/purchase-order-lines';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/purchase-order-lines';
+    public resourceUrl = SERVER_API_URL + 'api/purchase-order-lines';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/purchase-order-lines';
 
     constructor(private http: HttpClient) {}
 

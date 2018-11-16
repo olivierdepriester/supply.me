@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "invoiceLine" : {
+        "invoiceLine": {
             "home": {
                 "title": "Invoice Lines",
                 "createLabel": "创建新 Invoice Line",

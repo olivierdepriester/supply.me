@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { Demand } from 'app/shared/model/demand.model';
 import { DemandService } from './demand.service';
 import { DemandComponent } from './demand.component';
@@ -16,10 +16,13 @@ import { IDemand } from 'app/shared/model/demand.model';
 export class DemandResolve implements Resolve<IDemand> {
     constructor(private service: DemandService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Demand> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((demand: HttpResponse<Demand>) => demand.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Demand>) => response.ok),
+                map((demand: HttpResponse<Demand>) => demand.body)
+            );
         }
         return of(new Demand());
     }

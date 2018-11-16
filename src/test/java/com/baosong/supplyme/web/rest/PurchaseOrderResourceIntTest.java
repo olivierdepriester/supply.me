@@ -64,8 +64,6 @@ public class PurchaseOrderResourceIntTest {
     @Autowired
     private PurchaseOrderRepository purchaseOrderRepository;
 
-    
-
     @Autowired
     private PurchaseOrderService purchaseOrderService;
 
@@ -241,7 +239,6 @@ public class PurchaseOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getPurchaseOrder() throws Exception {
@@ -258,6 +255,7 @@ public class PurchaseOrderResourceIntTest {
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.creationDate").value(DEFAULT_CREATION_DATE.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingPurchaseOrder() throws Exception {
@@ -311,7 +309,7 @@ public class PurchaseOrderResourceIntTest {
 
         // Create the PurchaseOrder
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPurchaseOrderMockMvc.perform(put("/api/purchase-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(purchaseOrder)))
@@ -358,7 +356,7 @@ public class PurchaseOrderResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(purchaseOrder.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].expectedDate").value(hasItem(DEFAULT_EXPECTED_DATE.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));

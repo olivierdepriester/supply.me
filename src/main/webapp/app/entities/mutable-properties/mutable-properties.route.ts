@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { MutableProperties } from 'app/shared/model/mutable-properties.model';
 import { MutablePropertiesService } from './mutable-properties.service';
 import { MutablePropertiesComponent } from './mutable-properties.component';
@@ -16,10 +16,13 @@ import { IMutableProperties } from 'app/shared/model/mutable-properties.model';
 export class MutablePropertiesResolve implements Resolve<IMutableProperties> {
     constructor(private service: MutablePropertiesService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<MutableProperties> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((mutableProperties: HttpResponse<MutableProperties>) => mutableProperties.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<MutableProperties>) => response.ok),
+                map((mutableProperties: HttpResponse<MutableProperties>) => mutableProperties.body)
+            );
         }
         return of(new MutableProperties());
     }

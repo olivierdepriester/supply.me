@@ -11,8 +11,8 @@ type EntityArrayResponseType = HttpResponse<ISupplier[]>;
 
 @Injectable({ providedIn: 'root' })
 export class SupplierService {
-    private resourceUrl = SERVER_API_URL + 'api/suppliers';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/suppliers';
+    public resourceUrl = SERVER_API_URL + 'api/suppliers';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/suppliers';
 
     constructor(private http: HttpClient) {}
 

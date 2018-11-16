@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "demandCategory" : {
+        "demandCategory": {
             "home": {
                 "title": "Demand Categories",
                 "createLabel": "Create a new Demand Category",

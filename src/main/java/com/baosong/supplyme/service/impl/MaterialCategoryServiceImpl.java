@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -43,7 +42,8 @@ public class MaterialCategoryServiceImpl implements MaterialCategoryService {
      */
     @Override
     public MaterialCategory save(MaterialCategory materialCategory) {
-        log.debug("Request to save MaterialCategory : {}", materialCategory);        MaterialCategory result = materialCategoryRepository.save(materialCategory);
+        log.debug("Request to save MaterialCategory : {}", materialCategory);
+        MaterialCategory result = materialCategoryRepository.save(materialCategory);
         materialCategorySearchRepository.save(result);
         return result;
     }

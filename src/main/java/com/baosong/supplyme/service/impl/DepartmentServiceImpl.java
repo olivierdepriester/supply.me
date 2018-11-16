@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -43,7 +42,8 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public Department save(Department department) {
-        log.debug("Request to save Department : {}", department);        Department result = departmentRepository.save(department);
+        log.debug("Request to save Department : {}", department);
+        Department result = departmentRepository.save(department);
         departmentSearchRepository.save(result);
         return result;
     }

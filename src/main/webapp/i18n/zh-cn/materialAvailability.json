@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "materialAvailability" : {
+        "materialAvailability": {
             "home": {
                 "title": "Material Availabilities",
                 "createLabel": "创建新 Material Availability",

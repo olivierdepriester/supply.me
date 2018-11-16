@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "materialCategory" : {
+        "materialCategory": {
             "home": {
                 "title": "Material Categories",
                 "createLabel": "创建新 Material Category",

@@ -16,7 +16,7 @@ import { DemandService } from 'app/entities/demand';
     templateUrl: './purchase-order-line-update.component.html'
 })
 export class PurchaseOrderLineUpdateComponent implements OnInit {
-    private _purchaseOrderLine: IPurchaseOrderLine;
+    purchaseOrderLine: IPurchaseOrderLine;
     isSaving: boolean;
 
     purchaseorders: IPurchaseOrder[];
@@ -86,12 +86,5 @@ export class PurchaseOrderLineUpdateComponent implements OnInit {
 
     trackDemandById(index: number, item: IDemand) {
         return item.id;
-    }
-    get purchaseOrderLine() {
-        return this._purchaseOrderLine;
-    }
-
-    set purchaseOrderLine(purchaseOrderLine: IPurchaseOrderLine) {
-        this._purchaseOrderLine = purchaseOrderLine;
     }
 }

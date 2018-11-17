@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "project" : {
+        "project": {
             "home": {
                 "title": "Projects",
                 "createLabel": "Créer un nouveau Project",

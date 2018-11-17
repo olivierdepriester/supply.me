@@ -1,16 +1,21 @@
 /* tslint:disable max-line-length */
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { of } from 'rxjs';
+import { take, map } from 'rxjs/operators';
+import * as moment from 'moment';
+import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { InvoiceService } from 'app/entities/invoice/invoice.service';
-import { Invoice } from 'app/shared/model/invoice.model';
-import { SERVER_API_URL } from 'app/app.constants';
+import { IInvoice, Invoice, InvoiceStatus } from 'app/shared/model/invoice.model';
 
 describe('Service Tests', () => {
     describe('Invoice Service', () => {
         let injector: TestBed;
         let service: InvoiceService;
         let httpMock: HttpTestingController;
-
+        let elemDefault: IInvoice;
+        let currentDate: moment.Moment;
         beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [HttpClientTestingModule]
@@ -18,73 +23,113 @@ describe('Service Tests', () => {
             injector = getTestBed();
             service = injector.get(InvoiceService);
             httpMock = injector.get(HttpTestingController);
+            currentDate = moment();
+
+            elemDefault = new Invoice(0, 'AAAAAAA', InvoiceStatus.NEW, currentDate, currentDate);
         });
 
-        describe('Service methods', () => {
-            it('should call correct URL', () => {
-                service.find(123).subscribe(() => {});
+        describe('Service methods', async () => {
+            it('should find an element', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        sendingDate: currentDate.format(DATE_TIME_FORMAT),
+                        dueDate: currentDate.format(DATE_TIME_FORMAT)
+                    },
+                    elemDefault
+                );
+                service
+                    .find(123)
+                    .pipe(take(1))
+                    .subscribe(resp => expect(resp).toMatchObject({ body: elemDefault }));
 
                 const req = httpMock.expectOne({ method: 'GET' });
-
-                const resourceUrl = SERVER_API_URL + 'api/invoices';
-                expect(req.request.url).toEqual(resourceUrl + '/' + 123);
+                req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should create a Invoice', () => {
-                service.create(new Invoice(null)).subscribe(received => {
-                    expect(received.body.id).toEqual(null);
-                });
-
+            it('should create a Invoice', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        id: 0,
+                        sendingDate: currentDate.format(DATE_TIME_FORMAT),
+                        dueDate: currentDate.format(DATE_TIME_FORMAT)
+                    },
+                    elemDefault
+                );
+                const expected = Object.assign(
+                    {
+                        sendingDate: currentDate,
+                        dueDate: currentDate
+                    },
+                    returnedFromService
+                );
+                service
+                    .create(new Invoice(null))
+                    .pipe(take(1))
+                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
                 const req = httpMock.expectOne({ method: 'POST' });
-                req.flush({ id: null });
+                req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should update a Invoice', () => {
-                service.update(new Invoice(123)).subscribe(received => {
-                    expect(received.body.id).toEqual(123);
-                });
+            it('should update a Invoice', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        code: 'BBBBBB',
+                        status: 'BBBBBB',
+                        sendingDate: currentDate.format(DATE_TIME_FORMAT),
+                        dueDate: currentDate.format(DATE_TIME_FORMAT)
+                    },
+                    elemDefault
+                );
 
+                const expected = Object.assign(
+                    {
+                        sendingDate: currentDate,
+                        dueDate: currentDate
+                    },
+                    returnedFromService
+                );
+                service
+                    .update(expected)
+                    .pipe(take(1))
+                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
                 const req = httpMock.expectOne({ method: 'PUT' });
-                req.flush({ id: 123 });
+                req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should return a Invoice', () => {
-                service.find(123).subscribe(received => {
-                    expect(received.body.id).toEqual(123);
-                });
-
+            it('should return a list of Invoice', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        code: 'BBBBBB',
+                        status: 'BBBBBB',
+                        sendingDate: currentDate.format(DATE_TIME_FORMAT),
+                        dueDate: currentDate.format(DATE_TIME_FORMAT)
+                    },
+                    elemDefault
+                );
+                const expected = Object.assign(
+                    {
+                        sendingDate: currentDate,
+                        dueDate: currentDate
+                    },
+                    returnedFromService
+                );
+                service
+                    .query(expected)
+                    .pipe(
+                        take(1),
+                        map(resp => resp.body)
+                    )
+                    .subscribe(body => expect(body).toContainEqual(expected));
                 const req = httpMock.expectOne({ method: 'GET' });
-                req.flush({ id: 123 });
+                req.flush(JSON.stringify([returnedFromService]));
+                httpMock.verify();
             });
 
-            it('should return a list of Invoice', () => {
-                service.query(null).subscribe(received => {
-                    expect(received.body[0].id).toEqual(123);
-                });
-
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush([new Invoice(123)]);
-            });
-
-            it('should delete a Invoice', () => {
-                service.delete(123).subscribe(received => {
-                    expect(received.url).toContain('/' + 123);
-                });
+            it('should delete a Invoice', async () => {
+                const rxPromise = service.delete(123).subscribe(resp => expect(resp.ok));
 
                 const req = httpMock.expectOne({ method: 'DELETE' });
-                req.flush(null);
-            });
-
-            it('should propagate not found response', () => {
-                service.find(123).subscribe(null, (_error: any) => {
-                    expect(_error.status).toEqual(404);
-                });
-
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush('Invalid request parameters', {
-                    status: 404,
-                    statusText: 'Bad Request'
-                });
+                req.flush({ status: 200 });
             });
         });
 

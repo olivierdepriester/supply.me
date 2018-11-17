@@ -1,14 +1,12 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import { TreeNode } from 'primeng/components/common/api';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class TreeNodeService {
     constructor(private http: HttpClient) {}
 
     getTouristPlaces(): Observable<any[]> {
-        return this.http.get('content/primeng/assets/data/json/places/places.json').map(response => response as any[]);
+        return this.http.get<any[]>('content/primeng/assets/data/json/cities/cities.json');
     }
 }

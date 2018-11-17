@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "demand" : {
+        "demand": {
             "home": {
                 "title": "Demands",
                 "createLabel": "Créer un nouveau Demand",

@@ -65,8 +65,8 @@ export class DeliveryNoteUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.deliveryNote.deliveryDate = moment(this.deliveryDate, DATE_TIME_FORMAT);
-        this.deliveryNote.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.deliveryNote.deliveryDate = this.deliveryDate != null ? moment(this.deliveryDate, DATE_TIME_FORMAT) : null;
+        this.deliveryNote.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         if (this.deliveryNote.id !== undefined) {
             this.subscribeToSaveResponse(this.deliveryNoteService.update(this.deliveryNote));
         } else {

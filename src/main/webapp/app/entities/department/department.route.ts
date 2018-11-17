@@ -3,8 +3,8 @@ import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { Department } from 'app/shared/model/department.model';
 import { DepartmentService } from './department.service';
 import { DepartmentComponent } from './department.component';
@@ -17,10 +17,13 @@ import { IDepartment } from 'app/shared/model/department.model';
 export class DepartmentResolve implements Resolve<IDepartment> {
     constructor(private service: DepartmentService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Department> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((department: HttpResponse<Department>) => department.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Department>) => response.ok),
+                map((department: HttpResponse<Department>) => department.body)
+            );
         }
         return of(new Department());
     }

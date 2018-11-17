@@ -18,7 +18,7 @@ import { MaterialService } from 'app/entities/material';
     templateUrl: './delivery-note-line-update.component.html'
 })
 export class DeliveryNoteLineUpdateComponent implements OnInit {
-    private _deliveryNoteLine: IDeliveryNoteLine;
+    deliveryNoteLine: IDeliveryNoteLine;
     isSaving: boolean;
 
     deliverynotes: IDeliveryNote[];
@@ -101,12 +101,5 @@ export class DeliveryNoteLineUpdateComponent implements OnInit {
 
     trackMaterialById(index: number, item: IMaterial) {
         return item.id;
-    }
-    get deliveryNoteLine() {
-        return this._deliveryNoteLine;
-    }
-
-    set deliveryNoteLine(deliveryNoteLine: IDeliveryNoteLine) {
-        this._deliveryNoteLine = deliveryNoteLine;
     }
 }

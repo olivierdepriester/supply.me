@@ -15,7 +15,7 @@ import { IUser, UserService } from 'app/core';
     templateUrl: './demand-category-update.component.html'
 })
 export class DemandCategoryUpdateComponent implements OnInit {
-    private _demandCategory: IDemandCategory;
+    demandCategory: IDemandCategory;
     isSaving: boolean;
 
     users: IUser[];
@@ -32,6 +32,7 @@ export class DemandCategoryUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ demandCategory }) => {
             this.demandCategory = demandCategory;
+            this.creationDate = this.demandCategory.creationDate != null ? this.demandCategory.creationDate.format(DATE_TIME_FORMAT) : null;
         });
         this.userService.query().subscribe(
             (res: HttpResponse<IUser[]>) => {
@@ -47,7 +48,7 @@ export class DemandCategoryUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.demandCategory.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.demandCategory.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         if (this.demandCategory.id !== undefined) {
             this.subscribeToSaveResponse(this.demandCategoryService.update(this.demandCategory));
         } else {
@@ -74,13 +75,5 @@ export class DemandCategoryUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
-    }
-    get demandCategory() {
-        return this._demandCategory;
-    }
-
-    set demandCategory(demandCategory: IDemandCategory) {
-        this._demandCategory = demandCategory;
-        this.creationDate = moment(demandCategory.creationDate).format(DATE_TIME_FORMAT);
     }
 }

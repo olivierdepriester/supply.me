@@ -14,8 +14,8 @@ type EntityArrayResponseType = HttpResponse<IMaterialAvailability[]>;
 
 @Injectable({ providedIn: 'root' })
 export class MaterialAvailabilityService {
-    private resourceUrl = SERVER_API_URL + 'api/material-availabilities';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/material-availabilities';
+    public resourceUrl = SERVER_API_URL + 'api/material-availabilities';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/material-availabilities';
 
     constructor(private http: HttpClient) {}
 
@@ -57,7 +57,7 @@ export class MaterialAvailabilityService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertDateFromClient(materialAvailability: IMaterialAvailability): IMaterialAvailability {
+    protected convertDateFromClient(materialAvailability: IMaterialAvailability): IMaterialAvailability {
         const copy: IMaterialAvailability = Object.assign({}, materialAvailability, {
             startDate:
                 materialAvailability.startDate != null && materialAvailability.startDate.isValid()
@@ -71,17 +71,21 @@ export class MaterialAvailabilityService {
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.startDate = res.body.startDate != null ? moment(res.body.startDate) : null;
-        res.body.endDate = res.body.endDate != null ? moment(res.body.endDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.startDate = res.body.startDate != null ? moment(res.body.startDate) : null;
+            res.body.endDate = res.body.endDate != null ? moment(res.body.endDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((materialAvailability: IMaterialAvailability) => {
-            materialAvailability.startDate = materialAvailability.startDate != null ? moment(materialAvailability.startDate) : null;
-            materialAvailability.endDate = materialAvailability.endDate != null ? moment(materialAvailability.endDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((materialAvailability: IMaterialAvailability) => {
+                materialAvailability.startDate = materialAvailability.startDate != null ? moment(materialAvailability.startDate) : null;
+                materialAvailability.endDate = materialAvailability.endDate != null ? moment(materialAvailability.endDate) : null;
+            });
+        }
         return res;
     }
 }

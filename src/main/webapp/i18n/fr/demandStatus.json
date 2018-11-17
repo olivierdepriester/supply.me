@@ -1,6 +1,6 @@
 {
     "supplyMeApp": {
-        "DemandStatus" : {
+        "DemandStatus": {
             "null": "",
             "NEW": "Nouveau",
             "WAITING_FOR_APPROVAL": "En attente de validation",

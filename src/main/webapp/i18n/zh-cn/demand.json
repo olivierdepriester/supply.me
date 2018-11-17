@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "demand" : {
+        "demand": {
             "home": {
                 "title": "采购申请单",
                 "createLabel": "创建新 采购申请单",
@@ -49,14 +48,14 @@
                 "title": "Request {{ id }} status change",
                 "placeholder": "Please fill your comment here."
             },
-            "button" : {
+            "button": {
                 "sendToApproval": "Send the request to approval",
                 "reject": "Reject the request",
                 "approve": "Approve the request",
                 "copy": "Copy",
                 "createMaterial": "Create a new material for this request",
                 "createSupplier": "Create a new supplier for this request",
-                "uploader" : {
+                "uploader": {
                     "choose": "选择",
                     "upload": "上传",
                     "cancel": "取消"

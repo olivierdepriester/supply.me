@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "purchaseOrder" : {
+        "purchaseOrder": {
             "home": {
                 "title": "Purchase Orders",
                 "createLabel": "Create a new Purchase Order",

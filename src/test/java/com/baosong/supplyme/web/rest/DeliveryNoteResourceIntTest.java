@@ -64,8 +64,6 @@ public class DeliveryNoteResourceIntTest {
     @Autowired
     private DeliveryNoteRepository deliveryNoteRepository;
 
-    
-
     @Autowired
     private DeliveryNoteService deliveryNoteService;
 
@@ -241,7 +239,6 @@ public class DeliveryNoteResourceIntTest {
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getDeliveryNote() throws Exception {
@@ -258,6 +255,7 @@ public class DeliveryNoteResourceIntTest {
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.creationDate").value(DEFAULT_CREATION_DATE.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingDeliveryNote() throws Exception {
@@ -311,7 +309,7 @@ public class DeliveryNoteResourceIntTest {
 
         // Create the DeliveryNote
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restDeliveryNoteMockMvc.perform(put("/api/delivery-notes")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(deliveryNote)))
@@ -358,7 +356,7 @@ public class DeliveryNoteResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(deliveryNote.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].deliveryDate").value(hasItem(DEFAULT_DELIVERY_DATE.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())));

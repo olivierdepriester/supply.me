@@ -14,8 +14,8 @@ type EntityArrayResponseType = HttpResponse<IDemand[]>;
 
 @Injectable({ providedIn: 'root' })
 export class DemandService {
-    private resourceUrl = SERVER_API_URL + 'api/demands';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/demands';
+    public resourceUrl = SERVER_API_URL + 'api/demands';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/demands';
 
     constructor(private http: HttpClient, private principal: Principal) {}
 
@@ -127,17 +127,21 @@ export class DemandService {
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.expectedDate = res.body.expectedDate != null ? moment(res.body.expectedDate) : null;
-        res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.expectedDate = res.body.expectedDate != null ? moment(res.body.expectedDate) : null;
+            res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((demand: IDemand) => {
-            demand.expectedDate = demand.expectedDate != null ? moment(demand.expectedDate) : null;
-            demand.creationDate = demand.creationDate != null ? moment(demand.creationDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((demand: IDemand) => {
+                demand.expectedDate = demand.expectedDate != null ? moment(demand.expectedDate) : null;
+                demand.creationDate = demand.creationDate != null ? moment(demand.creationDate) : null;
+            });
+        }
         return res;
     }
 

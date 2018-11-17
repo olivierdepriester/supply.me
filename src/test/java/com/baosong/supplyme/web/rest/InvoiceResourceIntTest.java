@@ -64,8 +64,6 @@ public class InvoiceResourceIntTest {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    
-
     @Autowired
     private InvoiceService invoiceService;
 
@@ -259,7 +257,6 @@ public class InvoiceResourceIntTest {
             .andExpect(jsonPath("$.[*].dueDate").value(hasItem(DEFAULT_DUE_DATE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getInvoice() throws Exception {
@@ -276,6 +273,7 @@ public class InvoiceResourceIntTest {
             .andExpect(jsonPath("$.sendingDate").value(DEFAULT_SENDING_DATE.toString()))
             .andExpect(jsonPath("$.dueDate").value(DEFAULT_DUE_DATE.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingInvoice() throws Exception {
@@ -329,7 +327,7 @@ public class InvoiceResourceIntTest {
 
         // Create the Invoice
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvoiceMockMvc.perform(put("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(invoice)))
@@ -376,7 +374,7 @@ public class InvoiceResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(invoice.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].sendingDate").value(hasItem(DEFAULT_SENDING_DATE.toString())))
             .andExpect(jsonPath("$.[*].dueDate").value(hasItem(DEFAULT_DUE_DATE.toString())));

@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -43,7 +42,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
      */
     @Override
     public InvoiceLine save(InvoiceLine invoiceLine) {
-        log.debug("Request to save InvoiceLine : {}", invoiceLine);        InvoiceLine result = invoiceLineRepository.save(invoiceLine);
+        log.debug("Request to save InvoiceLine : {}", invoiceLine);
+        InvoiceLine result = invoiceLineRepository.save(invoiceLine);
         invoiceLineSearchRepository.save(result);
         return result;
     }

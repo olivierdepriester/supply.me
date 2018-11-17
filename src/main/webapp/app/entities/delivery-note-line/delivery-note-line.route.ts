@@ -3,8 +3,8 @@ import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { DeliveryNoteLine } from 'app/shared/model/delivery-note-line.model';
 import { DeliveryNoteLineService } from './delivery-note-line.service';
 import { DeliveryNoteLineComponent } from './delivery-note-line.component';
@@ -17,10 +17,13 @@ import { IDeliveryNoteLine } from 'app/shared/model/delivery-note-line.model';
 export class DeliveryNoteLineResolve implements Resolve<IDeliveryNoteLine> {
     constructor(private service: DeliveryNoteLineService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<DeliveryNoteLine> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((deliveryNoteLine: HttpResponse<DeliveryNoteLine>) => deliveryNoteLine.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<DeliveryNoteLine>) => response.ok),
+                map((deliveryNoteLine: HttpResponse<DeliveryNoteLine>) => deliveryNoteLine.body)
+            );
         }
         return of(new DeliveryNoteLine());
     }

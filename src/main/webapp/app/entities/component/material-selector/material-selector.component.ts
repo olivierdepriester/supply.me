@@ -22,13 +22,14 @@ import { MaterialSelectorItem } from './';
     ]
 })
 export class MaterialSelectorComponent extends AbstractSelectorComponent<dataModel.IMaterial, MaterialSelectorItem> {
-    @ViewChild(AutoComplete) private autoComplete: AutoComplete;
+    @ViewChild(AutoComplete)
+    private autoComplete: AutoComplete;
 
     protected getNew(data: dataModel.IMaterial): MaterialSelectorItem {
         return new MaterialSelectorItem(data);
     }
     protected searchServiceFunction(textQuery: string): Observable<HttpResponse<dataModel.IMaterial[]>> {
-        return this.service.search({ query: textQuery, size: SELECTOR_SIZE, sort: ['partNumber.keyword,asc', 'id'] });
+        return this.service.search({ query: textQuery, size: SELECTOR_SIZE, sort: ['partNumber,asc', 'id'] });
     }
     protected getAutoCompleteComponent() {
         return this.autoComplete;

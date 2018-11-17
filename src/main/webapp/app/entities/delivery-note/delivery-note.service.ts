@@ -14,8 +14,8 @@ type EntityArrayResponseType = HttpResponse<IDeliveryNote[]>;
 
 @Injectable({ providedIn: 'root' })
 export class DeliveryNoteService {
-    private resourceUrl = SERVER_API_URL + 'api/delivery-notes';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/delivery-notes';
+    public resourceUrl = SERVER_API_URL + 'api/delivery-notes';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/delivery-notes';
 
     constructor(private http: HttpClient) {}
 
@@ -57,7 +57,7 @@ export class DeliveryNoteService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertDateFromClient(deliveryNote: IDeliveryNote): IDeliveryNote {
+    protected convertDateFromClient(deliveryNote: IDeliveryNote): IDeliveryNote {
         const copy: IDeliveryNote = Object.assign({}, deliveryNote, {
             deliveryDate:
                 deliveryNote.deliveryDate != null && deliveryNote.deliveryDate.isValid() ? deliveryNote.deliveryDate.toJSON() : null,
@@ -67,17 +67,21 @@ export class DeliveryNoteService {
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.deliveryDate = res.body.deliveryDate != null ? moment(res.body.deliveryDate) : null;
-        res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.deliveryDate = res.body.deliveryDate != null ? moment(res.body.deliveryDate) : null;
+            res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((deliveryNote: IDeliveryNote) => {
-            deliveryNote.deliveryDate = deliveryNote.deliveryDate != null ? moment(deliveryNote.deliveryDate) : null;
-            deliveryNote.creationDate = deliveryNote.creationDate != null ? moment(deliveryNote.creationDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((deliveryNote: IDeliveryNote) => {
+                deliveryNote.deliveryDate = deliveryNote.deliveryDate != null ? moment(deliveryNote.deliveryDate) : null;
+                deliveryNote.creationDate = deliveryNote.creationDate != null ? moment(deliveryNote.creationDate) : null;
+            });
+        }
         return res;
     }
 }

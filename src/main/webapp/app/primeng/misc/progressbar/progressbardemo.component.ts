@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { MenuItem, Message } from 'primeng/components/common/api';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/take';
+import { Subscription, Observable } from 'rxjs';
+import { interval } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-progressbar',
@@ -19,8 +18,8 @@ export class ProgressBarDemoComponent implements OnInit, OnDestroy {
     interval$: Subscription;
 
     ngOnInit() {
-        const interval = Observable.interval(800).take(100);
-        this.interval$ = interval.subscribe(
+        const myInterval = interval(800).pipe(take(100));
+        this.interval$ = myInterval.subscribe(
             x => (this.value = x + 1),
             () => {
                 /** no error handling */

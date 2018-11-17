@@ -1,6 +1,6 @@
 {
     "supplyMeApp": {
-        "PurchaseOrderStatus" : {
+        "PurchaseOrderStatus": {
             "null": "",
             "NEW": "Nouveau",
             "SENT": "Envoyee",

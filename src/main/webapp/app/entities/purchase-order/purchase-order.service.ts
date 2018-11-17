@@ -13,8 +13,8 @@ type EntityArrayResponseType = HttpResponse<IPurchaseOrder[]>;
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseOrderService {
-    private resourceUrl = SERVER_API_URL + 'api/purchase-orders';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/purchase-orders';
+    public resourceUrl = SERVER_API_URL + 'api/purchase-orders';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/purchase-orders';
 
     constructor(private http: HttpClient) {}
 
@@ -56,7 +56,7 @@ export class PurchaseOrderService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertDateFromClient(purchaseOrder: IPurchaseOrder): IPurchaseOrder {
+    protected convertDateFromClient(purchaseOrder: IPurchaseOrder): IPurchaseOrder {
         const copy: IPurchaseOrder = Object.assign({}, purchaseOrder, {
             expectedDate:
                 purchaseOrder.expectedDate != null && purchaseOrder.expectedDate.isValid() ? purchaseOrder.expectedDate.toJSON() : null,
@@ -66,17 +66,21 @@ export class PurchaseOrderService {
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.expectedDate = res.body.expectedDate != null ? moment(res.body.expectedDate) : null;
-        res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.expectedDate = res.body.expectedDate != null ? moment(res.body.expectedDate) : null;
+            res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((purchaseOrder: IPurchaseOrder) => {
-            purchaseOrder.expectedDate = purchaseOrder.expectedDate != null ? moment(purchaseOrder.expectedDate) : null;
-            purchaseOrder.creationDate = purchaseOrder.creationDate != null ? moment(purchaseOrder.creationDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((purchaseOrder: IPurchaseOrder) => {
+                purchaseOrder.expectedDate = purchaseOrder.expectedDate != null ? moment(purchaseOrder.expectedDate) : null;
+                purchaseOrder.creationDate = purchaseOrder.creationDate != null ? moment(purchaseOrder.creationDate) : null;
+            });
+        }
         return res;
     }
 

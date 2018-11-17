@@ -58,8 +58,6 @@ public class PurchaseOrderLineResourceIntTest {
     @Autowired
     private PurchaseOrderLineRepository purchaseOrderLineRepository;
 
-    
-
     @Autowired
     private PurchaseOrderLineService purchaseOrderLineService;
 
@@ -232,7 +230,6 @@ public class PurchaseOrderLineResourceIntTest {
             .andExpect(jsonPath("$.[*].orderPrice").value(hasItem(DEFAULT_ORDER_PRICE.doubleValue())));
     }
     
-
     @Test
     @Transactional
     public void getPurchaseOrderLine() throws Exception {
@@ -248,6 +245,7 @@ public class PurchaseOrderLineResourceIntTest {
             .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY.doubleValue()))
             .andExpect(jsonPath("$.orderPrice").value(DEFAULT_ORDER_PRICE.doubleValue()));
     }
+
     @Test
     @Transactional
     public void getNonExistingPurchaseOrderLine() throws Exception {
@@ -299,7 +297,7 @@ public class PurchaseOrderLineResourceIntTest {
 
         // Create the PurchaseOrderLine
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPurchaseOrderLineMockMvc.perform(put("/api/purchase-order-lines")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(purchaseOrderLine)))

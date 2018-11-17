@@ -29,7 +29,6 @@ import com.baosong.supplyme.domain.MaterialCategory;
 import com.baosong.supplyme.repository.MaterialRepository;
 import com.baosong.supplyme.repository.search.MaterialSearchRepository;
 import com.baosong.supplyme.security.AuthoritiesConstants;
-import com.baosong.supplyme.security.jwt.JWTConfigurer;
 import com.baosong.supplyme.security.jwt.JWTFilter;
 import com.baosong.supplyme.security.jwt.TokenProvider;
 import com.baosong.supplyme.service.MaterialCategoryService;
@@ -85,7 +84,6 @@ public class MaterialResourceIntTest {
 
     @Autowired
     private MaterialRepository materialRepository;
-
 
     @Autowired
     private MaterialService materialService;
@@ -175,7 +173,7 @@ public class MaterialResourceIntTest {
         );
         String jwt = tokenProvider.createToken(authentication, false);
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        request.addHeader(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         request.setRequestURI("/api/test");
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
@@ -269,7 +267,6 @@ public class MaterialResourceIntTest {
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(material.getCreationDate().toString())));
     }
 
-
     @Test
     @Transactional
     public void getMaterial() throws Exception {
@@ -287,6 +284,7 @@ public class MaterialResourceIntTest {
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.creationDate").value(material.getCreationDate().toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingMaterial() throws Exception {

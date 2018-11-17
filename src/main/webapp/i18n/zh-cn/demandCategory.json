@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "demandCategory" : {
+        "demandCategory": {
             "home": {
                 "title": "Demand Categories",
                 "createLabel": "创建新 Demand Category",

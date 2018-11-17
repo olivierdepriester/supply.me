@@ -60,8 +60,6 @@ public class MaterialAvailabilityResourceIntTest {
     @Autowired
     private MaterialAvailabilityRepository materialAvailabilityRepository;
 
-
-
     @Autowired
     private MaterialAvailabilityService materialAvailabilityService;
 
@@ -198,7 +196,6 @@ public class MaterialAvailabilityResourceIntTest {
             .andExpect(jsonPath("$.[*].purchasePrice").value(hasItem(DEFAULT_PURCHASE_PRICE.doubleValue())));
     }
 
-
     @Test
     @Transactional
     public void getMaterialAvailability() throws Exception {
@@ -214,6 +211,7 @@ public class MaterialAvailabilityResourceIntTest {
             .andExpect(jsonPath("$.updateDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.purchasePrice").value(DEFAULT_PURCHASE_PRICE.doubleValue()));
     }
+
     @Test
     @Transactional
     public void getNonExistingMaterialAvailability() throws Exception {

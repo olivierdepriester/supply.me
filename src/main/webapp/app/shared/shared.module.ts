@@ -13,4 +13,10 @@ import { SelectorRequiredDirective } from 'app/entities/component/selector-requi
     exports: [SupplyMeSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective, SelectorRequiredDirective],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class SupplyMeSharedModule {}
+export class SupplyMeSharedModule {
+    static forRoot() {
+        return {
+            ngModule: SupplyMeSharedModule
+        };
+    }
+}

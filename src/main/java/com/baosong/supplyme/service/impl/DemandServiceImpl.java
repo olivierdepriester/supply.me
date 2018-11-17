@@ -36,6 +36,7 @@ import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.UserService;
 import com.baosong.supplyme.service.util.DemandSearchCriteria;
+import com.github.vanroy.springdata.jest.JestElasticsearchTemplate;
 import com.google.common.collect.Sets;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -47,7 +48,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -68,7 +68,7 @@ public class DemandServiceImpl implements DemandService {
     private final static Map<DemandStatus, Set<DemandStatus>> DEMAND_WORKFLOW_RULES;
 
     @Autowired(required = false)
-    private ElasticsearchTemplate template;
+    private JestElasticsearchTemplate template;
 
     @Autowired
     private UserService userService;
@@ -221,7 +221,7 @@ public class DemandServiceImpl implements DemandService {
             booleanQueryBuilder.must(QueryBuilders.termQuery("project.id", criteria.getProjectId()));
         }
         if (criteria.getDepartmentId() != null) {
-            booleanQueryBuilder.must(QueryBuilders.termQuery("department.id", criteria.getProjectId()));
+            booleanQueryBuilder.must(QueryBuilders.termQuery("department.id", criteria.getDepartmentId()));
         }
         if (criteria.getCreationUserId() != null) {
             booleanQueryBuilder.must(QueryBuilders.termQuery("creationUser.id", criteria.getCreationUserId()));

@@ -61,8 +61,6 @@ public class InvoiceLineResourceIntTest {
     @Autowired
     private InvoiceLineRepository invoiceLineRepository;
 
-    
-
     @Autowired
     private InvoiceLineService invoiceLineService;
 
@@ -256,7 +254,6 @@ public class InvoiceLineResourceIntTest {
             .andExpect(jsonPath("$.[*].amountWithTax").value(hasItem(DEFAULT_AMOUNT_WITH_TAX.doubleValue())));
     }
     
-
     @Test
     @Transactional
     public void getInvoiceLine() throws Exception {
@@ -273,6 +270,7 @@ public class InvoiceLineResourceIntTest {
             .andExpect(jsonPath("$.amountNet").value(DEFAULT_AMOUNT_NET.doubleValue()))
             .andExpect(jsonPath("$.amountWithTax").value(DEFAULT_AMOUNT_WITH_TAX.doubleValue()));
     }
+
     @Test
     @Transactional
     public void getNonExistingInvoiceLine() throws Exception {
@@ -326,7 +324,7 @@ public class InvoiceLineResourceIntTest {
 
         // Create the InvoiceLine
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvoiceLineMockMvc.perform(put("/api/invoice-lines")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(invoiceLine)))

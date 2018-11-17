@@ -15,7 +15,7 @@ import { IUser, UserService } from 'app/core';
     templateUrl: './material-category-update.component.html'
 })
 export class MaterialCategoryUpdateComponent implements OnInit {
-    private _materialCategory: IMaterialCategory;
+    materialCategory: IMaterialCategory;
     isSaving: boolean;
 
     materialcategories: IMaterialCategory[];
@@ -34,6 +34,8 @@ export class MaterialCategoryUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ materialCategory }) => {
             this.materialCategory = materialCategory;
+            this.creationDate =
+                this.materialCategory.creationDate != null ? this.materialCategory.creationDate.format(DATE_TIME_FORMAT) : null;
         });
         this.materialCategoryService.query().subscribe(
             (res: HttpResponse<IMaterialCategory[]>) => {
@@ -55,7 +57,7 @@ export class MaterialCategoryUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.materialCategory.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
+        this.materialCategory.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         if (this.materialCategory.id !== undefined) {
             this.subscribeToSaveResponse(this.materialCategoryService.update(this.materialCategory));
         } else {
@@ -86,13 +88,5 @@ export class MaterialCategoryUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
-    }
-    get materialCategory() {
-        return this._materialCategory;
-    }
-
-    set materialCategory(materialCategory: IMaterialCategory) {
-        this._materialCategory = materialCategory;
-        this.creationDate = moment(materialCategory.creationDate).format(DATE_TIME_FORMAT);
     }
 }

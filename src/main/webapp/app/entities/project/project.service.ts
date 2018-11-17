@@ -14,8 +14,8 @@ type EntityArrayResponseType = HttpResponse<IProject[]>;
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
-    private resourceUrl = SERVER_API_URL + 'api/projects';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/projects';
+    public resourceUrl = SERVER_API_URL + 'api/projects';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/projects';
 
     constructor(private http: HttpClient) {}
 
@@ -57,22 +57,26 @@ export class ProjectService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertDateFromClient(project: IProject): IProject {
+    protected convertDateFromClient(project: IProject): IProject {
         const copy: IProject = Object.assign({}, project, {
             creationDate: project.creationDate != null && project.creationDate.isValid() ? project.creationDate.toJSON() : null
         });
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((project: IProject) => {
-            project.creationDate = project.creationDate != null ? moment(project.creationDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((project: IProject) => {
+                project.creationDate = project.creationDate != null ? moment(project.creationDate) : null;
+            });
+        }
         return res;
     }
 }

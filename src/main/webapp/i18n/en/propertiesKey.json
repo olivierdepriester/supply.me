@@ -1,6 +1,6 @@
 {
     "supplyMeApp": {
-        "PropertiesKey" : {
+        "PropertiesKey": {
             "null": "",
             "THRESHOLD_SECOND_LEVEL_APPROVAL": "Threshold above which a 2nd lvl approval is required",
             "PURCHASE_ORDER_CODE_GENERATOR": "Purchase order code generator",

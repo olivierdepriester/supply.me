@@ -55,8 +55,6 @@ public class SupplierResourceIntTest {
     @Autowired
     private SupplierRepository supplierRepository;
 
-    
-
     @Autowired
     private SupplierService supplierService;
 
@@ -208,7 +206,6 @@ public class SupplierResourceIntTest {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
     
-
     @Test
     @Transactional
     public void getSupplier() throws Exception {
@@ -223,6 +220,7 @@ public class SupplierResourceIntTest {
             .andExpect(jsonPath("$.referenceNumber").value(DEFAULT_REFERENCE_NUMBER.toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingSupplier() throws Exception {
@@ -272,7 +270,7 @@ public class SupplierResourceIntTest {
 
         // Create the Supplier
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restSupplierMockMvc.perform(put("/api/suppliers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(supplier)))
@@ -319,8 +317,8 @@ public class SupplierResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(supplier.getId().intValue())))
-            .andExpect(jsonPath("$.[*].referenceNumber").value(hasItem(DEFAULT_REFERENCE_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].referenceNumber").value(hasItem(DEFAULT_REFERENCE_NUMBER)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
 
     @Test

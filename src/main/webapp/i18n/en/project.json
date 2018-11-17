@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "project" : {
+        "project": {
             "home": {
                 "title": "Projects",
                 "createLabel": "Create a new project",
@@ -19,7 +18,7 @@
             },
             "code": "Code",
             "description": "Description",
-            "headUser" : "Project leader",
+            "headUser": "Project leader",
             "demand": "Demand"
         }
     }

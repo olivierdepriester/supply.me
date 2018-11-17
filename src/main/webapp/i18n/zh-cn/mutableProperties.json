@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "mutableProperties" : {
+        "mutableProperties": {
             "home": {
                 "title": "Mutable Properties",
                 "createLabel": "创建新 Mutable Properties",

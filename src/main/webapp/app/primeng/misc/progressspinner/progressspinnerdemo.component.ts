@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
-import { MenuItem, Message } from 'primeng/components/common/api';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/take';
+import { Message } from 'primeng/components/common/api';
 
 @Component({
     selector: 'jhi-progressspinner',

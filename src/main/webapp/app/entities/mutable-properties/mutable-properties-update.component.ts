@@ -11,7 +11,7 @@ import { MutablePropertiesService } from './mutable-properties.service';
     templateUrl: './mutable-properties-update.component.html'
 })
 export class MutablePropertiesUpdateComponent implements OnInit {
-    private _mutableProperties: IMutableProperties;
+    mutableProperties: IMutableProperties;
     isSaving: boolean;
 
     constructor(private mutablePropertiesService: MutablePropertiesService, private activatedRoute: ActivatedRoute) {}
@@ -47,12 +47,5 @@ export class MutablePropertiesUpdateComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-    get mutableProperties() {
-        return this._mutableProperties;
-    }
-
-    set mutableProperties(mutableProperties: IMutableProperties) {
-        this._mutableProperties = mutableProperties;
     }
 }

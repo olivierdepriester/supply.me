@@ -14,7 +14,7 @@ import { Principal } from 'app/core';
     templateUrl: './material-update.component.html'
 })
 export class MaterialUpdateComponent implements OnInit {
-    private _material: IMaterial;
+    material: IMaterial;
     isSaving: boolean;
     private currentAccount: any;
 
@@ -56,12 +56,5 @@ export class MaterialUpdateComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-    get material() {
-        return this._material;
-    }
-
-    set material(material: IMaterial) {
-        this._material = material;
     }
 }

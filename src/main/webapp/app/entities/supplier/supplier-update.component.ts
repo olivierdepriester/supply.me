@@ -11,7 +11,7 @@ import { SupplierService } from './supplier.service';
     templateUrl: './supplier-update.component.html'
 })
 export class SupplierUpdateComponent implements OnInit {
-    private _supplier: ISupplier;
+    supplier: ISupplier;
     isSaving: boolean;
 
     constructor(private supplierService: SupplierService, private activatedRoute: ActivatedRoute) {}
@@ -54,12 +54,5 @@ export class SupplierUpdateComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-    get supplier() {
-        return this._supplier;
-    }
-
-    set supplier(supplier: ISupplier) {
-        this._supplier = supplier;
     }
 }

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SORTED_AUTHORITIES } from 'app/app.constants';
+import { JhiLanguageService } from 'ng-jhipster';
+import { SessionStorageService } from 'ngx-webstorage';
 import { Observable, Subject } from 'rxjs';
 import { AccountService } from './account.service';
 
@@ -10,7 +12,11 @@ export class Principal {
     private authenticationState = new Subject<any>();
     private highestValidationAuthorityLevel: string;
 
-    constructor(private account: AccountService) {}
+    constructor(
+        private languageService: JhiLanguageService,
+        private sessionStorage: SessionStorageService,
+        private account: AccountService
+    ) {}
 
     authenticate(identity) {
         this.userIdentity = identity;
@@ -72,6 +78,11 @@ export class Principal {
                     this.userIdentity = account;
                     this.authenticated = true;
                     this.highestValidationAuthorityLevel = this.getHighestValidationAuthority();
+
+                    // After retrieve the account info, the language will be changed to
+                    // the user's preferred language configured in the account setting
+                    const langKey = this.sessionStorage.retrieve('locale') || this.userIdentity.langKey;
+                    this.languageService.changeLanguage(langKey);
                 } else {
                     this.userIdentity = null;
                     this.authenticated = false;

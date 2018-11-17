@@ -18,7 +18,7 @@ import { SupplierService } from 'app/entities/supplier';
     templateUrl: './material-availability-update.component.html'
 })
 export class MaterialAvailabilityUpdateComponent implements OnInit {
-    private _materialAvailability: IMaterialAvailability;
+    materialAvailability: IMaterialAvailability;
     isSaving: boolean;
 
     materials: IMaterial[];
@@ -39,6 +39,9 @@ export class MaterialAvailabilityUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ materialAvailability }) => {
             this.materialAvailability = materialAvailability;
+            this.startDate =
+                this.materialAvailability.startDate != null ? this.materialAvailability.startDate.format(DATE_TIME_FORMAT) : null;
+            this.endDate = this.materialAvailability.endDate != null ? this.materialAvailability.endDate.format(DATE_TIME_FORMAT) : null;
         });
         this.materialService.query().subscribe(
             (res: HttpResponse<IMaterial[]>) => {
@@ -60,8 +63,8 @@ export class MaterialAvailabilityUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.materialAvailability.startDate = moment(this.startDate, DATE_TIME_FORMAT);
-        this.materialAvailability.endDate = moment(this.endDate, DATE_TIME_FORMAT);
+        this.materialAvailability.startDate = this.startDate != null ? moment(this.startDate, DATE_TIME_FORMAT) : null;
+        this.materialAvailability.endDate = this.endDate != null ? moment(this.endDate, DATE_TIME_FORMAT) : null;
         if (this.materialAvailability.id !== undefined) {
             this.subscribeToSaveResponse(this.materialAvailabilityService.update(this.materialAvailability));
         } else {
@@ -95,14 +98,5 @@ export class MaterialAvailabilityUpdateComponent implements OnInit {
 
     trackSupplierById(index: number, item: ISupplier) {
         return item.id;
-    }
-    get materialAvailability() {
-        return this._materialAvailability;
-    }
-
-    set materialAvailability(materialAvailability: IMaterialAvailability) {
-        this._materialAvailability = materialAvailability;
-        this.startDate = moment(materialAvailability.startDate).format(DATE_TIME_FORMAT);
-        this.endDate = moment(materialAvailability.endDate).format(DATE_TIME_FORMAT);
     }
 }

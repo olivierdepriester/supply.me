@@ -104,7 +104,7 @@ public class MaterialCategoryResource {
         log.debug("REST request to get a page of MaterialCategories");
         Page<MaterialCategory> page = materialCategoryService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/material-categories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**

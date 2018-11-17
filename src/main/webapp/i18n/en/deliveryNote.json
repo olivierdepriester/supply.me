@@ -1,7 +1,6 @@
-
 {
     "supplyMeApp": {
-        "deliveryNote" : {
+        "deliveryNote": {
             "home": {
                 "title": "Delivery Notes",
                 "createLabel": "Create a new Delivery Note",

@@ -3,8 +3,8 @@ import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { InvoiceLine } from 'app/shared/model/invoice-line.model';
 import { InvoiceLineService } from './invoice-line.service';
 import { InvoiceLineComponent } from './invoice-line.component';
@@ -17,10 +17,13 @@ import { IInvoiceLine } from 'app/shared/model/invoice-line.model';
 export class InvoiceLineResolve implements Resolve<IInvoiceLine> {
     constructor(private service: InvoiceLineService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<InvoiceLine> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((invoiceLine: HttpResponse<InvoiceLine>) => invoiceLine.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<InvoiceLine>) => response.ok),
+                map((invoiceLine: HttpResponse<InvoiceLine>) => invoiceLine.body)
+            );
         }
         return of(new InvoiceLine());
     }

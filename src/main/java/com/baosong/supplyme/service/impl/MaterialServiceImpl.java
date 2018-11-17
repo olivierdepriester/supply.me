@@ -3,6 +3,7 @@ package com.baosong.supplyme.service.impl;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import com.baosong.supplyme.domain.Material;
@@ -15,6 +16,7 @@ import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.UserService;
+import com.github.vanroy.springdata.jest.JestElasticsearchTemplate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +39,8 @@ public class MaterialServiceImpl implements MaterialService {
 
     private final MaterialSearchRepository materialSearchRepository;
 
-    // @Autowired(required = false)
-    // private ElasticsearchTemplate template;
+    @Autowired(required = false)
+    private JestElasticsearchTemplate template;
 
     @Autowired
     private UserService userService;
@@ -162,9 +164,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void rebuildIndex() {
-        // template.deleteIndex(Material.class);
-        // List<Material> items = materialRepository.findAll();
-        // items.stream().forEach(d -> materialSearchRepository.save(d));
+        template.deleteIndex(Material.class);
+        List<Material> items = materialRepository.findAll();
+        items.stream().forEach(d -> materialSearchRepository.save(d));
     }
 
     @Override

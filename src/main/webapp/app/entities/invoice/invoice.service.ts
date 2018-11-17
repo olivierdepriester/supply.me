@@ -14,8 +14,8 @@ type EntityArrayResponseType = HttpResponse<IInvoice[]>;
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
-    private resourceUrl = SERVER_API_URL + 'api/invoices';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/invoices';
+    public resourceUrl = SERVER_API_URL + 'api/invoices';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/invoices';
 
     constructor(private http: HttpClient) {}
 
@@ -57,7 +57,7 @@ export class InvoiceService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertDateFromClient(invoice: IInvoice): IInvoice {
+    protected convertDateFromClient(invoice: IInvoice): IInvoice {
         const copy: IInvoice = Object.assign({}, invoice, {
             sendingDate: invoice.sendingDate != null && invoice.sendingDate.isValid() ? invoice.sendingDate.toJSON() : null,
             dueDate: invoice.dueDate != null && invoice.dueDate.isValid() ? invoice.dueDate.toJSON() : null
@@ -65,17 +65,21 @@ export class InvoiceService {
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.sendingDate = res.body.sendingDate != null ? moment(res.body.sendingDate) : null;
-        res.body.dueDate = res.body.dueDate != null ? moment(res.body.dueDate) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.sendingDate = res.body.sendingDate != null ? moment(res.body.sendingDate) : null;
+            res.body.dueDate = res.body.dueDate != null ? moment(res.body.dueDate) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((invoice: IInvoice) => {
-            invoice.sendingDate = invoice.sendingDate != null ? moment(invoice.sendingDate) : null;
-            invoice.dueDate = invoice.dueDate != null ? moment(invoice.dueDate) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((invoice: IInvoice) => {
+                invoice.sendingDate = invoice.sendingDate != null ? moment(invoice.sendingDate) : null;
+                invoice.dueDate = invoice.dueDate != null ? moment(invoice.dueDate) : null;
+            });
+        }
         return res;
     }
 }

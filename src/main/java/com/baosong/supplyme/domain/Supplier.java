@@ -106,7 +106,6 @@ public class Supplier implements Serializable {
     @OneToMany(mappedBy = "supplier")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<MaterialAvailability> names = new HashSet<>();
-
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;

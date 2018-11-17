@@ -11,8 +11,8 @@ type EntityArrayResponseType = HttpResponse<IInvoiceLine[]>;
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceLineService {
-    private resourceUrl = SERVER_API_URL + 'api/invoice-lines';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/invoice-lines';
+    public resourceUrl = SERVER_API_URL + 'api/invoice-lines';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/invoice-lines';
 
     constructor(private http: HttpClient) {}
 

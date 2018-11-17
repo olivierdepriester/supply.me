@@ -44,7 +44,8 @@ public class DeliveryNoteLineServiceImpl implements DeliveryNoteLineService {
      */
     @Override
     public DeliveryNoteLine save(DeliveryNoteLine deliveryNoteLine) {
-        log.debug("Request to save DeliveryNoteLine : {}", deliveryNoteLine);        DeliveryNoteLine result = deliveryNoteLineRepository.save(deliveryNoteLine);
+        log.debug("Request to save DeliveryNoteLine : {}", deliveryNoteLine);
+        DeliveryNoteLine result = deliveryNoteLineRepository.save(deliveryNoteLine);
         deliveryNoteLineSearchRepository.save(result);
         return result;
     }

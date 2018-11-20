@@ -103,6 +103,10 @@ export class DemandComponent implements OnInit, OnDestroy {
         this.changeStatus(demand, DemandStatus.APPROVED, null);
     }
 
+    close(demand: IDemand) {
+        this.changeStatus(demand, DemandStatus.CLOSED, null);
+    }
+
     /**
      * Change the status of a given demand
      * @param demand

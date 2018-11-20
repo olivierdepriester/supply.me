@@ -340,6 +340,13 @@ demand status
     border-color: $success;
 }
 
+.closed {
+    @extend %demand-status;
+    color: #fff;
+    background-color: darkgray;
+    border-color: darkgray;
+}
+
 .ui-fileupload {
     & .ui-button {
         background-color: $primary;
@@ -370,4 +377,10 @@ ngb-progressbar {
         font-size: $font-size-base;
         font-weight: 700;
     }
+}
+
+.btn-close {
+    color: #fff;
+    background-color: darkgray;
+    border-color: darkgray;
 }

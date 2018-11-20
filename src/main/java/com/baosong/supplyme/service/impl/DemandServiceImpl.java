@@ -97,6 +97,7 @@ public class DemandServiceImpl implements DemandService {
         DEMAND_WORKFLOW_RULES.put(DemandStatus.PARTIALLY_DELIVERED, Sets.newHashSet(DemandStatus.ORDERED));
         DEMAND_WORKFLOW_RULES.put(DemandStatus.FULLY_DELIVERED,
                 Sets.newHashSet(DemandStatus.ORDERED, DemandStatus.PARTIALLY_DELIVERED));
+        DEMAND_WORKFLOW_RULES.put(DemandStatus.CLOSED, Sets.newHashSet(DemandStatus.FULLY_DELIVERED, DemandStatus.APPROVED));
     }
 
     public DemandServiceImpl(DemandRepository demandRepository, DemandSearchRepository demandSearchRepository) {

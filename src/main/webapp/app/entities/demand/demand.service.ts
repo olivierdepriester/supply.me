@@ -157,6 +157,7 @@ export class DemandService {
             demand.status !== DemandStatus.FULLY_DELIVERED &&
             demand.status !== DemandStatus.PARTIALLY_DELIVERED &&
             demand.status !== DemandStatus.ORDERED &&
+            demand.status !== DemandStatus.CLOSED &&
             (this.principal.hasAnyAuthorityDirect(['ROLE_ADMIN']) || demand.creationUser.id === account.id);
         return result;
     }

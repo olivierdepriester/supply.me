@@ -14,7 +14,8 @@ export enum DemandStatus {
     REJECTED = 'REJECTED',
     ORDERED = 'ORDERED',
     PARTIALLY_DELIVERED = 'PARTIALLY_DELIVERED',
-    FULLY_DELIVERED = 'FULLY_DELIVERED'
+    FULLY_DELIVERED = 'FULLY_DELIVERED',
+    CLOSED = 'CLOSED'
 }
 
 export interface IDemandStatusChange {

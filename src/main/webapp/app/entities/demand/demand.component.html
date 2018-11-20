@@ -127,52 +127,64 @@
                         <td class="text-center" title="{{item.demand.creationDate | datetimeFormat }}">{{item.demand.creationDate | dateFormat }}</td>
                         <td class="text-left">
                             <div class="btn-group flex-btn-group-container">
-                                <button type="submit" [routerLink]="['/demand', item.demand.id, 'view' ]" class="btn btn-info btn-sm">
+                                <button type="submit" class="btn btn-info btn-sm"
+                                    title="{{ 'entity.action.view' | translate }}"
+                                    [routerLink]="['/demand', item.demand.id, 'view' ]">
                                     <fa-icon [icon]="'eye'"></fa-icon>
-                                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                                 </button>
-                                <button type="submit" [routerLink]="'/demand/new'" [queryParams]="{origin : item.demand.id}"
+                                <button type="submit" class="btn btn-primary btn-sm"
                                     title="{{ 'supplyMeApp.demand.button.copy' | translate }}"
-                                    class="btn btn-primary btn-sm">
+                                    [routerLink]="'/demand/new'" [queryParams]="{origin : item.demand.id}">
                                     <fa-icon [icon]="['far','clone']"></fa-icon>
                                 </button>
                                 <div *ngIf="item.allowance.canEdit; then editableDemandBlock"></div>
                                 <div *ngIf="item.allowance.canApprove; then approvalDemandBlock"></div>
                                 <div *ngIf="item.allowance.canReject; then rejectDemandBlock"></div>
                                 <div *ngIf="false; then orderDemandBlock"></div>
+                                <div *ngIf="true; then closeDemandBlock"></div>
                                 <div *ngIf="item.allowance.canDelete; then deleteDemandBlock"></div>
                                 <ng-template #editableDemandBlock>
-                                    <button type="submit" [routerLink]="['/demand', item.demand.id, 'edit']" class="btn btn-primary btn-sm">
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        title="{{ 'supplyMeApp.demand.button.edit' | translate }}"
+                                        [routerLink]="['/demand', item.demand.id, 'edit']" >
                                         <fa-icon [icon]="'pencil-alt'"></fa-icon>
                                     </button>
                                     <button type="button" class="btn btn-primary btn-sm"
-                                        title="{{ 'supplyMeApp.demand.button.sendToApproval' | translate }}" (click)="sendToApproval(item.demand)">
+                                        title="{{ 'supplyMeApp.demand.button.sendToApproval' | translate }}"
+                                        (click)="sendToApproval(item.demand)">
                                         <fa-icon [icon]="'share-square'"></fa-icon>
                                     </button>
                                 </ng-template>
                                 <ng-template #approvalDemandBlock>
-                                    <button type="button" class="btn btn-primary btn-sm" style="margin-left:2px"
-                                        title="{{ 'supplyMeApp.demand.button.approve' | translate }}" (click)="approve(item.demand)">
+                                    <button type="button" class="btn btn-success btn-sm" style="margin-left:2px"
+                                        title="{{ 'supplyMeApp.demand.button.approve' | translate }}"
+                                        (click)="approve(item.demand)">
                                         <fa-icon [icon]="'thumbs-up'"></fa-icon>
                                     </button>
                                 </ng-template>
                                 <ng-template #rejectDemandBlock>
-                                        <button type="button" [routerLink]="['/', { outlets: { popup: 'demand/'+ item.demand.id + '/REJECTED/comment'} }]"
-                                        class="btn btn-primary btn-sm"
-                                        title="{{ 'supplyMeApp.demand.button.reject' | translate }}">
+                                        <button type="button" class="btn btn-warning btn-sm"
+                                        title="{{ 'supplyMeApp.demand.button.reject' | translate }}"
+                                        [routerLink]="['/', { outlets: { popup: 'demand/'+ item.demand.id + '/REJECTED/comment'} }]" >
                                         <fa-icon [icon]="'thumbs-down'"></fa-icon>
                                     </button>
                                 </ng-template>
                                 <ng-template #orderDemandBlock>
-                                    <button type="button" [routerLink]="['/purchase-order/new']" [queryParams]="{demandId : item.demand.id}"
-                                        class="btn btn-primary btn-sm">
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                        [routerLink]="['/purchase-order/new']" [queryParams]="{demandId : item.demand.id}">
                                         <fa-icon [icon]="'shopping-cart'"></fa-icon>
                                     </button>
+                                </ng-template>
+                                <ng-template #closeDemandBlock>
+                                    <button type="button" class="btn btn-close btn-sm"
+                                        (click)="close(item.demand)" >
+                                    <fa-icon [icon]="['far', 'hand-paper']"></fa-icon>
+                                </button>
                                 </ng-template>
                                 <ng-template #deleteDemandBlock>
                                     <button type="submit" [routerLink]="['/', { outlets: { popup: 'demand/'+ item.demand.id + '/delete'} }]"
                                         replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
-                                        <fa-icon [icon]="'times'"></fa-icon>
+                                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                                     </button>
                                 </ng-template>
                             </div>

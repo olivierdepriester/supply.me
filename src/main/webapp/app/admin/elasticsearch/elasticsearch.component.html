@@ -1,0 +1,32 @@
+<div>
+    <button type="button" style="float:left;margin-right:2rem;" class="btn btn-primary" (click)="rebuildAll()"
+        [disabled]="isRebuildingAll">Rebuild all</button>
+    <ngb-progressbar [height]="'2.25rem'" type="success" [animated]="true" [striped]="true" [max]="indices.length"
+        [showValue]="false" [value]="reindexedCount"><span>{{ progressText }}</span></ngb-progressbar>
+</div>
+<div class="table-responsive" *ngIf="indices">
+    <form name="listForm" class="form-inline">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Class name</th>
+                    <th class="text-right">Nb reindexed</th>
+                    <th class="text-center">Id</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let index of indices">
+                    <td><span>{{ index.className }}</span></td>
+                    <td class="numeric">{{ index.count | nullToDash }}</td>
+                    <td>
+                        <input id="{{ 'id_' + index.className }}" name="{{ 'id_' + index.className }}" [(ngModel)]="index.entityId">
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" (click)="rebuild(index)" [disabled]="index.isRunning || isRebuildingAll">Build</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>

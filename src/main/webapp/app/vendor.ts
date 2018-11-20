@@ -46,7 +46,8 @@ import {
     faShippingFast,
     faLightbulb,
     faChevronLeft,
-    faChevronRight
+    faChevronRight,
+    faDatabase
 } from '@fortawesome/free-solid-svg-icons';
 import { faCheckCircle, faClone } from '@fortawesome/free-regular-svg-icons';
 // Adds the SVG icon to the library so you can use it in your page
@@ -93,6 +94,7 @@ library.add(faShippingFast);
 library.add(faLightbulb);
 library.add(faChevronLeft, faChevronRight);
 library.add(faClone);
+library.add(faDatabase);
 import 'quill/dist/quill.js';
 // import '../../../../node_modules/fullcalendar/dist/fullcalendar.js';
 import 'chart.js/src/chart.js';

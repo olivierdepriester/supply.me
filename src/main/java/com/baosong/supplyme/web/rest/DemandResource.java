@@ -265,8 +265,7 @@ public class DemandResource {
             @RequestBody List<AttachmentFileDTO> files) {
         try {
             List<AttachmentFileDTO> attachmentFiles = this.attachmentFileService.saveAttachmentFiles(id, files);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("Attachment", "0"))
-                    .body(attachmentFiles);
+            return ResponseEntity.ok().body(attachmentFiles);
         } catch (ServiceException e) {
             throw new BadRequestAlertException(e.getMessage(), "Attachment", "update");
         }

@@ -29,7 +29,7 @@ export class MaterialSelectorComponent extends AbstractSelectorComponent<dataMod
         return new MaterialSelectorItem(data);
     }
     protected searchServiceFunction(textQuery: string): Observable<HttpResponse<dataModel.IMaterial[]>> {
-        return this.service.search({ query: textQuery, size: SELECTOR_SIZE, sort: ['partNumber,asc', 'id'] });
+        return this.service.search({ query: textQuery, size: SELECTOR_SIZE, sort: ['partNumber.keyword,asc', 'id'] });
     }
     protected getAutoCompleteComponent() {
         return this.autoComplete;

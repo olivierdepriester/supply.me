@@ -1,15 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
-
-import { IMaterial } from 'app/shared/model/material.model';
 import { Principal } from 'app/core';
-
 import { ITEMS_PER_PAGE } from 'app/shared';
+import { IMaterial } from 'app/shared/model/material.model';
+import { JhiAlertService, JhiEventManager, JhiParseLinks } from 'ng-jhipster';
+import { Subscription } from 'rxjs';
 import { MaterialService } from './material.service';
-import { IMaterialCategory } from 'app/shared/model/material-category.model';
 
 @Component({
     selector: 'jhi-material',
@@ -28,8 +25,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
     reverse: any;
     totalItems: number;
     currentSearch: string;
-
-    selectedCategory: IMaterialCategory = { name: '' };
+    private defaultPredicate = 'partNumber.keyword';
 
     constructor(
         private materialService: MaterialService,
@@ -45,7 +41,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
         this.links = {
             last: 0
         };
-        this.predicate = 'id';
+        this.predicate = this.defaultPredicate;
         this.reverse = true;
         this.currentSearch =
             this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
@@ -54,22 +50,9 @@ export class MaterialComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
-        if (this.currentSearch) {
-            this.materialService
-                .search({
-                    query: this.currentSearch,
-                    page: this.page,
-                    size: this.itemsPerPage,
-                    sort: this.sort()
-                })
-                .subscribe(
-                    (res: HttpResponse<IMaterial[]>) => this.paginateMaterials(res.body, res.headers),
-                    (res: HttpErrorResponse) => this.onError(res.message)
-                );
-            return;
-        }
         this.materialService
-            .query({
+            .search({
+                query: this.currentSearch,
                 page: this.page,
                 size: this.itemsPerPage,
                 sort: this.sort()
@@ -78,6 +61,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
                 (res: HttpResponse<IMaterial[]>) => this.paginateMaterials(res.body, res.headers),
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
+        return;
     }
 
     reset() {
@@ -97,7 +81,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
             last: 0
         };
         this.page = 0;
-        this.predicate = 'id';
+        this.predicate = this.defaultPredicate;
         this.reverse = true;
         this.currentSearch = '';
         this.loadAll();
@@ -112,7 +96,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
             last: 0
         };
         this.page = 0;
-        this.predicate = '_score';
+        this.predicate = this.defaultPredicate;
         this.reverse = false;
         this.currentSearch = query;
         this.loadAll();

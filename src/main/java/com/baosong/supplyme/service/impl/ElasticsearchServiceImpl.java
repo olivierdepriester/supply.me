@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.baosong.supplyme.domain.errors.ServiceException;
-import com.baosong.supplyme.repository.AuthorityRepository;
 import com.baosong.supplyme.repository.DeliveryNoteRepository;
 import com.baosong.supplyme.repository.DemandCategoryRepository;
 import com.baosong.supplyme.repository.DemandRepository;

@@ -106,7 +106,8 @@ export class DemandAllowance {
         public canReject?: boolean,
         public canApprove?: boolean,
         public canDelete?: boolean,
-        public canSendToApproval?: boolean
+        public canSendToApproval?: boolean,
+        public canClose?: boolean
     ) {}
 }
 

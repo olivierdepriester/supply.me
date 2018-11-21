@@ -141,7 +141,7 @@
                                 <div *ngIf="item.allowance.canApprove; then approvalDemandBlock"></div>
                                 <div *ngIf="item.allowance.canReject; then rejectDemandBlock"></div>
                                 <div *ngIf="false; then orderDemandBlock"></div>
-                                <div *ngIf="true; then closeDemandBlock"></div>
+                                <div *ngIf="item.allowance.canClose; then closeDemandBlock"></div>
                                 <div *ngIf="item.allowance.canDelete; then deleteDemandBlock"></div>
                                 <ng-template #editableDemandBlock>
                                     <button type="submit" class="btn btn-primary btn-sm"
@@ -177,6 +177,7 @@
                                 </ng-template>
                                 <ng-template #closeDemandBlock>
                                     <button type="button" class="btn btn-close btn-sm"
+                                        title="{{ 'supplyMeApp.demand.button.close' | translate }}"
                                         (click)="close(item.demand)" >
                                     <fa-icon [icon]="['far', 'hand-paper']"></fa-icon>
                                 </button>

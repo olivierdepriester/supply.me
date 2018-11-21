@@ -162,6 +162,13 @@ export class DemandService {
         return result;
     }
 
+    isCloseAllowed(demand: IDemand, account: any): boolean {
+        const result =
+            (demand.status === DemandStatus.APPROVED || demand.status === DemandStatus.ORDERED) &&
+            (this.principal.hasAnyAuthorityDirect(['ROLE_PURCHASER']) || demand.creationUser.id === account.id);
+        return result;
+    }
+
     isApprovalAllowed(demand: IDemand, account: any): boolean {
         const result =
             demand.status === DemandStatus.WAITING_FOR_APPROVAL &&

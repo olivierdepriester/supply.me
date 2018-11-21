@@ -53,7 +53,8 @@
                 "sendToApproval": "Send the request to approval",
                 "reject": "Reject the request",
                 "approve": "Approve the request",
-                "copy": "Copy",
+                "copy": "Create a new request by copying this request information",
+                "close": "Close the request after having been fulfilled",
                 "createMaterial": "Create a new material for this request",
                 "createSupplier": "Create a new supplier for this request",
                 "uploader": {

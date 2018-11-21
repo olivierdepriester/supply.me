@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Principal } from 'app/core';
-import { DemandSearchCriteria, DemandStatus, IDemand, DemandListItem } from 'app/shared/model/demand.model';
+import { DemandSearchCriteria, DemandStatus, IDemand, DemandListItem, DemandAllowance } from 'app/shared/model/demand.model';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
@@ -76,17 +76,7 @@ export class DemandComponent implements OnInit, OnDestroy {
                 sort: this.sort()
             })
             .subscribe(
-                (res: HttpResponse<IDemand[]>) =>
-                    (this.demands = res.body.map(
-                        d =>
-                            new DemandListItem(d, {
-                                canEdit: this.demandService.isEditAllowed(d, this.currentAccount),
-                                canSendToApproval: this.demandService.isEditAllowed(d, this.currentAccount),
-                                canApprove: this.demandService.isApprovalAllowed(d, this.currentAccount),
-                                canDelete: this.demandService.isDeleteAllowed(d, this.currentAccount),
-                                canReject: this.demandService.isRejectAllowed(d, this.currentAccount)
-                            })
-                    )),
+                (res: HttpResponse<IDemand[]>) => (this.demands = res.body.map(d => new DemandListItem(d, this.getAllowanceForDemand(d)))),
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
     }
@@ -118,16 +108,25 @@ export class DemandComponent implements OnInit, OnDestroy {
             const demandInList = this.demands.find(d => d.demand.id === res.body.id);
             if (demandInList !== null) {
                 demandInList.demand = res.body;
-                demandInList.allowance = {
-                    canEdit: this.demandService.isEditAllowed(demandInList.demand, this.currentAccount),
-                    canSendToApproval: this.demandService.isEditAllowed(demandInList.demand, this.currentAccount),
-                    canApprove: this.demandService.isApprovalAllowed(demandInList.demand, this.currentAccount),
-                    canDelete: this.demandService.isDeleteAllowed(demandInList.demand, this.currentAccount),
-                    canReject: this.demandService.isRejectAllowed(demandInList.demand, this.currentAccount)
-                };
+                demandInList.allowance = this.getAllowanceForDemand(demandInList.demand);
             }
             // this.search();
         });
+    }
+
+    /**
+     * Sets the access rights for a demand.
+     * @param demand The demand to be granted access
+     */
+    private getAllowanceForDemand(demand: IDemand) {
+        return new DemandAllowance(
+            this.demandService.isEditAllowed(demand, this.currentAccount),
+            this.demandService.isRejectAllowed(demand, this.currentAccount),
+            this.demandService.isApprovalAllowed(demand, this.currentAccount),
+            this.demandService.isDeleteAllowed(demand, this.currentAccount),
+            this.demandService.isEditAllowed(demand, this.currentAccount),
+            this.demandService.isCloseAllowed(demand, this.currentAccount)
+        );
     }
 
     isPurchaseOrderAllowed(demand: IDemand): boolean {
@@ -137,22 +136,6 @@ export class DemandComponent implements OnInit, OnDestroy {
                 demand.status === DemandStatus.APPROVED) &&
             this.currentAccount.authorities.includes('ROLE_PURCHASER')
         );
-    }
-
-    isApprovalAllowed(demand: IDemand) {
-        return this.demandService.isApprovalAllowed(demand, this.currentAccount);
-    }
-
-    isEditAllowed(demand: IDemand): boolean {
-        return this.demandService.isEditAllowed(demand, this.currentAccount);
-    }
-
-    isDeleteAllowed(demand: IDemand): boolean {
-        return this.demandService.isDeleteAllowed(demand, this.currentAccount);
-    }
-
-    isRejectAllowed(demand: IDemand): boolean {
-        return this.demandService.isRejectAllowed(demand, this.currentAccount);
     }
 
     ngOnDestroy() {
@@ -165,6 +148,7 @@ export class DemandComponent implements OnInit, OnDestroy {
 
     registerChangeInDemands() {
         this.eventSubscriber = this.eventManager.subscribe('demandListModification', () => this.search());
+        // Event thrown after user filled a comment on the demand
         this.eventSubscriber = this.eventManager.subscribe('demandComment', response =>
             this.changeStatus(response.content.demand, response.content.status, response.content.comment)
         );

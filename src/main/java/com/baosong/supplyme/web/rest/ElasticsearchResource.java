@@ -6,7 +6,6 @@ import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.service.ElasticsearchService;
 import com.baosong.supplyme.service.dto.ElasticsearchIndexResult;
 import com.baosong.supplyme.web.rest.errors.BadRequestAlertException;
-import com.baosong.supplyme.web.rest.util.HeaderUtil;
 import com.codahale.metrics.annotation.Timed;
 
 import org.slf4j.Logger;

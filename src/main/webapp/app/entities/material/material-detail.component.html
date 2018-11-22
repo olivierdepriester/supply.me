@@ -17,6 +17,14 @@
                 <dd>
                     <span>{{material.description}}</span>
                 </dd>
+                <dt><span jhiTranslate="supplyMeApp.material.category">Category</span></dt>
+                <dd>
+                    <span>{{ material.materialCategory.name }}</span>
+                </dd>
+                <dt><span jhiTranslate="supplyMeApp.material.estimatedPrice">Estimated unit price</span></dt>
+                <dd>
+                    <span>{{ material.estimatedPrice | currencyCustom | nullToDash }}</span>
+                </dd>
                 <dt><span jhiTranslate="global.field.creationUser">Creation User</span></dt>
                 <dd>
                     <span>{{material.creationUser | smUser }}</span>

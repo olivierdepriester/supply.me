@@ -80,7 +80,7 @@ public class Material implements Serializable {
     private User creationUser;
 
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("")
+    @JsonIgnoreProperties({"creationUser","creationDate"})
     private MaterialCategory materialCategory;
 
     @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)

@@ -53,7 +53,7 @@ public class Department implements Serializable {
     private User headUser;
 
     @ManyToOne
-    @JsonIgnoreProperties("")
+    @JsonIgnoreProperties({"creationUser","creationDate"})
     private Project defaultProject;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

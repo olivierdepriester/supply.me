@@ -108,29 +108,29 @@ public class Demand implements Serializable {
 
     @NotNull
     @ManyToOne(optional = false)
+    @JsonIgnoreProperties({"creationUser","creationDate"})
     private Material material;
 
     @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("creationUser,creationDate")
+    @JsonIgnoreProperties({"defaultProject","creationUser","creationDate"})
     private Department department;
 
     @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("creationUser,creationDate")
+    @JsonIgnoreProperties({"creationUser","creationDate"})
     private Project project;
 
     @ManyToOne(optional = true)
-    @JsonIgnoreProperties("creationUser")
+    @JsonIgnoreProperties({"creationUser","creationDate"})
     private Supplier supplier;
 
     @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("creationUser,creationDate")
+    @JsonIgnoreProperties({"creationUser","creationDate"})
     private DemandCategory demandCategory;
 
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("")
     private User creationUser;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "demand", cascade = CascadeType.ALL)

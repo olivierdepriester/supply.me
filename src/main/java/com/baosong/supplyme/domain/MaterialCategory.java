@@ -35,7 +35,6 @@ public class MaterialCategory implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @NotNull
     @Column(name = "creation_date", nullable = false)
     private Instant creationDate;
 

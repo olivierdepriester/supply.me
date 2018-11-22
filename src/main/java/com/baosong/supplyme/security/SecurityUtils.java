@@ -141,12 +141,9 @@ public final class SecurityUtils {
 
     public static String getCurrentUserHighestAuthority() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        return getHighestAuthority(
-            securityContext.getAuthentication().getAuthorities().stream()
-                .filter(ga -> SORTED_AUTHORITIES.contains(ga.getAuthority()))
-                .map(ga -> ga.getAuthority())
-                .collect(Collectors.toList())
-            );
+        return getHighestAuthority(securityContext.getAuthentication().getAuthorities().stream()
+                .filter(ga -> SORTED_AUTHORITIES.contains(ga.getAuthority())).map(ga -> ga.getAuthority())
+                .collect(Collectors.toList()));
     }
 
     /**
@@ -188,6 +185,22 @@ public final class SecurityUtils {
             return 1;
         } else {
             return Integer.compare(SORTED_AUTHORITIES.indexOf(x), SORTED_AUTHORITIES.indexOf(y));
+        }
+    }
+
+    /**
+     * Get the authority level immediatly greater than the one given as a parameter
+     *
+     * @param authorityLevel current authority level.
+     * @return the next authority level. if the parameter is the latest return {@code null}.
+     *  if the paramater is not in the list of authority levels
+     */
+    public static String getNextAuthorityLevel(String authorityLevel) {
+        int index = SORTED_AUTHORITIES.indexOf(authorityLevel);
+        if (index < SORTED_AUTHORITIES.size() - 1) {
+            return SORTED_AUTHORITIES.get(index + 1);
+        } else {
+            return null;
         }
     }
 }

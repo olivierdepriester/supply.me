@@ -311,8 +311,13 @@ public class DemandServiceImpl implements DemandService {
                 }
                 demand.setStatus(targetStatus);
                 demand.setValidationAuthority(this.getValidationAuthorityToSet(demand));
-                // Try to appove Automatically if possible
+                // Try to approve Automatically if possible
                 demand = this.changeStatus(demand.getId(), DemandStatus.APPROVED, "Auto");
+                if (DemandStatus.WAITING_FOR_APPROVAL.equals(demand.getStatus())) {
+                    // Send mail to the next authority level
+                    List<User> recipients = userService.getUsersFromAuthority(SecurityUtils.getNextAuthorityLevel(demand.getReachedAuthority()));
+                    this.mailService.sendWaitingForApprovalDemandEmail(demand, recipients);
+                }
             }
             break;
         case APPROVED:
@@ -332,7 +337,7 @@ public class DemandServiceImpl implements DemandService {
                     // partial validation)
                     hasReachedAuthorityChanged = true;
                     demand.setReachedAuthority(currentUserHighestAuthority);
-                    // P
+                    // Fill as a comment the reached authority level
                     demandStatusChange.setComment(currentUserHighestAuthority);
                 }
             }
@@ -345,12 +350,17 @@ public class DemandServiceImpl implements DemandService {
 
                 // Send a mail to the purchasers
                 List<User> recipients = userService.getUsersFromAuthority(AuthoritiesConstants.PURCHASER);
-                String to = recipients.stream().map(u -> u.getEmail()).collect(Collectors.joining(","));
-                mailService.sendApprovedDemandToPurchaserEmail(demand, to);
+                if (!recipients.isEmpty()) {
+                    mailService.sendApprovedDemandToPurchaserEmail(demand, recipients);
+                }
             } else {
                 if (!hasReachedAuthorityChanged) {
                     // No change --> We do not save nor add any change
                     return demand;
+                } else {
+                    // Send mail to the next authority level
+                    List<User> recipients = userService.getUsersFromAuthority(SecurityUtils.getNextAuthorityLevel(demand.getReachedAuthority()));
+                    this.mailService.sendWaitingForApprovalDemandEmail(demand, recipients);
                 }
             }
             break;

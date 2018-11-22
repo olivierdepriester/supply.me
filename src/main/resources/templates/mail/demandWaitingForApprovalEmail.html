@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{email.demand.waitingForApproval.title(${demand.code})}">The request XXX is waiting for your approval </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+    </head>
+    <body>
+        <p th:text="#{email.greeting.several}">
+            Dear
+        </p>
+        <p th:utext="#{email.demand.waitingForApproval.text1(${baseUrl},${#strings.toString(demand.id)},${demand.code},${author} )}">
+            The request XXX made by YYYY is waiting ...
+            <ul>
+               <li>
+                   Department :
+                   <span th:text="${demand.department.code} + ' - ' + ${demand.department.description}"></span>
+                </li>
+                <li>
+                    Material :
+                    <span th:text="${demand.material.partNumber} + ' - ' + ${demand.material.name}"></span>
+                </li>
+                <li>
+                    Quantity :
+                    <span th:text="${#numbers.formatDecimal(demand.quantity, 1, 'COMMA', 0, 'POINT')}"></span>
+                </li>
+                <li>
+                    Amount :
+                    ¥<span th:text="${#numbers.formatDecimal(demand.amountWithVat, 1, 'COMMA', 2, 'POINT')}"></span>
+                </li>
+            </ul>
+        </p>
+        <p>
+            <span th:text="#{email.courtesy}">Regards, </span>
+            <br/>
+            <em th:text="#{email.signature}">JHipster.</em>
+        </p>
+    </body>
+</html>

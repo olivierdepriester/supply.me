@@ -11,7 +11,7 @@
             "updated": "A request has been updated with identifier {{ param }}",
             "deleted": "A request has been deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete request {{ id }}?"
+                "question": "Are you sure you want to delete request <i>{{ id }}</i> for material <i>{{ material }}</i> ?"
             },
             "detail": {
                 "title": "Request"

@@ -11,7 +11,7 @@
             "updated": "Le Demand avec l'identifiant {{ param }} a été mis à jour",
             "deleted": "Le Demand avec l'identifiant {{ param }} a été supprimé",
             "delete": {
-                "question": "Etes-vous certain de vouloir supprimer le Demand {{ id }} ?"
+                "question": "Etes-vous sur de vouloir supprimer la demande <i>{{ id }}</i> sur l'article <i>{{ material }}</i> ?"
             },
             "detail": {
                 "title": "Demand"

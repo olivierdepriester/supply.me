@@ -195,12 +195,12 @@ public final class SecurityUtils {
      * @return the next authority level. if the parameter is the latest return {@code null}.
      *  if the paramater is not in the list of authority levels
      */
-    public static String getNextAuthorityLevel(String authorityLevel) {
+    public static Optional<String> getNextAuthorityLevel(String authorityLevel) {
         int index = SORTED_AUTHORITIES.indexOf(authorityLevel);
         if (index < SORTED_AUTHORITIES.size() - 1) {
-            return SORTED_AUTHORITIES.get(index + 1);
+            return Optional.of(SORTED_AUTHORITIES.get(index + 1));
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 }

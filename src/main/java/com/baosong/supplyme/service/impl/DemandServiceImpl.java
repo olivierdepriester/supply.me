@@ -315,8 +315,10 @@ public class DemandServiceImpl implements DemandService {
                 demand = this.changeStatus(demand.getId(), DemandStatus.APPROVED, "Auto");
                 if (DemandStatus.WAITING_FOR_APPROVAL.equals(demand.getStatus())) {
                     // Send mail to the next authority level
-                    List<User> recipients = userService.getUsersFromAuthority(SecurityUtils.getNextAuthorityLevel(demand.getReachedAuthority()));
-                    this.mailService.sendWaitingForApprovalDemandEmail(demand, recipients);
+                    List<User> to = this.getNextAuthorityLevelUsers(demand.getReachedAuthority());
+                    if (!to.isEmpty()) {
+                        this.mailService.sendWaitingForApprovalDemandEmail(demand, to);
+                    }
                 }
             }
             break;
@@ -359,8 +361,10 @@ public class DemandServiceImpl implements DemandService {
                     return demand;
                 } else {
                     // Send mail to the next authority level
-                    List<User> recipients = userService.getUsersFromAuthority(SecurityUtils.getNextAuthorityLevel(demand.getReachedAuthority()));
-                    this.mailService.sendWaitingForApprovalDemandEmail(demand, recipients);
+                    List<User> to = this.getNextAuthorityLevelUsers(demand.getReachedAuthority());
+                    if (!to.isEmpty()) {
+                        this.mailService.sendWaitingForApprovalDemandEmail(demand, to);
+                    }
                 }
             }
             break;
@@ -375,6 +379,18 @@ public class DemandServiceImpl implements DemandService {
         }
         demand.getDemandStatusChanges().add(demandStatusChange);
         return this.saveAndCascadeIndex(demand);
+    }
+
+    private List<User> getNextAuthorityLevelUsers(String currentAuthorityLevel) {
+        Optional<String> authorityLevel = Optional.of(currentAuthorityLevel == null ? "" : currentAuthorityLevel);
+        List<User> result = new ArrayList<>(1);
+        while (authorityLevel.isPresent() && result.isEmpty()) {
+            authorityLevel = SecurityUtils.getNextAuthorityLevel(authorityLevel.get());
+            if (authorityLevel.isPresent()) {
+                result = userService.getUsersFromAuthority(authorityLevel.get());
+            }
+        }
+        return result;
     }
 
     /**

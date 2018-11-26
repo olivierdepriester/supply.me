@@ -145,7 +145,7 @@ public class MailService {
         context.setLocale(locale);
         String content = templateEngine.process("mail/demandApprovalEmail", context);
         String subject = messageSource.getMessage("email.demand.approval.title",
-                new Object[] { demand.getMaterial().getName() }, locale);
+                new Object[] { demand.getCode() }, locale);
         sendEmail(to, subject, content, false, true, demand.isUrgent());
     }
 
@@ -164,7 +164,7 @@ public class MailService {
         context.setVariable("rejecter", FormatUtil.formatUser(user));
         String content = templateEngine.process("mail/demandRejectEmail", context);
         String subject = messageSource.getMessage("email.demand.reject.title",
-                new Object[] { demand.getMaterial().getName() }, locale);
+                new Object[] { demand.getCode() }, locale);
         sendEmail(demand.getCreationUser(), subject, content, false, true, demand.isUrgent());
     }
 

@@ -1,29 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.demand.approval.title(${demand.material.partNumber})}">JHipster password reset</title>
+        <title th:text="#{email.demand.approval.title(${demand.code})}">Approval</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+        <style th:replace="mail/fragmentDemandStyle::fragmentDemandStyle"></style>
     </head>
     <body>
-        <p th:text="#{email.demand.approval.greeting}">
+        <p th:text="#{email.greeting.several}">
             Dear
         </p>
-        <p th:text="#{email.demand.approval.text1(${demand.project.code})}">
-            For your JHipster account a password reset was requested, please click on the URL below to reset it:
-            <table>
-            	<tr>
-            		<td><a th:href="@{|${baseUrl}/#/demand/${demand.id}/view|}"
-            			th:text="${demand.material.partNumber} + ' - ' + ${demand.material.name}">Material</a></td>
-            		<td th:text="${demand.quantity}"></td>
-            		<td th:text="${demand.creationUser.lastName} + ' ' + ${demand.creationUser.firstName}"></td>
-            	<tr>
-            </table>
+        <p th:utext="#{email.demand.approval.text1(${baseUrl},${#strings.toString(demand.id)},${demand.code})}">
+            The request XXX made by YYYY is waiting ...
         </p>
-        <p>
-            <span th:text="#{email.demand.approval.text2}">Regards, </span>
-            <br/>
-            <em th:text="#{email.signature}">JHipster.</em>
-        </p>
+        <p th:text="#{email.demand.approval.text2(${demand.department.description})}">Can you order</p>
+        <div th:include="mail/fragmentDemandDetail::fragmentDemandDetail(${demand})"></div>
+        <p th:replace="mail/fragmentGreetings::fragmentGreetings"></p>
     </body>
 </html>

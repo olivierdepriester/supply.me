@@ -4,70 +4,7 @@
         <title th:text="#{email.demand.waitingForApproval.title(${demand.code})}">The request XXX is waiting for your approval </title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
-        <style>
-            html {
-              font-family: sans-serif;
-              line-height: 1.15;
-              -webkit-text-size-adjust: 100%;
-              -ms-text-size-adjust: 100%;
-              -ms-overflow-style: scrollbar;
-              -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            }
-            body {
-              margin: 0;
-              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-              font-size: 1rem;
-              font-weight: 400;
-              line-height: 1.5;
-              color: #212529;
-              text-align: left;
-              background-color: #fff;
-            }
-            a {
-              color: #3e8acc;
-              font-weight: 700;
-              text-decoration: none;
-              background-color: transparent;
-              -webkit-text-decoration-skip: objects;
-            }
-            a:hover {
-                color: #286396;
-                text-decoration: underline;
-            }
-            .warning {
-                font-weight: 700;
-                background-color:#ffc107;
-                padding: 0.3rem  1rem;
-                color: black;
-            }
-            .summary {
-                border-style: solid;
-                border-radius: 0.5rem;
-                border-width: 1px;
-                border-color: #17a2b8;
-                margin: 0.3rem;
-            }
-            .header {
-                background-color: #17a2b8;
-                color: white;
-                font-weight: 700;
-                font-size: larger;
-                padding: 0.3rem  1rem;
-                border-radius: 0.5rem;
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-            .content {
-                margin-left: 2rem;
-            }
-            dt {
-                font-weight: 700;
-            }
-            dd {
-                margin-bottom: 0.5rem;
-                margin-left: 2rem;
-            }
-        </style>
+        <style th:replace="mail/fragmentDemandStyle::fragmentDemandStyle"></style>
     </head>
     <body>
         <p th:text="#{email.greeting.several}">
@@ -76,28 +13,7 @@
         <p th:utext="#{email.demand.waitingForApproval.text1(${baseUrl},${#strings.toString(demand.id)},${demand.code},${author} )}">
             The request XXX made by YYYY is waiting ...
         </p>
-        <div class="summary">
-            <div class="header" th:text="#{email.demand.summary}"> Summary</div>
-            <div th:if="${demand.urgent}" class="warning" th:text="#{email.demand.urgent.warning}"> *** This request has been tagged as urgent *** </div>
-            <div class="content">
-                <dl>
-                    <dt><span th:text="#{field.demand.department}">Department :</span></dt>
-                    <dd><span th:text="${demand.department.code} + ' - ' + ${demand.department.description}"></span></dd>
-                    <dt><span th:text="#{field.demand.material}">Material :</span></dt>
-                    <dd><span th:text="${demand.material.partNumber} + ' - ' + ${demand.material.name}"></span></dd>
-                    <dt><span th:text="#{field.demand.quantity}">Quantity :</span></dt>
-                    <dd><span th:text="${#numbers.formatDecimal(demand.quantity, 1, 'COMMA', 0, 'POINT')}"></span></dd>
-                    <dt><span th:text="#{field.demand.amount}">Amount :</span></dt>
-                    <dd>¥<span th:text="${#numbers.formatDecimal(demand.amountWithVat, 1, 'COMMA', 2, 'POINT')}"></span></dd>
-                    <dt><span th:text="#{field.demand.expectedDate}">Expected date :</span></dt>
-                    <dd><span th:text="${#dates.format(demand.expectedDate, 'yyyy-MM-dd')}"></span></dd>
-                </dl>
-            </div>
-        </div>
-        <p>
-            <span th:text="#{email.courtesy}">Regards, </span>
-            <br/>
-            <em th:text="#{email.signature}">JHipster.</em>
-        </p>
+        <div th:include="mail/fragmentDemandDetail::fragmentDemandDetail(${demand})"></div>
+        <p th:replace="mail/fragmentGreetings::fragmentGreetings"></p>
     </body>
 </html>

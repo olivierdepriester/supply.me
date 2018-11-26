@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <div th:fragment="fragmentDemandDetail(demand)">
+            <div class="summary">
+                <div class="header" th:text="#{email.demand.summary}"> Summary</div>
+                <div th:if="${demand.urgent}" class="warning" th:text="#{email.demand.urgent.warning}"> *** This request has been tagged as urgent *** </div>
+                <div class="content">
+                    <dl>
+                        <dt><span th:text="#{field.demand.department}">Department :</span></dt>
+                        <dd><span th:text="${demand.department.code} + ' - ' + ${demand.department.description}"></span></dd>
+                        <dt><span th:text="#{field.demand.material}">Material :</span></dt>
+                        <dd><span th:text="${demand.material.partNumber} + ' - ' + ${demand.material.name}"></span></dd>
+                        <dt><span th:text="#{field.demand.quantity}">Quantity :</span></dt>
+                        <dd><span th:text="${#numbers.formatDecimal(demand.quantity, 1, 'COMMA', 0, 'POINT')}"></span></dd>
+                        <dt><span th:text="#{field.demand.amount}">Amount :</span></dt>
+                        <dd>¥<span th:text="${#numbers.formatDecimal(demand.amountWithVat, 1, 'COMMA', 2, 'POINT')}"></span></dd>
+                        <dt><span th:text="#{field.demand.expectedDate}">Expected date :</span></dt>
+                        <dd><span th:text="${#dates.format(demand.expectedDate, 'yyyy-MM-dd')}"></span></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -7,6 +7,8 @@ import { DemandAuthorization, DemandStatus, IDemand } from 'app/shared/model/dem
 import { JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
+import { IPurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
+import { PurchaseOrderLineService } from '../purchase-order-line';
 
 @Component({
     selector: 'jhi-demand-detail',
@@ -16,6 +18,7 @@ import { DemandService } from './demand.service';
 export class DemandDetailComponent implements OnInit, OnDestroy {
     demand: IDemand;
     files: IAttachmentFile[];
+    purchaseOrderLines: IPurchaseOrderLine[];
     authorization: DemandAuthorization = new DemandAuthorization();
     eventSubscriber: Subscription;
 
@@ -23,6 +26,7 @@ export class DemandDetailComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private eventManager: JhiEventManager,
         private demandService: DemandService,
+        private purchaseOrderLineService: PurchaseOrderLineService,
         private principal: Principal
     ) {}
 
@@ -46,6 +50,11 @@ export class DemandDetailComponent implements OnInit, OnDestroy {
         this.principal.identity().then(account => {
             this.authorization = this.demandService.getAuthorizationForDemand(this.demand, account);
         });
+        if (this.demand.id) {
+            this.purchaseOrderLineService
+                .getBydemandId(this.demand.id)
+                .subscribe((res: HttpResponse<IPurchaseOrderLine[]>) => (this.purchaseOrderLines = res.body));
+        }
     }
 
     downloadFile(attachmentFile: IAttachmentFile) {

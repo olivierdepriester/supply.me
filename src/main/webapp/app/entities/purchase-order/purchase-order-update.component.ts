@@ -54,7 +54,6 @@ export class PurchaseOrderUpdateComponent implements OnInit {
             if (!purchaseOrder.id) {
                 this.purchaseOrder.creationDate = moment();
                 this.purchaseOrder.status = PurchaseOrderStatus.NEW;
-                this.purchaseOrder.code = '0000000000';
             }
             // Check if the purchase order can be edited
             this.principal.identity().then(account => {

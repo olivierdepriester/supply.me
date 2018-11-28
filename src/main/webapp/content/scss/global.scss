@@ -347,6 +347,13 @@ demand status
     border-color: darkgray;
 }
 
+.ordered {
+    @extend %demand-status;
+    color: whitesmoke;
+    background-color: darkblue;
+    border-color: darkblue;
+}
+
 .ui-fileupload {
     & .ui-button {
         background-color: $primary;

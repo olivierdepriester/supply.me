@@ -317,6 +317,11 @@ $close: darkgray;
     font-size: 1rem;
 }
 
+.detail-status {
+    margin-bottom: 0.4rem;
+    display: inline-block;
+}
+
 .new {
     @extend %demand-status;
     color: whitesmoke;

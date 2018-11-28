@@ -34,6 +34,9 @@
                     <th jhiSortBy="code"><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
+                    <th jhiSortBy="status"><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
                     <th jhiSortBy="supplier.id"><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
@@ -41,22 +44,19 @@
                             Date</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
-                    <th jhiSortBy="status"><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span>
+                    <th jhiSortBy="quantity">
+                        <span jhiTranslate="supplyMeApp.purchaseOrder.quantity">Quantity</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
-                    <th jhiSortBy="creationDate"><span jhiTranslate="supplyMeApp.purchaseOrder.creationDate">Creation
+                    <th jhiSortBy="amount">
+                        <span jhiTranslate="supplyMeApp.purchaseOrder.amount">Amount</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th jhiSortBy="creationDate"><span jhiTranslate="global.field.creationDate">Creation
                             Date</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
-                    <th jhiSortBy="creationUser.id"><span jhiTranslate="supplyMeApp.purchaseOrder.creationUser">Creation
-                            User</span>
-                        <fa-icon [icon]="'sort'"></fa-icon>
-                    </th>
-                    <th jhiSortBy="quantity"><span jhiTranslate="supplyMeApp.purchaseOrder.quantity">Creation
-                            User</span>
-                        <fa-icon [icon]="'sort'"></fa-icon>
-                    </th>
-                    <th jhiSortBy="amount"><span jhiTranslate="supplyMeApp.purchaseOrder.amount">Creation
+                    <th jhiSortBy="creationUser.id"><span jhiTranslate="global.field.creationUser">Creation
                             User</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
@@ -66,23 +66,25 @@
                 [infiniteScrollDistance]="0">
                 <tr *ngFor="let purchaseOrder of purchaseOrders ;trackBy: trackId">
                     <td class="text-center"><a [routerLink]="['/purchase-order', purchaseOrder.id, 'view' ]">{{purchaseOrder.code}}</a></td>
+                    <td class="text-center">
+                        <span [ngClass]="purchaseOrder.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">Status</span>
+                    </td>
                     <td>
                         <div *ngIf="purchaseOrder.supplier">
-                            <a [routerLink]="['../supplier', purchaseOrder.supplier?.id, 'view' ]">{{purchaseOrder.supplier?.referenceNumber
-                                + ' - ' + purchaseOrder.supplier?.name}}</a>
+                            <a [routerLink]="['../supplier', purchaseOrder.supplier?.id, 'view' ]">{{purchaseOrder.supplier | smSupplier }}</a>
                         </div>
                     </td>
                     <td class="text-center">{{purchaseOrder.expectedDate | dateFormat }}</td>
-                    <td jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</td>
-                    <td class="text-center">{{purchaseOrder.creationDate | datetimeFormat }}</td>
-                    <td>
-                        {{purchaseOrder.creationUser?.lastName + ' ' + purchaseOrder.creationUser?.firstName }}
-                    </td>
                     <td class="text-right">
                         {{ purchaseOrder.quantity }}
                     </td>
                     <td class="text-right">
-                        {{ purchaseOrder.amount | currency:'CNY':'symbol-narrow':'1.0-3' }}
+                        {{ purchaseOrder.amount | currencyCustom }}
+                    </td>
+
+                    <td class="text-center">{{purchaseOrder.creationDate | datetimeFormat }}</td>
+                    <td>
+                        {{purchaseOrder.creationUser | smUser }}
                     </td>
                     <td class="text-left">
                         <div class="btn-group flex-btn-group-container">

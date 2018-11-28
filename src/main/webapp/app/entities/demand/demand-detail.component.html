@@ -3,7 +3,7 @@
         <ng-container *ngIf="demand">
             <h2>
                 <span jhiTranslate="supplyMeApp.demand.detail.title">Demand</span> {{demand.code}}
-                <div class="status" [ngClass]="demand.status.toLowerCase()" style="margin-bottom: 0.4rem; display: inline-block;" jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</div>
+                <div class="detail-status" [ngClass]="demand.status.toLowerCase()" style="margin-bottom: 0.4rem; display: inline-block;" jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</div>
                 <span *ngIf="demand.urgent" class="urgent fa fa-exclamation" title="{{ 'supplyMeApp.demand.urgencyWarning' | translate}} "></span>
             </h2>
             <hr>
@@ -166,6 +166,47 @@
                             </div>
                         </ng-template>
                     </ngb-panel>
+                    <ngb-panel id="ngb-panel-purchaseorders" *ngIf="purchaseOrderLines && purchaseOrderLines.length > 0">
+                        <ng-template ngbPanelTitle>
+                            <fa-icon [icon]="'sort-down'"></fa-icon>
+                            <span class="title" jhiTranslate="supplyMeApp.purchaseOrder.home.title">Purchase orders</span>
+                            <span class="title" >: {{ purchaseOrderLines.length }} </span>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span></th>
+                                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span></th>
+                                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span></th>
+                                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">ExpectedDate</span></th>
+                                            <th><span jhiTranslate="supplyMeApp.purchaseOrderLine.quantity">Quantity</span></th>
+                                            <th><span jhiTranslate="supplyMeApp.purchaseOrderLine.orderPrice">Order price</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let line of purchaseOrderLines">
+                                            <td class="text-center">
+                                                <a [routerLink]="['/purchase-order', line.purchaseOrder?.id, 'view' ]">{{
+                                                    line.purchaseOrder.code }}</a>
+                                            </td>
+                                            <td>
+                                                <span *ngIf="line.purchaseOrder.supplier">
+                                                    <a [routerLink]="['/supplier', line.purchaseOrder.supplier?.id, 'view' ]">{{
+                                                        line.purchaseOrder.supplier | smSupplier }}</a>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span [ngClass]="line.purchaseOrder.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + line.purchaseOrder.status}}">Status</span>
+                                            </td>
+                                            <td class="text-center">{{ line.purchaseOrder.expectedDate | dateFormat }} </td>
+                                            <td class="numeric">{{ line.quantity }} </td>
+                                            <td class="numeric">{{ line.orderPrice | currencyCustom }} </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                        </ng-template>
+                    </ngb-panel>
                     <ngb-panel id="ngb-panel-events">
                         <ng-template ngbPanelTitle>
                             <fa-icon [icon]="'sort-down'"></fa-icon>
@@ -192,47 +233,6 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </ng-template>
-                    </ngb-panel>
-                    <ngb-panel id="ngb-panel-purchaseorders" *ngIf="purchaseOrderLines && purchaseOrderLines.length > 0">
-                        <ng-template ngbPanelTitle>
-                            <fa-icon [icon]="'sort-down'"></fa-icon>
-                            <span class="title" jhiTranslate="supplyMeApp.purchaseOrder.home.title">Purchase orders</span>
-                            <span class="title" >: {{ purchaseOrderLines.length }} </span>
-                        </ng-template>
-                        <ng-template ngbPanelContent>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr class="text-center">
-                                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span></th>
-                                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span></th>
-                                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span></th>
-                                            <th><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">ExpectedDate</span></th>
-                                            <th><span jhiTranslate="supplyMeApp.purchaseOrderLine.quantity">Quantity</span></th>
-                                            <th><span jhiTranslate="supplyMeApp.purchaseOrderLine.orderPrice">Order price</span></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let line of purchaseOrderLines">
-                                            <td class="text-center">
-                                                <a [routerLink]="['/purchase-order', line.purchaseOrder?.id, 'view' ]">{{
-                                                    line.purchaseOrder.code }}</a>
-                                            </td>
-                                            <td>
-                                                <div *ngIf="line.purchaseOrder.supplier">
-                                                    <a [routerLink]="['/supplier', line.purchaseOrder.supplier?.id, 'view' ]">{{
-                                                        line.purchaseOrder.supplier?.name }}</a>
-                                                </div>
-                                            </td>
-                                            <td class="text-center">
-                                                <span jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + line.purchaseOrder.status}}">{{line.purchaseOrder.status}}</span>
-                                            </td>
-                                            <td class="text-center">{{ line.purchaseOrder.expectedDate | dateFormat }} </td>
-                                            <td class="numeric">{{ line.quantity }} </td>
-                                            <td class="numeric">{{ line.orderPrice | currency:'CNY':'symbol-narrow':'1.0-3' }} </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
                         </ng-template>
                     </ngb-panel>
                 </ngb-accordion>

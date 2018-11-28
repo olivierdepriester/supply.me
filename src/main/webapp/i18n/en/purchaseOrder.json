@@ -2,10 +2,10 @@
     "supplyMeApp": {
         "purchaseOrder": {
             "home": {
-                "title": "Purchase Orders",
-                "createLabel": "Create a new Purchase Order",
-                "createOrEditLabel": "Create or edit a Purchase Order",
-                "search": "Search for Purchase Order"
+                "title": "Purchase orders",
+                "createLabel": "Create a new purchase order",
+                "createOrEditLabel": "Create or edit a purchase order",
+                "search": "Search for purchase orders"
             },
             "created": "A new Purchase Order is created with identifier {{ param }}",
             "updated": "A Purchase Order is updated with identifier {{ param }}",
@@ -14,19 +14,17 @@
                 "question": "Are you sure you want to delete Purchase Order {{ id }}?"
             },
             "detail": {
-                "title": "Purchase Order"
+                "title": "Purchase order"
             },
             "code": "Code",
-            "expectedDate": "Expected Date",
+            "expectedDate": "Expected date",
             "status": "Status",
-            "creationDate": "Creation Date",
             "supplier": "Supplier",
-            "creationUser": "Creation User",
             "quantity": "Quantity",
             "amount": "Amount",
             "demand": {
-                "add": "Add a demand : ",
-                "view": "View the demand"
+                "add": "Add a request : ",
+                "view": "View the request"
             }
         }
     }

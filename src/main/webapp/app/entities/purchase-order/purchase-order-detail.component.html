@@ -1,36 +1,39 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="purchaseOrder">
-            <h2><span jhiTranslate="supplyMeApp.purchaseOrder.detail.title">Purchase Order</span> {{purchaseOrder.id}}</h2>
+            <h2>
+                <span jhiTranslate="supplyMeApp.purchaseOrder.detail.title">Purchase Order</span> {{purchaseOrder.code}}
+                <div class="detail-status" [ngClass]="purchaseOrder.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.DemandStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</div>
+            </h2>
             <hr>
             <jhi-alert></jhi-alert>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
-                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.code">Code</span></dt>
-                <dd>
-                    <span>{{purchaseOrder.code}}</span>
-                </dd>
                 <dt><span jhiTranslate="supplyMeApp.purchaseOrder.supplier">Supplier</span></dt>
                 <dd>
                     <div *ngIf="purchaseOrder.supplier">
-                        <a [routerLink]="['/supplier', purchaseOrder.supplier?.id, 'view']">{{purchaseOrder.supplier?.referenceNumber + ' - ' + purchaseOrder.supplier?.name}}</a>
+                        <a [routerLink]="['/supplier', purchaseOrder.supplier?.id, 'view']">{{purchaseOrder.supplier | smSupplier }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.purchaseOrder.expectedDate">Expected Date</span></dt>
                 <dd>
                     <span>{{purchaseOrder.expectedDate | dateFormat }}</span>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.status">Status</span></dt>
+                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.amount">Amount</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</span>
+                    <span>{{purchaseOrder.amount | currencyCustom }}</span>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.creationDate">Creation Date</span></dt>
+                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.quantity">Quantity</span></dt>
+                <dd>
+                    <span>{{purchaseOrder.quantity }}</span>
+                </dd>
+                <dt><span jhiTranslate="global.field.creationDate">Creation Date</span></dt>
                 <dd>
                     <span>{{purchaseOrder.creationDate | datetimeFormat}}</span>
                 </dd>
-                <dt><span jhiTranslate="supplyMeApp.purchaseOrder.creationUser">Creation User</span></dt>
+                <dt><span jhiTranslate="global.field.creationUser">Creation User</span></dt>
                 <dd>
-                    {{purchaseOrder.creationUser?.lastName + ' ' + purchaseOrder.creationUser?.firstName}}
+                    {{purchaseOrder.creationUser | smUser}}
                 </dd>
             </dl>
             <div class="table-responsive" *ngIf="purchaseOrder.purchaseOrderLines">
@@ -38,33 +41,28 @@
                     <thead>
                         <tr>
                             <th class="text-center"><span>#</span></th>
-                            <th class="text-center"><span jhiTranslate="supplyMeApp.material.partNumber">Material Part Number</span></th>
-                            <th class="text-center"><span jhiTranslate="supplyMeApp.material.name">Material Name</span></th>
+                            <th class="text-left"><span jhiTranslate="supplyMeApp.demand.detail.title">Demand</span></th>
+                            <th class="text-center"><span jhiTranslate="supplyMeApp.material.detail.title">Material</span></th>
                             <th class="text-center"><span jhiTranslate="supplyMeApp.purchaseOrderLine.quantity">Quantity</span></th>
                             <th class="text-center"><span jhiTranslate="supplyMeApp.purchaseOrderLine.orderPrice">Price</span></th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let purchaseOrderLine of purchaseOrder.purchaseOrderLines" >
                             <td class="text-right">
-                                <a [routerLink]="['/demand', purchaseOrderLine.demand.id, 'view' ]">{{ purchaseOrderLine.lineNumber }}</a>
+                                {{ purchaseOrderLine.lineNumber }}
                             </td>
-                            <td class="text-center">{{ purchaseOrderLine.demand.material.partNumber }}</td>
-                            <td>{{ purchaseOrderLine.demand.material.name }}</td>
+                            <td class="text-left">
+                                <a [routerLink]="['/demand', purchaseOrderLine.demand.id, 'view' ]">{{ purchaseOrderLine.demand.code }}</a>
+                            </td>
+                            <td>
+                                <a [routerLink]="['/material', purchaseOrderLine.demand.material.id, 'view' ]">{{ purchaseOrderLine.demand.material | smMaterial }}</a>
+                            </td>
                             <td class="text-right">
                                 <span class="numeric">{{ purchaseOrderLine.quantity }}</span>
                             </td>
                             <td class="text-right" >
-                                <span class="numeric">{{ purchaseOrderLine.orderPrice | currency:'CNY':'symbol-narrow':'1.0-3' }}</span>
-                            </td>
-                            <td class="text-center">
-                                <button
-                                    [routerLink]="['/demand', purchaseOrderLine.demand.id, 'view' ]"
-                                    class="btn btn-info btn-sm">
-                                    <fa-icon [icon]="'eye'"></fa-icon>
-                                    <span class="d-none d-md-inline" jhiTranslate="supplyMeApp.purchaseOrder.demand.view">View</span>
-                                </button>
+                                <span class="numeric">{{ purchaseOrderLine.orderPrice | currencyCustom }}</span>
                             </td>
                         </tr>
                     </tbody>

@@ -4,11 +4,12 @@
             "null": "",
             "NEW": "Nouveau",
             "WAITING_FOR_APPROVAL": "En attente de validation",
-            "APPROVED": "Valide",
-            "REJECTED": "Rejete",
-            "ORDERED": "Commande",
-            "PARTIALLY_DELIVERED": "Partiellement livre",
-            "FULLY_DELIVERED": "Livre"
+            "APPROVED": "Validée",
+            "REJECTED": "Rejetée",
+            "ORDERED": "Commandée",
+            "PARTIALLY_DELIVERED": "Livraison en cours",
+            "FULLY_DELIVERED": "Livrée",
+            "CLOSED": "Cloturée"
         }
     }
 }

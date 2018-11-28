@@ -4,10 +4,11 @@ import { SERVER_API_URL } from 'app/app.constants';
 import { Principal } from 'app/core';
 import { createRequestOption } from 'app/shared';
 import { IAttachmentFile, AttachmentFile } from 'app/shared/model/attachment-file.model';
-import { DemandStatus, IDemand } from 'app/shared/model/demand.model';
+import { DemandStatus, IDemand, DemandAuthorization } from 'app/shared/model/demand.model';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { __await } from 'tslib';
 
 type EntityResponseType = HttpResponse<IDemand>;
 type EntityArrayResponseType = HttpResponse<IDemand[]>;
@@ -35,7 +36,7 @@ export class DemandService {
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    changeStatus(id: number, status: DemandStatus, statusComment: string) {
+    changeStatus(id: number, status: DemandStatus, statusComment: string): Observable<EntityResponseType> {
         const options = { id: `${id}`, status: `${status}`, comment: statusComment };
         return this.http
             .put<IDemand>(`${this.resourceUrl}/changeStatus`, options, { observe: 'response' })
@@ -188,6 +189,35 @@ export class DemandService {
             demand.status === DemandStatus.WAITING_FOR_APPROVAL &&
             account.authorities &&
             account.authorities.includes('ROLE_VALIDATOR_LVL1')
+        );
+    }
+
+    isPurchaseOrderAllowed(demand: IDemand): boolean {
+        return (
+            ((demand.status === DemandStatus.ORDERED &&
+                (demand.quantityOrdered == null || demand.quantity.valueOf() > demand.quantityOrdered.valueOf())) ||
+                demand.status === DemandStatus.APPROVED) &&
+            this.principal.hasAnyAuthorityDirect(['ROLE_PURCHASER'])
+        );
+    }
+
+    /**
+     * Sets the access rights for a demand.
+     * @param demand The demand to be granted access
+     */
+    public getAllowance(demand: IDemand): Promise<DemandAuthorization> {
+        return Promise.resolve(this.getAuthorizationForDemand(demand, this.principal.identity()));
+    }
+
+    public getAuthorizationForDemand(demand: IDemand, account: any): DemandAuthorization {
+        return new DemandAuthorization(
+            this.isEditAllowed(demand, account),
+            this.isRejectAllowed(demand, account),
+            this.isApprovalAllowed(demand, account),
+            this.isDeleteAllowed(demand, account),
+            this.isEditAllowed(demand, account),
+            this.isPurchaseOrderAllowed(demand),
+            this.isCloseAllowed(demand, account)
         );
     }
 }

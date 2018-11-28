@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Principal } from 'app/core';
-import { DemandSearchCriteria, DemandStatus, IDemand, DemandListItem, DemandAllowance } from 'app/shared/model/demand.model';
+import { DemandSearchCriteria, DemandStatus, IDemand, DemandListItem, DemandAuthorization } from 'app/shared/model/demand.model';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
 import { DemandService } from './demand.service';
@@ -76,7 +76,10 @@ export class DemandComponent implements OnInit, OnDestroy {
                 sort: this.sort()
             })
             .subscribe(
-                (res: HttpResponse<IDemand[]>) => (this.demands = res.body.map(d => new DemandListItem(d, this.getAllowanceForDemand(d)))),
+                (res: HttpResponse<IDemand[]>) =>
+                    (this.demands = res.body.map(
+                        d => new DemandListItem(d, this.demandService.getAuthorizationForDemand(d, this.currentAccount))
+                    )),
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
     }
@@ -108,26 +111,26 @@ export class DemandComponent implements OnInit, OnDestroy {
             const demandInList = this.demands.find(d => d.demand.id === res.body.id);
             if (demandInList !== null) {
                 demandInList.demand = res.body;
-                demandInList.allowance = this.getAllowanceForDemand(demandInList.demand);
+                demandInList.authorization = this.demandService.getAuthorizationForDemand(demandInList.demand, this.currentAccount);
             }
             // this.search();
         });
     }
 
-    /**
-     * Sets the access rights for a demand.
-     * @param demand The demand to be granted access
-     */
-    private getAllowanceForDemand(demand: IDemand) {
-        return new DemandAllowance(
-            this.demandService.isEditAllowed(demand, this.currentAccount),
-            this.demandService.isRejectAllowed(demand, this.currentAccount),
-            this.demandService.isApprovalAllowed(demand, this.currentAccount),
-            this.demandService.isDeleteAllowed(demand, this.currentAccount),
-            this.demandService.isEditAllowed(demand, this.currentAccount),
-            this.demandService.isCloseAllowed(demand, this.currentAccount)
-        );
-    }
+    // /**
+    //  * Sets the access rights for a demand.
+    //  * @param demand The demand to be granted access
+    //  */
+    // private getAllowanceForDemand(demand: IDemand): DemandAllowance {
+    //     return new DemandAllowance(
+    //         this.demandService.isEditAllowed(demand, this.currentAccount),
+    //         this.demandService.isRejectAllowed(demand, this.currentAccount),
+    //         this.demandService.isApprovalAllowed(demand, this.currentAccount),
+    //         this.demandService.isDeleteAllowed(demand, this.currentAccount),
+    //         this.demandService.isEditAllowed(demand, this.currentAccount),
+    //         this.demandService.isCloseAllowed(demand, this.currentAccount)
+    //     );
+    // }
 
     isPurchaseOrderAllowed(demand: IDemand): boolean {
         return (

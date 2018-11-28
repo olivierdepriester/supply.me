@@ -137,12 +137,12 @@
                                     [routerLink]="'/demand/new'" [queryParams]="{origin : item.demand.id}">
                                     <fa-icon [icon]="['far','clone']"></fa-icon>
                                 </button>
-                                <div *ngIf="item.allowance.canEdit; then editableDemandBlock"></div>
-                                <div *ngIf="item.allowance.canApprove; then approvalDemandBlock"></div>
-                                <div *ngIf="item.allowance.canReject; then rejectDemandBlock"></div>
+                                <div *ngIf="item.authorization.canEdit; then editableDemandBlock"></div>
+                                <div *ngIf="item.authorization.canApprove; then approvalDemandBlock"></div>
+                                <div *ngIf="item.authorization.canReject; then rejectDemandBlock"></div>
                                 <div *ngIf="false; then orderDemandBlock"></div>
-                                <div *ngIf="item.allowance.canClose; then closeDemandBlock"></div>
-                                <div *ngIf="item.allowance.canDelete; then deleteDemandBlock"></div>
+                                <div *ngIf="item.authorization.canClose; then closeDemandBlock"></div>
+                                <div *ngIf="item.authorization.canDelete; then deleteDemandBlock"></div>
                                 <ng-template #editableDemandBlock>
                                     <button type="submit" class="btn btn-primary btn-sm"
                                         title="{{ 'supplyMeApp.demand.button.edit' | translate }}"
@@ -163,7 +163,7 @@
                                     </button>
                                 </ng-template>
                                 <ng-template #rejectDemandBlock>
-                                        <button type="button" class="btn btn-warning btn-sm"
+                                    <button type="button" class="btn btn-warning btn-sm"
                                         title="{{ 'supplyMeApp.demand.button.reject' | translate }}"
                                         [routerLink]="['/', { outlets: { popup: 'demand/'+ item.demand.id + '/REJECTED/comment'} }]" >
                                         <fa-icon [icon]="'thumbs-down'"></fa-icon>
@@ -171,6 +171,7 @@
                                 </ng-template>
                                 <ng-template #orderDemandBlock>
                                     <button type="button" class="btn btn-primary btn-sm"
+                                        title="{{ 'supplyMeApp.demand.button.order' | translate }}"
                                         [routerLink]="['/purchase-order/new']" [queryParams]="{demandId : item.demand.id}">
                                         <fa-icon [icon]="'shopping-cart'"></fa-icon>
                                     </button>

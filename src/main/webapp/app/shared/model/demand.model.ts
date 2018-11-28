@@ -100,19 +100,20 @@ export class Demand implements IDemand {
     ) {}
 }
 
-export class DemandAllowance {
+export class DemandAuthorization {
     constructor(
         public canEdit?: boolean,
         public canReject?: boolean,
         public canApprove?: boolean,
         public canDelete?: boolean,
         public canSendToApproval?: boolean,
+        public canPurchase?: boolean,
         public canClose?: boolean
     ) {}
 }
 
 export class DemandListItem {
-    constructor(public demand?: IDemand, public allowance?: DemandAllowance) {}
+    constructor(public demand?: IDemand, public authorization?: DemandAuthorization) {}
 }
 
 export class DemandSearchCriteria {

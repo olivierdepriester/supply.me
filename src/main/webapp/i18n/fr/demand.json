@@ -2,27 +2,68 @@
     "supplyMeApp": {
         "demand": {
             "home": {
-                "title": "Demands",
-                "createLabel": "Créer un nouveau Demand",
-                "createOrEditLabel": "Créer ou éditer un Demand",
-                "search": "Recherche pour Demand"
+                "title": "Demandes",
+                "createLabel": "Créer une nouvelle demande",
+                "createOrEditLabel": "Créer ou éditer une demande",
+                "search": "Rechercher des demandes"
             },
-            "created": "Un nouveau Demand a été créé avec l'identifiant {{ param }}",
-            "updated": "Le Demand avec l'identifiant {{ param }} a été mis à jour",
-            "deleted": "Le Demand avec l'identifiant {{ param }} a été supprimé",
+            "created": "Une nouvelle demande a été créée avec l'identifiant {{ param }}",
+            "updated": "La demande {{ param }} a été mise à jour",
+            "deleted": "La demande {{ param }} a été supprimée",
             "delete": {
                 "question": "Etes-vous sur de vouloir supprimer la demande <i>{{ id }}</i> sur l'article <i>{{ material }}</i> ?"
             },
             "detail": {
-                "title": "Demand"
+                "title": "Demande"
             },
-            "quantity": "Quantity",
-            "status": "Status",
-            "expectedDate": "Expected Date",
-            "creationDate": "Creation Date",
-            "material": "Material",
-            "project": "Project",
-            "creationUser": "Creation User"
+            "code": "Code",
+            "supplier": "Fournisseur",
+            "quantity": "Quantité",
+            "status": "Statut",
+            "description": "Description",
+            "expectedDate": "Date souhaitée",
+            "material": "Article",
+            "department": "Département",
+            "project": "Projet",
+            "category": "Catégorie",
+            "otherCategory": "Saisissez ici la description de votre catégorie",
+            "unit": "Unité",
+            "planned": "Planifiée ?",
+            "urgent": "Urgente ?",
+            "urgencyWarning": "Cette demande est urgente",
+            "useAnnualBudget": "Budget annuel ?",
+            "vat": "TVA (%)",
+            "whereUse": "Usage",
+            "estimatedPrice": "Prix unitaire HT",
+            "estimatedPriceWithVat": "Prix unitaire TTC",
+            "amountWithVat": "Montant TTC",
+            "amount": "Montant",
+            "usage": "Usage",
+            "attachments": "Pieces jointes",
+            "pricing": "Prix",
+            "statusChange": {
+                "title": "Evénements",
+                "comment": "Commentaire"
+            },
+            "commentPopup": {
+                "title": "Changement de statut de la demande {{ id }}",
+                "placeholder": "Saisissez votre commentaire ici."
+            },
+            "button": {
+                "sendToApproval": "Envoyer la demande pour approbation",
+                "reject": "Rejeter la demande",
+                "approve": "Approuver la demande",
+                "copy": "Dupliquer et éditer la demande",
+                "close": "Cloturer la demande",
+                "createMaterial": "Créer un nouvel article pour cette demande",
+                "createSupplier": "Créer un nouveau fournisseur pour cette demande",
+                "order": "Créer une commande",
+                "uploader": {
+                    "choose": "Sélectionner",
+                    "upload": "Télécharger",
+                    "cancel": "Annuler"
+                }
+            }
         }
     }
 }

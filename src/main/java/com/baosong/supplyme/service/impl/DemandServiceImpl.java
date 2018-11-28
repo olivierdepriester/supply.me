@@ -276,7 +276,7 @@ public class DemandServiceImpl implements DemandService {
         Demand demand = null;
         User currentUser = userService.getCurrentUser().get();
         try {
-            demand = findOne(id).get();
+            demand = findOneWithStatusChanges(id).get();
         } catch (NoSuchElementException e) {
             // Demand not found
             throw new ServiceException(String.format("No demand found for id %d", id), "notFound");
@@ -377,7 +377,8 @@ public class DemandServiceImpl implements DemandService {
             demand.setStatus(targetStatus);
             break;
         }
-        demand.getDemandStatusChanges().add(demandStatusChange);
+        // Event added as 1st item because the list is sorted by date desc
+        demand.getDemandStatusChanges().add(0, demandStatusChange);
         return this.saveAndCascadeIndex(demand);
     }
 

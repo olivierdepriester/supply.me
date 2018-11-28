@@ -182,7 +182,13 @@
             }
         },
         "field": {
-            "id": "ID"
+            "id": "ID",
+            "yes": "Oui",
+            "no": "Non",
+            "creationDate": "Date de creation",
+            "from": "De",
+            "to": " a ",
+            "creationUser": "Auteur"
         },
         "ribbon": {
             "dev": "Développement"

@@ -57,6 +57,7 @@
                 "close": "Close the request after having been fulfilled",
                 "createMaterial": "Create a new material for this request",
                 "createSupplier": "Create a new supplier for this request",
+                "order": "Create a purchase order",
                 "uploader": {
                     "choose": "Choose",
                     "upload": "Upload",

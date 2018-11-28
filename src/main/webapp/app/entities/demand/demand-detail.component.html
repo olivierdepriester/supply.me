@@ -46,7 +46,7 @@
                     </ng-template>
                 </dd>
             </dl>
-            <div class="accordion" *ngIf="demand.demandStatusChanges && demand.demandStatusChanges.length > 0">
+            <div class="accordion">
                 <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-pricing">
                     <ngb-panel id="ngb-panel-pricing">
                         <ng-template ngbPanelTitle>
@@ -199,9 +199,20 @@
             <button type="submit" (click)="previousState()" class="btn btn-info">
                 <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
             </button>
-
-            <button *ngIf="editable" type="button" [routerLink]="['/demand', demand.id, 'edit']" class="btn btn-primary">
+            <button *ngIf="authorization.canEdit" type="button" [routerLink]="['/demand', demand.id, 'edit']" class="btn btn-primary">
                 <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+            <button *ngIf="authorization.canApprove" type="button" (click)="approve()" class="btn btn-success" >
+                <fa-icon [icon]="'thumbs-up'"></fa-icon>
+                <span jhiTranslate="supplyMeApp.demand.button.approve"> Approve</span>
+            </button>
+            <button *ngIf="authorization.canReject" type="button" [routerLink]="['/', { outlets: { popup: 'demand/'+ demand.id + '/REJECTED/comment'} }]" class="btn btn-warning">
+                <fa-icon [icon]="'thumbs-down'"></fa-icon>
+                <span jhiTranslate="supplyMeApp.demand.button.reject"> Reject</span>
+            </button>
+            <button *ngIf="authorization.canPurchase" type="button" [routerLink]="['/purchase-order/new']" [queryParams]="{demandId : demand.id}" class="btn btn-primary">
+                <fa-icon [icon]="'shopping-cart'"></fa-icon>
+                <span jhiTranslate="supplyMeApp.demand.button.order">Purchase order</span>
             </button>
         </ng-container>
     </div>

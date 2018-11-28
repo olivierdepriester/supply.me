@@ -27,13 +27,13 @@
                 <dd>
                     <span>{{purchaseOrder.quantity }}</span>
                 </dd>
-                <dt><span jhiTranslate="global.field.creationDate">Creation Date</span></dt>
-                <dd>
-                    <span>{{purchaseOrder.creationDate | datetimeFormat}}</span>
-                </dd>
                 <dt><span jhiTranslate="global.field.creationUser">Creation User</span></dt>
                 <dd>
                     {{purchaseOrder.creationUser | smUser}}
+                </dd>
+                <dt><span jhiTranslate="global.field.creationDate">Creation Date</span></dt>
+                <dd>
+                    <span>{{purchaseOrder.creationDate | datetimeFormat}}</span>
                 </dd>
             </dl>
             <div class="table-responsive" *ngIf="purchaseOrder.purchaseOrderLines">

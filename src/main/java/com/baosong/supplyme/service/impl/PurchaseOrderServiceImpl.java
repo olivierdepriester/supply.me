@@ -183,7 +183,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
             if (line.getDemand() != null) {
                 // Set demand status to ORDERED
-                line.setDemand(demandService.changeStatus(line.getDemand().getId(), DemandStatus.ORDERED, null));
+                line.setDemand(demandService.changeStatus(line.getDemand().getId(), DemandStatus.ORDERED, persistedPurchaseOrder.getCode()));
                 /// Calculate the demand ordered quantity
                 double quantityOrdered = demandService.getQuantityOrderedFromPO(line.getDemand().getId());
                 line.getDemand().setQuantityOrdered(quantityOrdered);

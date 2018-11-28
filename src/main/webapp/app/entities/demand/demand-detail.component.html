@@ -243,6 +243,9 @@
             <button *ngIf="authorization.canEdit" type="button" [routerLink]="['/demand', demand.id, 'edit']" class="btn btn-primary">
                 <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
             </button>
+            <button *ngIf="authorization.canEdit" type="button" (click)="sendToApproval()" class="btn btn-sendToApproval" >
+                <fa-icon [icon]="'share-square'"></fa-icon><span jhiTranslate="supplyMeApp.demand.button.sendToApproval"> Send To Approval</span>
+            </button>
             <button *ngIf="authorization.canApprove" type="button" (click)="approve()" class="btn btn-success" >
                 <fa-icon [icon]="'thumbs-up'"></fa-icon>
                 <span jhiTranslate="supplyMeApp.demand.button.approve"> Approve</span>
@@ -251,7 +254,7 @@
                 <fa-icon [icon]="'thumbs-down'"></fa-icon>
                 <span jhiTranslate="supplyMeApp.demand.button.reject"> Reject</span>
             </button>
-            <button *ngIf="authorization.canPurchase" type="button" [routerLink]="['/purchase-order/new']" [queryParams]="{demandId : demand.id}" class="btn btn-primary">
+            <button *ngIf="authorization.canPurchase" type="button" [routerLink]="['/purchase-order/new']" [queryParams]="{demandId : demand.id}" class="btn btn-order">
                 <fa-icon [icon]="'shopping-cart'"></fa-icon>
                 <span jhiTranslate="supplyMeApp.demand.button.order">Purchase order</span>
             </button>

@@ -303,6 +303,10 @@ jhi-user-selector {
 /* ==========================================================================
 demand status
 ========================================================================== */
+
+$order: darkblue;
+$close: darkgray;
+
 %demand-status {
     border-radius: 0.8rem;
     border-width: 0.1rem;
@@ -342,16 +346,16 @@ demand status
 
 .closed {
     @extend %demand-status;
-    color: #fff;
-    background-color: darkgray;
-    border-color: darkgray;
+    color: whitesmoke;
+    background-color: $close;
+    border-color: $close;
 }
 
 .ordered {
     @extend %demand-status;
     color: whitesmoke;
-    background-color: darkblue;
-    border-color: darkblue;
+    background-color: $order;
+    border-color: $order;
 }
 
 .ui-fileupload {
@@ -387,7 +391,19 @@ ngb-progressbar {
 }
 
 .btn-close {
-    color: #fff;
-    background-color: darkgray;
-    border-color: darkgray;
+    color: whitesmoke;
+    background-color: $close;
+    border-color: $close;
+}
+
+.btn-order {
+    color: whitesmoke;
+    background-color: $order;
+    border-color: $order;
+}
+
+.btn-sendToApproval {
+    color: $success;
+    background-color: transparent;
+    border-color: $success;
 }

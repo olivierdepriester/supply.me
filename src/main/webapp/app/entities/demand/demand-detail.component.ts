@@ -4,11 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Principal } from 'app/core';
 import { IAttachmentFile } from 'app/shared/model/attachment-file.model';
 import { DemandAuthorization, DemandStatus, IDemand } from 'app/shared/model/demand.model';
+import { IPurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 import { JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
-import { DemandService } from './demand.service';
-import { IPurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 import { PurchaseOrderLineService } from '../purchase-order-line';
+import { DemandService } from './demand.service';
 
 @Component({
     selector: 'jhi-demand-detail',
@@ -72,11 +72,6 @@ export class DemandDetailComponent implements OnInit, OnDestroy {
     }
 
     private changeStatus(status: DemandStatus, comment: string) {
-        // this.demandService.changeStatus(this.demand.id, status, comment)
-        // .subscribe((res: HttpResponse<IDemand>) =>
-        //     this.demandService.find(res.body.id, true)
-        //     .subscribe((newres: HttpResponse<IDemand>) => this.initializeCurrentDemand(newres.body))
-        // );
         this.demandService
             .changeStatus(this.demand.id, status, comment)
             .subscribe((res: HttpResponse<IDemand>) => this.initializeCurrentDemand(res.body));
@@ -84,6 +79,10 @@ export class DemandDetailComponent implements OnInit, OnDestroy {
 
     approve(): void {
         this.changeStatus(DemandStatus.APPROVED, null);
+    }
+
+    sendToApproval(): void {
+        this.changeStatus(DemandStatus.WAITING_FOR_APPROVAL, null);
     }
 
     ngOnDestroy(): void {

@@ -140,7 +140,7 @@
                                 <div *ngIf="item.authorization.canEdit; then editableDemandBlock"></div>
                                 <div *ngIf="item.authorization.canApprove; then approvalDemandBlock"></div>
                                 <div *ngIf="item.authorization.canReject; then rejectDemandBlock"></div>
-                                <div *ngIf="false; then orderDemandBlock"></div>
+                                <div *ngIf="item.authorization.canPurchase; then orderDemandBlock"></div>
                                 <div *ngIf="item.authorization.canClose; then closeDemandBlock"></div>
                                 <div *ngIf="item.authorization.canDelete; then deleteDemandBlock"></div>
                                 <ng-template #editableDemandBlock>
@@ -149,7 +149,7 @@
                                         [routerLink]="['/demand', item.demand.id, 'edit']" >
                                         <fa-icon [icon]="'pencil-alt'"></fa-icon>
                                     </button>
-                                    <button type="button" class="btn btn-primary btn-sm"
+                                    <button type="button" class="btn btn-sendToApproval btn-sm"
                                         title="{{ 'supplyMeApp.demand.button.sendToApproval' | translate }}"
                                         (click)="sendToApproval(item.demand)">
                                         <fa-icon [icon]="'share-square'"></fa-icon>
@@ -170,7 +170,7 @@
                                     </button>
                                 </ng-template>
                                 <ng-template #orderDemandBlock>
-                                    <button type="button" class="btn btn-primary btn-sm"
+                                    <button type="button" class="btn btn-order btn-sm"
                                         title="{{ 'supplyMeApp.demand.button.order' | translate }}"
                                         [routerLink]="['/purchase-order/new']" [queryParams]="{demandId : item.demand.id}">
                                         <fa-icon [icon]="'shopping-cart'"></fa-icon>

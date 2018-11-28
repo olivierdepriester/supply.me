@@ -103,7 +103,11 @@
                     "my": "My open requests",
                     "new": "New request"
                 },
-                "purchaseOrder": "Purchase Order",
+                "purchaseOrder": {
+                    "title": "Purchaser orders",
+                    "search": "Search for purchase orders",
+                    "new": "New purchase order"
+                },
                 "purchaseOrderLine": "Purchase Order Line",
                 "deliveryNote": "Delivery Note",
                 "deliveryNoteLine": "Delivery Note Line",

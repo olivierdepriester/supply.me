@@ -292,6 +292,28 @@
                     </li>
                 </ul>
             </li>
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="purchase-order-menu">
+                    <span>
+                        <fa-icon [icon]="'shopping-cart'" [fixedWidth]="true"></fa-icon>
+                        <span jhiTranslate="global.menu.entities.purchaseOrder.title">Purchase Order</span>
+                    </span>
+                </a>
+                <ul class="dropdown-menu" ngbDropdownMenu>
+                    <li *jhiHasAnyAuthority="'ROLE_PURCHASER'">
+                        <a class="dropdown-item" routerLink="purchase-order/new" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <fa-icon [icon]="'plus'" [fixedWidth]="true"></fa-icon>
+                            <span jhiTranslate="global.menu.entities.purchaseOrder.new">New purchase order</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="purchase-order" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <fa-icon [icon]="'shopping-cart'" [fixedWidth]="true"></fa-icon>
+                            <span jhiTranslate="global.menu.entities.purchaseOrder.search">Purchase Order</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
             <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
@@ -327,12 +349,6 @@
                             <span jhiTranslate="global.menu.entities.materialAvailability">Material Availability</span>
                         </a>
                     </li> -->
-                    <li *jhiHasAnyAuthority="'ROLE_PURCHASER'">
-                        <a class="dropdown-item" routerLink="purchase-order" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                            <fa-icon [icon]="'shopping-cart'" [fixedWidth]="true"></fa-icon>
-                            <span jhiTranslate="global.menu.entities.purchaseOrder">Purchase Order</span>
-                        </a>
-                    </li>
                     <li *jhiHasAnyAuthority="'ROLE_DELIVERY_MANAGER'">
                         <a class="dropdown-item" routerLink="delivery-note" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <fa-icon icon="asterisk" fixedWidth="true"></fa-icon>

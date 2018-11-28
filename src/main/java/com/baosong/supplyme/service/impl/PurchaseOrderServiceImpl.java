@@ -3,6 +3,7 @@ package com.baosong.supplyme.service.impl;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -75,33 +76,37 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         boolean statusChange = false;
         if (purchaseOrder.getId() == null) {
             // New purchase order --> Generate a new code
-            persistedPurchaseOrder = purchaseOrder.status(PurchaseOrderStatus.NEW)
-                    .code(mutablePropertiesService.getNewPurchaseCode()).creationDate(Instant.now())
-                    .creationUser(userService.getCurrentUser().get());
+            persistedPurchaseOrder = new PurchaseOrder()
+                .purchaseOrderLines(new ArrayList<>(1))
+                .status(PurchaseOrderStatus.NEW)
+                .code(mutablePropertiesService.getNewPurchaseCode())
+                .creationDate(Instant.now())
+                .creationUser(userService.getCurrentUser().get());
         } else {
             // Update -> Retrieve entity from database
             persistedPurchaseOrder = findOne(purchaseOrder.getId()).get();
-            if (persistedPurchaseOrder.getStatus().equals(purchaseOrder.getStatus())) {
-                // Update value fields
-                persistedPurchaseOrder.expectedDate(purchaseOrder.getExpectedDate())
-                        .supplier(purchaseOrder.getSupplier());
-            } else {
+            if (!persistedPurchaseOrder.getStatus().equals(purchaseOrder.getStatus())) {
                 // Update status
                 persistedPurchaseOrder.status(purchaseOrder.getStatus());
                 statusChange = true;
             }
         }
+        // If it is a status change, no other data are allowed to be updated.
         if (!statusChange) {
-            // If not a status change, properties of the purchase order may have to be
-            // updated
+            // If not a status change, properties of the purchase order may have to be updated
             if (!isEditable(persistedPurchaseOrder)) {
                 throw new ServiceException(String.format("The purchase order %d can not be edited by the current user",
                         persistedPurchaseOrder.getId()),
                         "purchaseOrder.edit.forbidden");
             }
+            // Persist the object before updating line so that the ordered quantity of the demand is well calculated even if the PO is new.
+            purchaseOrderRepository.save(persistedPurchaseOrder
+                .expectedDate(purchaseOrder.getExpectedDate())
+                .supplier(purchaseOrder.getSupplier())
+            );
             // Update lines
             this.updatePurchaseOrderLines(purchaseOrder, persistedPurchaseOrder);
-            // Update agregated values
+            // Update fields and agregated values
             persistedPurchaseOrder
                     .quantity(persistedPurchaseOrder.getPurchaseOrderLines().stream()
                             .mapToDouble(PurchaseOrderLine::getQuantity).sum())
@@ -110,12 +115,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     .numberOfMaterials(persistedPurchaseOrder.getPurchaseOrderLines().stream()
                             .mapToLong(pol -> pol.getDemand().getMaterial().getId()).distinct().count());
         } else {
-            // To update lines index
+            // To update Elasticsearch indices for purchase order lines
             persistedPurchaseOrder.getPurchaseOrderLines().forEach(pol -> this.purchaseOrderLineService.save(pol));
         }
-        PurchaseOrder result = purchaseOrderRepository.save(persistedPurchaseOrder);
-        purchaseOrderSearchRepository.save(result);
-        return result;
+        purchaseOrderSearchRepository.save(persistedPurchaseOrder);
+        return persistedPurchaseOrder;
     }
 
     /**
@@ -165,10 +169,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             // If PO update : add new lines or update existing lines
             if (line.getId() == null) {
                 // New line
-                line.setQuantityDelivered(0d);
-                if (sourcePurchaseOrder.getId() != null) {
-                    persistedPurchaseOrder.getPurchaseOrderLines().add(line);
-                }
+                persistedPurchaseOrder.getPurchaseOrderLines().add(line.quantityDelivered(0d));
                 // No need to index lines now : it is required to be done when the PO is sent
                 // purchaseOrderLineService.save(line);
             } else {

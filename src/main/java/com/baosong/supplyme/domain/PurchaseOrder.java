@@ -31,9 +31,7 @@ public class PurchaseOrder implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Size(min = 10, max = 10)
-    @Column(name = "code", length = 10, nullable = false)
+    @Column(name = "code", length = 12, nullable = false)
     private String code;
 
     @Column(name = "expected_date")

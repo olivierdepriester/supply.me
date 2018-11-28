@@ -20,7 +20,8 @@ export class PurchaseOrderUpdateComponent implements OnInit {
     private _purchaseOrder: IPurchaseOrder;
     private _demand: IDemand;
 
-    @ViewChild(DemandSelectorComponent) private demandSelector: DemandSelectorComponent;
+    @ViewChild(DemandSelectorComponent)
+    private demandSelector: DemandSelectorComponent;
 
     isSaving: boolean;
 
@@ -164,7 +165,7 @@ export class PurchaseOrderUpdateComponent implements OnInit {
     private addPurchaseOrderLineFromDemand(demand: IDemand) {
         const line = new PurchaseOrderLine();
         line.lineNumber = this.getNewPOLineNumber();
-        line.orderPrice = 0;
+        line.orderPrice = demand.estimatedPrice;
         line.quantity = demand.quantity - demand.quantityOrdered;
         line.demand = demand;
         this.purchaseOrder.purchaseOrderLines.push(line);

@@ -6,9 +6,9 @@ export class DemandSelectorItem extends AbstractSelectorItem {
     public displayValue: string;
     constructor(public data?: dataModel.IDemand) {
         super(data);
-        this.displayValue = `${data.material.partNumber} - ${data.material.name} [${data.project.code}]`;
-        this.description = `${data.material.partNumber} - ${data.material.name} [${data.quantity}]\n${data.project.code} - ${
-            data.project.description
-        }`;
+        this.displayValue = `${data.code} - ${data.material.name} [${data.department.code}]`;
+        this.description = `${data.quantity} x [${data.material.partNumber} - ${data.material.name}]
+        \n${data.department.code} - ${data.department.description}
+        \n${data.project.code} - ${data.project.description}`;
     }
 }

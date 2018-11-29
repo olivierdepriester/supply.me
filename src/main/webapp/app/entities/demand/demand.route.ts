@@ -16,6 +16,8 @@ import { DemandChangeStatusPopupComponent } from './demand-change-status-dialog.
 import { SupplierTemporaryPopupComponent } from './supplier-temporary-dialog.component';
 import { SupplierResolve } from '../supplier';
 import { MaterialResolve } from '../material';
+import { IPurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
+import { PurchaseOrderLineService } from '../purchase-order-line';
 
 @Injectable({ providedIn: 'root' })
 export class DemandResolve implements Resolve<IDemand> {
@@ -67,6 +69,19 @@ export class AttachmentFilesResolve implements Resolve<IAttachmentFile[]> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
             return this.service.getAttachmentFiles(id).pipe(map((res: HttpResponse<IAttachmentFile[]>) => res.body));
+        }
+        return [];
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class PurchaserOrderLinesResolve implements Resolve<IPurchaseOrderLine[]> {
+    constructor(private service: PurchaseOrderLineService) {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.getBydemandId(id).pipe(map((res: HttpResponse<IPurchaseOrderLine[]>) => res.body));
         }
         return [];
     }
@@ -150,7 +165,8 @@ export const demandRoute: Routes = [
         component: DemandDetailComponent,
         resolve: {
             demand: DemandWithChangesResolve,
-            attachments: AttachmentFilesResolve
+            attachments: AttachmentFilesResolve,
+            purchaseOrderLines: PurchaserOrderLinesResolve
         },
         data: {
             authorities: ['ROLE_USER'],

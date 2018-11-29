@@ -7,7 +7,6 @@ import { DemandAuthorization, DemandStatus, IDemand } from 'app/shared/model/dem
 import { IPurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 import { JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
-import { PurchaseOrderLineService } from '../purchase-order-line';
 import { DemandService } from './demand.service';
 
 @Component({
@@ -26,17 +25,18 @@ export class DemandDetailComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private eventManager: JhiEventManager,
         private demandService: DemandService,
-        private purchaseOrderLineService: PurchaseOrderLineService,
         private principal: Principal
     ) {}
 
     ngOnInit() {
-        this.activatedRoute.data.subscribe(({ demand, attachments }) => {
+        // Get the demand, its attachment files and its purchase orders
+        this.activatedRoute.data.subscribe(({ demand, attachments, purchaseOrderLines }) => {
             this.initializeCurrentDemand(demand);
             this.files = attachments;
+            this.purchaseOrderLines = purchaseOrderLines;
         });
         this.eventSubscriber = this.eventManager.subscribe('demandComment', response => {
-            // Demand reject --> Reload the demand and its events
+            // Demand status change --> Reload the demand and its events
             this.changeStatus(response.content.status, response.content.comment);
         });
     }
@@ -45,19 +45,19 @@ export class DemandDetailComponent implements OnInit, OnDestroy {
      * Initialize the current demand model from a demand
      * @param demand Source demand.
      */
-    private initializeCurrentDemand(demand: IDemand) {
+    private initializeCurrentDemand(demand: IDemand): void {
         this.demand = demand;
         this.principal.identity().then(account => {
+            // Set the
             this.authorization = this.demandService.getAuthorizationForDemand(this.demand, account);
         });
-        if (this.demand.id) {
-            this.purchaseOrderLineService
-                .getBydemandId(this.demand.id)
-                .subscribe((res: HttpResponse<IPurchaseOrderLine[]>) => (this.purchaseOrderLines = res.body));
-        }
     }
 
-    downloadFile(attachmentFile: IAttachmentFile) {
+    /**
+     * Download an attachment file
+     * @param attachmentFile : file to be downloaded
+     */
+    downloadFile(attachmentFile: IAttachmentFile): void {
         this.demandService.downloadAttachmentFile(attachmentFile).subscribe((res: Blob) => {
             const element = document.createElement('a');
             element.href = URL.createObjectURL(res);
@@ -71,16 +71,27 @@ export class DemandDetailComponent implements OnInit, OnDestroy {
         window.history.back();
     }
 
+    /**
+     * Change the status of the current demand.
+     * @param status Status to set.
+     * @param comment Comment to set with the status
+     */
     private changeStatus(status: DemandStatus, comment: string) {
         this.demandService
             .changeStatus(this.demand.id, status, comment)
             .subscribe((res: HttpResponse<IDemand>) => this.initializeCurrentDemand(res.body));
     }
 
+    /**
+     * Approve the current demand
+     */
     approve(): void {
         this.changeStatus(DemandStatus.APPROVED, null);
     }
 
+    /**
+     * Send the current demand for approval
+     */
     sendToApproval(): void {
         this.changeStatus(DemandStatus.WAITING_FOR_APPROVAL, null);
     }

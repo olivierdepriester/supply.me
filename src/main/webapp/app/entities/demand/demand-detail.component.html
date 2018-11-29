@@ -3,7 +3,7 @@
         <ng-container *ngIf="demand">
             <h2>
                 <span jhiTranslate="supplyMeApp.demand.detail.title">Demand</span> {{demand.code}}
-                <div class="detail-status" [ngClass]="demand.status.toLowerCase()" style="margin-bottom: 0.4rem; display: inline-block;" jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</div>
+                <div class="detail-status" [ngClass]="demand.status.toLowerCase().concat('-status')" jhiTranslate="{{'supplyMeApp.DemandStatus.' + demand.status}}">{{demand.status}}</div>
                 <span *ngIf="demand.urgent" class="urgent fa fa-exclamation" title="{{ 'supplyMeApp.demand.urgencyWarning' | translate}} "></span>
             </h2>
             <hr>
@@ -197,7 +197,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">
-                                                <span [ngClass]="line.purchaseOrder.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + line.purchaseOrder.status}}">Status</span>
+                                                <span [ngClass]="line.purchaseOrder.status.toLowerCase().concat('-status')" jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + line.purchaseOrder.status}}">Status</span>
                                             </td>
                                             <td class="text-center">{{ line.purchaseOrder.expectedDate | dateFormat }} </td>
                                             <td class="numeric">{{ line.quantity }} </td>
@@ -227,7 +227,7 @@
                                         <td class="text-center" style="width: 20%">{{ statusChange.creationDate | datetimeFormat }}</td>
                                         <td style="width: 20%">{{ statusChange.creationUser | smUser }}</td>
                                         <td class="text-center" style="width: 30%">
-                                            <span [ngClass]="statusChange.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.DemandStatus.' + statusChange.status}}">demand.status</span>
+                                            <span [ngClass]="statusChange.status.toLowerCase().concat('-status')" jhiTranslate="{{'supplyMeApp.DemandStatus.' + statusChange.status}}">demand.status</span>
                                         </td>
                                         <td style="width: 30%">{{statusChange.comment }}</td>
                                     </tr>

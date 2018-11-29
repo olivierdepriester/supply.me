@@ -1,9 +1,9 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IUser, Principal } from 'app/core';
+import { Principal } from 'app/core';
 import { DemandSelectorComponent } from 'app/entities/component/demand-selector';
-import { DATE_FORMAT, DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { IDemand } from 'app/shared/model/demand.model';
 import { IPurchaseOrderLine, PurchaseOrderLine } from 'app/shared/model/purchase-order-line.model';
 import { IPurchaseOrder, PurchaseOrderStatus } from 'app/shared/model/purchase-order.model';
@@ -25,8 +25,7 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     isSaving: boolean;
 
-    expectedDate: string;
-    creationDate: string;
+    expectedDate: Date;
 
     constructor(
         private jhiAlertService: JhiAlertService,
@@ -42,8 +41,11 @@ export class PurchaseOrderUpdateComponent implements OnInit {
 
     set purchaseOrder(purchaseOrder: IPurchaseOrder) {
         this._purchaseOrder = purchaseOrder;
-        this.expectedDate = moment(purchaseOrder.expectedDate).format(DATE_FORMAT);
-        this.creationDate = moment(purchaseOrder.creationDate).format(DATE_TIME_FORMAT);
+        if (purchaseOrder.expectedDate != null) {
+            this.expectedDate = purchaseOrder.expectedDate.toDate();
+        } else {
+            this.expectedDate = null;
+        }
     }
 
     ngOnInit() {
@@ -77,10 +79,16 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         });
     }
 
+    /**
+     * Back button
+     */
     previousState() {
         window.history.back();
     }
 
+    /**
+     * Save button
+     */
     save() {
         this.isSaving = true;
         this.purchaseOrder.expectedDate = moment(this.expectedDate, DATE_FORMAT);
@@ -104,13 +112,17 @@ export class PurchaseOrderUpdateComponent implements OnInit {
     private validate(): boolean {
         let result = true;
         const errorMessages: any[] = new Array();
+        // Get lines with an invalid price
         const wrongPrices = this.purchaseOrder.purchaseOrderLines.filter(l => isNaN(Number(l.orderPrice)));
+        // Get lines with an invalid quantity
         const wrongQuantities = this.purchaseOrder.purchaseOrderLines.filter(l => isNaN(Number(l.quantity)));
         if (wrongPrices.length !== 0) {
+            // Exists invalid prices --> Error
             errorMessages.push({ key: 'error.purchaseOrder.validation.orderPrice', value: wrongPrices.map(l => l.lineNumber).join(',') });
             result = false;
         }
         if (wrongQuantities.length !== 0) {
+            // Exists invalid quantities --> Error
             errorMessages.push({ key: 'error.purchaseOrder.validation.quantity', value: wrongQuantities.map(l => l.lineNumber).join(',') });
             result = false;
         }
@@ -121,12 +133,19 @@ export class PurchaseOrderUpdateComponent implements OnInit {
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<IPurchaseOrder>>) {
-        result.subscribe((res: HttpResponse<IPurchaseOrder>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
+        result.subscribe(
+            (res: HttpResponse<IPurchaseOrder>) => {
+                this.purchaseOrder.id = res.body.id;
+                this.onSaveSuccess();
+            },
+            (res: HttpErrorResponse) => this.onSaveError()
+        );
     }
 
     private onSaveSuccess() {
         this.isSaving = false;
-        this.previousState();
+        // On success redirect to the detail page
+        this.router.navigate(['/purchase-order/', this.purchaseOrder.id, 'view']);
     }
 
     private onSaveError() {
@@ -137,6 +156,10 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         return item.id;
     }
 
+    /**
+     * Delete a line from the current purchase order
+     * @param purchaseOrderLine
+     */
     deletePurchaseOrderLine(purchaseOrderLine: PurchaseOrderLine) {
         const index: number = this.purchaseOrder.purchaseOrderLines.indexOf(purchaseOrderLine);
         if (index !== -1) {
@@ -155,8 +178,7 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         }
     }
     /**
-     * Add a line to the purchase order from a demand
-     *
+     * Add a line to the purchase order initialized wih a demand
      * @private
      * @param {IDemand} demand
      * @memberof PurchaseOrderUpdateComponent
@@ -170,6 +192,9 @@ export class PurchaseOrderUpdateComponent implements OnInit {
         this.purchaseOrder.purchaseOrderLines.push(line);
     }
 
+    /**
+     * Get a new line number.
+     */
     private getNewPOLineNumber(): number {
         return (
             this.purchaseOrder.purchaseOrderLines

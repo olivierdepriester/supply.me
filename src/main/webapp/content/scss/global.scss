@@ -307,7 +307,7 @@ demand status
 $order: darkblue;
 $close: darkgray;
 
-%demand-status {
+%entity-status {
     border-radius: 0.8rem;
     border-width: 0.1rem;
     border-style: solid;
@@ -322,45 +322,52 @@ $close: darkgray;
     display: inline-block;
 }
 
-.new {
-    @extend %demand-status;
+.new-status {
+    @extend %entity-status;
     color: whitesmoke;
     background-color: $info;
     border-color: $info;
 }
 
-.rejected {
-    @extend %demand-status;
+.rejected-status {
+    @extend %entity-status;
     color: whitesmoke;
     background-color: $warning;
     border-color: $warning;
 }
-.waiting_for_approval {
-    @extend %demand-status;
+.waiting_for_approval-status {
+    @extend %entity-status;
     color: $success;
     background-color: transparent;
     border-color: $success;
 }
 
-.approved {
-    @extend %demand-status;
+.approved-status {
+    @extend %entity-status;
     color: whitesmoke;
     background-color: $success;
     border-color: $success;
 }
 
-.closed {
-    @extend %demand-status;
+.closed-status {
+    @extend %entity-status;
     color: whitesmoke;
     background-color: $close;
     border-color: $close;
 }
 
-.ordered {
-    @extend %demand-status;
+.ordered-status {
+    @extend %entity-status;
     color: whitesmoke;
     background-color: $order;
     border-color: $order;
+}
+
+.sent-status {
+    @extend %entity-status;
+    color: whitesmoke;
+    background-color: $success;
+    border-color: $success;
 }
 
 .ui-fileupload {

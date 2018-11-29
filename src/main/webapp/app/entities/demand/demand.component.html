@@ -105,7 +105,7 @@
                             <span *ngIf="item.demand.urgent" class="urgent fa fa-exclamation" title="{{ 'supplyMeApp.demand.urgencyWarning' | translate}} "></span>
                         </td>
                         <td class="text-center" >
-                            <span [ngClass]="item.demand.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.DemandStatus.' + item.demand.status}}">demand.status</span>
+                            <span [ngClass]="item.demand.status.toLowerCase().concat('-status')" jhiTranslate="{{'supplyMeApp.DemandStatus.' + item.demand.status}}">demand.status</span>
                         </td>
                         <td class="text-left">
                             <div *ngIf="item.demand.material" title="{{ item.demand.material?.partNumber + ' - ' + item.demand.material?.name + '\n' + item.demand.material?.description }}">

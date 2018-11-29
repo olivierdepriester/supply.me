@@ -1,16 +1,18 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <form name="editForm" role="form" novalidate #editForm="ngForm">
-            <h2 id="jhi-purchase-order-heading" jhiTranslate="supplyMeApp.purchaseOrder.home.createOrEditLabel">Create or edit a Purchase Order</h2>
+            <h2 id="jhi-purchase-order-heading">
+                <ng-container *ngIf="purchaseOrder.id; else elseTemplate">
+                    <span jhiTranslate="supplyMeApp.purchaseOrder.detail.title">Purchase Order</span> {{purchaseOrder.code}}
+                    <div class="detail-status" [ngClass]="purchaseOrder.status.toLowerCase().concat('-status')" jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</div>
+                </ng-container>
+                <ng-template #elseTemplate>
+                    <span jhiTranslate="supplyMeApp.purchaseOrder.home.createLabel">Create a purchase order</span>
+                </ng-template>
+            </h2>
             <div>
                 <jhi-alert></jhi-alert>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!purchaseOrder.id">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.code" for="field_code">Code</label>
-                    <div class="d-flex">
-                        <input type="text" class="form-control" name="code" id="field_code" [(ngModel)]="purchaseOrder.code" readonly />
-                    </div>
-                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.supplier" for="field_supplier">Supplier</label>
                     <jhi-supplier-selector required id="field_supplier" name="supplier" [(ngModel)]="purchaseOrder.supplier" style="display: block"></jhi-supplier-selector>
@@ -18,17 +20,9 @@
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.expectedDate" for="field_expectedDate">Expected Date</label>
                     <div class="d-flex">
-                        <input id="field_expectedDate" type="text" class="form-control" name="expectedDate" [(ngModel)]="expectedDate" />
-                    </div>
-                </div>
-                <div class="form-group" [hidden]="!purchaseOrder.id">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.status" for="field_status">Status</label>
-                    <input type="text" class="form-control" name="code" id="field_status" readonly value="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status | translate}}" />
-                </div>
-                <div class="form-group" [hidden]="!purchaseOrder.id">
-                    <label class="form-control-label" jhiTranslate="supplyMeApp.purchaseOrder.creationDate" for="field_creationDate">Creation Date</label>
-                    <div class="d-flex">
-                        <input id="field_creationDate" type="text" class="form-control" name="creationDate" [(ngModel)]="creationDate" readonly />
+                        <p-calendar id="field_expectedDate" style="width:100%" [inputStyleClass]="'form-control'"
+                        [monthNavigator]="true" [yearNavigator]="true" yearRange="2018:2030" [style]="{'width': '100%'}"
+                        [(ngModel)]="expectedDate" name="expectedDate" dateFormat="yy-mm-dd"></p-calendar>
                     </div>
                 </div>
             </div>
@@ -54,8 +48,12 @@
                         <tbody>
                             <tr *ngFor="let purchaseOrderLine of purchaseOrder.purchaseOrderLines;trackBy: trackLineById;" >
                                 <td class="text-right">{{ purchaseOrderLine.lineNumber }}</td>
-                                <td class="text-center">{{ purchaseOrderLine.demand.material.partNumber }}</td>
-                                <td>{{ purchaseOrderLine.demand.material.name }}</td>
+                                <td class="text-left">
+                                    <a [routerLink]="['/demand', purchaseOrderLine.demand.id, 'view' ]" target="blank">{{ purchaseOrderLine.demand.code }}</a>
+                                </td>
+                                <td>
+                                    <a [routerLink]="['/material', purchaseOrderLine.demand.material.id, 'view' ]" target="blank">{{ purchaseOrderLine.demand.material | smMaterial }}</a>
+                                </td>
                                 <td class="text-right">
                                     <input class="numeric" name="{{ 'quantity_' + purchaseOrderLine.lineNumber}}" [(ngModel)]="purchaseOrderLine.quantity">
                                 </td>
@@ -71,12 +69,6 @@
                                         class="btn btn-danger btn-sm">
                                         <fa-icon [icon]="'times'"></fa-icon>
                                         <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                                    </button>
-                                    <button
-                                        [routerLink]="['/demand', purchaseOrderLine.demand.id, 'view' ]"
-                                        class="btn btn-info btn-sm">
-                                        <fa-icon [icon]="'eye'"></fa-icon>
-                                        <span class="d-none d-md-inline" jhiTranslate="supplyMeApp.purchaseOrder.demand.view">View</span>
                                     </button>
                                 </td>
                             </tr>

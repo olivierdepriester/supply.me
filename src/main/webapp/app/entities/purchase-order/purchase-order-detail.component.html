@@ -3,7 +3,7 @@
         <div *ngIf="purchaseOrder">
             <h2>
                 <span jhiTranslate="supplyMeApp.purchaseOrder.detail.title">Purchase Order</span> {{purchaseOrder.code}}
-                <div class="detail-status" [ngClass]="purchaseOrder.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.DemandStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</div>
+                <div class="detail-status" [ngClass]="purchaseOrder.status.toLowerCase().concat('-status')" jhiTranslate="{{'supplyMeApp.DemandStatus.' + purchaseOrder.status}}">{{purchaseOrder.status}}</div>
             </h2>
             <hr>
             <jhi-alert></jhi-alert>

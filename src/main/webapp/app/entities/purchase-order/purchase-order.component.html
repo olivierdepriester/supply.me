@@ -1,7 +1,7 @@
 <div>
     <h2 id="page-heading">
         <span jhiTranslate="supplyMeApp.purchaseOrder.home.title">Purchase Orders</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-purchase-order"
+        <button *jhiHasAnyAuthority="'ROLE_PURCHASER'" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-purchase-order"
             [routerLink]="['/purchase-order/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down" jhiTranslate="supplyMeApp.purchaseOrder.home.createLabel">
@@ -67,7 +67,8 @@
                 <tr *ngFor="let purchaseOrder of purchaseOrders ;trackBy: trackId">
                     <td class="text-center"><a [routerLink]="['/purchase-order', purchaseOrder.id, 'view' ]">{{purchaseOrder.code}}</a></td>
                     <td class="text-center">
-                        <span [ngClass]="purchaseOrder.status.toLowerCase()" jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">Status</span>
+                        <span [ngClass]="purchaseOrder.status.toLowerCase().concat('-status')"
+                        jhiTranslate="{{'supplyMeApp.PurchaseOrderStatus.' + purchaseOrder.status}}">Status</span>
                     </td>
                     <td>
                         <div *ngIf="purchaseOrder.supplier">
@@ -108,14 +109,10 @@
                                     <fa-icon [icon]="'times'"></fa-icon>
                                 </button>
                             </ng-template>
-                            <!-- <ng-container *jhiHasAnyAuthority="'ROLE_DELIVERY_MANAGER'"></ng-container> -->
-                            <!-- <ng-template > -->
-                                <button type="button" [routerLink]="['/delivery-note/new/', purchaseOrder.id ]"
-                                    class="btn btn-primary btn-sm" title="{{ 'entity.action.edit' | translate }}">
-                                    <fa-icon [icon]="'shipping-fast'"></fa-icon>
-                                </button>
-                            <!-- </ng-template> -->
-
+                            <button *jhiHasAnyAuthority="'ROLE_DELIVERY_MANAGER'" type="button" [routerLink]="['/delivery-note/new/', purchaseOrder.id ]"
+                                class="btn btn-primary btn-sm" title="{{ 'entity.action.delivery' | translate }}">
+                                <fa-icon [icon]="'shipping-fast'"></fa-icon>
+                            </button>
                         </div>
                     </td>
                 </tr>

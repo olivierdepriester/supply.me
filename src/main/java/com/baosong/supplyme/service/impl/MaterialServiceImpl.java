@@ -163,13 +163,6 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public void rebuildIndex() {
-        template.deleteIndex(Material.class);
-        List<Material> items = materialRepository.findAll();
-        items.stream().forEach(d -> materialSearchRepository.save(d));
-    }
-
-    @Override
     public Material saveAndCascadeIndex(Material material) {
         boolean isNew = material.getId() == null;
         Material result = materialRepository.save(material);

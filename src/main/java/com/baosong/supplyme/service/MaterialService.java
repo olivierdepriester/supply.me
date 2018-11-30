@@ -63,6 +63,4 @@ public interface MaterialService {
      * @return the list of entities
      */
     Page<Material> search(String query, Pageable pageable);
-
-    public void rebuildIndex();
 }

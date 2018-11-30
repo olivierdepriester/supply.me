@@ -167,11 +167,4 @@ public class MaterialResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/materials");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
-    @PostMapping("/_search/materials/rebuild")
-    @Timed
-    public ResponseEntity<Void> rebuildIndex() {
-        materialService.rebuildIndex();
-        return ResponseEntity.ok().build();
-    }
 }

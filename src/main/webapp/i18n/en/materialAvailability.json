@@ -2,7 +2,7 @@
     "supplyMeApp": {
         "materialAvailability": {
             "home": {
-                "title": "Material Availabilities",
+                "title": "Availabilities",
                 "createLabel": "Create a new Material Availability",
                 "createOrEditLabel": "Create or edit a Material Availability",
                 "search": "Search for Material Availability"
@@ -14,10 +14,10 @@
                 "question": "Are you sure you want to delete Material Availability {{ id }}?"
             },
             "detail": {
-                "title": "Material Availability"
+                "title": "Material availability"
             },
-            "startDate": "Start Date",
-            "endDate": "End Date",
+            "creationDate": "Start Date",
+            "updateDate": "Last update",
             "purchasePrice": "Purchase Price",
             "material": "Material",
             "supplier": "Supplier"

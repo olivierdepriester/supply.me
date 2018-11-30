@@ -5,6 +5,7 @@ import com.baosong.supplyme.domain.MaterialAvailability;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -48,9 +49,16 @@ public interface MaterialAvailabilityService {
      * Search for the materialAvailability corresponding to the query.
      *
      * @param query the query of the search
-     * 
+     *
      * @param pageable the pagination information
      * @return the list of entities
      */
     Page<MaterialAvailability> search(String query, Pageable pageable);
+
+    /**
+     * Get all the availabilities of a material.
+     * @param materialId The material identifier.
+     * @return the list of availabilities
+     */
+    List<MaterialAvailability> getAllForMaterial(Long materialId);
 }

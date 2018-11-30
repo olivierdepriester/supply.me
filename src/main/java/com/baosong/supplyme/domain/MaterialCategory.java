@@ -39,7 +39,7 @@ public class MaterialCategory implements Serializable {
     private Instant creationDate;
 
     @ManyToOne
-    @JsonIgnoreProperties("parentMaterialCategory")
+    @JsonIgnoreProperties({"parentMaterialCategory", "creationUser"})
     private MaterialCategory parentMaterialCategory;
 
     @ManyToOne

@@ -1,20 +1,21 @@
 package com.baosong.supplyme.service.impl;
 
-import com.baosong.supplyme.service.MaterialAvailabilityService;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.List;
+import java.util.Optional;
+
 import com.baosong.supplyme.domain.MaterialAvailability;
 import com.baosong.supplyme.repository.MaterialAvailabilityRepository;
 import com.baosong.supplyme.repository.search.MaterialAvailabilitySearchRepository;
+import com.baosong.supplyme.service.MaterialAvailabilityService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing MaterialAvailability.
@@ -98,5 +99,11 @@ public class MaterialAvailabilityServiceImpl implements MaterialAvailabilityServ
     @Transactional(readOnly = true)
     public Page<MaterialAvailability> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of MaterialAvailabilities for query {}", query);
-        return materialAvailabilitySearchRepository.search(queryStringQuery(query), pageable);    }
+        return materialAvailabilitySearchRepository.search(queryStringQuery(query), pageable);
+    }
+
+    @Override
+    public List<MaterialAvailability> getAllForMaterial(Long materialId) {
+        return this.materialAvailabilityRepository.getByMaterialIdOrderByUpdateDateDesc(materialId);
+	}
 }

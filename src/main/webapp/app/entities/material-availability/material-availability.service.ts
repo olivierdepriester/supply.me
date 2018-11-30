@@ -39,6 +39,12 @@ export class MaterialAvailabilityService {
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
+    findForMaterial(materialId: number): Observable<EntityArrayResponseType> {
+        return this.http
+            .get<IMaterialAvailability[]>(`${this.resourceUrl}/material/${materialId}`, { observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
+
     query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
         return this.http
@@ -59,13 +65,13 @@ export class MaterialAvailabilityService {
 
     protected convertDateFromClient(materialAvailability: IMaterialAvailability): IMaterialAvailability {
         const copy: IMaterialAvailability = Object.assign({}, materialAvailability, {
-            startDate:
-                materialAvailability.startDate != null && materialAvailability.startDate.isValid()
-                    ? materialAvailability.startDate.toJSON()
+            creationDate:
+                materialAvailability.creationDate != null && materialAvailability.creationDate.isValid()
+                    ? materialAvailability.creationDate.toJSON()
                     : null,
-            endDate:
-                materialAvailability.endDate != null && materialAvailability.endDate.isValid()
-                    ? materialAvailability.endDate.toJSON()
+            updateDate:
+                materialAvailability.updateDate != null && materialAvailability.updateDate.isValid()
+                    ? materialAvailability.updateDate.toJSON()
                     : null
         });
         return copy;
@@ -73,8 +79,8 @@ export class MaterialAvailabilityService {
 
     protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
         if (res.body) {
-            res.body.startDate = res.body.startDate != null ? moment(res.body.startDate) : null;
-            res.body.endDate = res.body.endDate != null ? moment(res.body.endDate) : null;
+            res.body.creationDate = res.body.creationDate != null ? moment(res.body.creationDate) : null;
+            res.body.updateDate = res.body.updateDate != null ? moment(res.body.updateDate) : null;
         }
         return res;
     }
@@ -82,8 +88,9 @@ export class MaterialAvailabilityService {
     protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
         if (res.body) {
             res.body.forEach((materialAvailability: IMaterialAvailability) => {
-                materialAvailability.startDate = materialAvailability.startDate != null ? moment(materialAvailability.startDate) : null;
-                materialAvailability.endDate = materialAvailability.endDate != null ? moment(materialAvailability.endDate) : null;
+                materialAvailability.creationDate =
+                    materialAvailability.creationDate != null ? moment(materialAvailability.creationDate) : null;
+                materialAvailability.updateDate = materialAvailability.updateDate != null ? moment(materialAvailability.updateDate) : null;
             });
         }
         return res;

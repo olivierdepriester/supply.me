@@ -1,13 +1,11 @@
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import * as moment from 'moment';
-import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
-
-import { IMaterial } from 'app/shared/model/material.model';
-import { MaterialService } from './material.service';
 import { Principal } from 'app/core';
+import { IMaterial } from 'app/shared/model/material.model';
+import * as moment from 'moment';
+import { Observable } from 'rxjs';
+import { MaterialService } from './material.service';
 
 @Component({
     selector: 'jhi-material-update',

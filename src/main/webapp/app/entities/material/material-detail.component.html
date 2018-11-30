@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="material">
-            <h2><span jhiTranslate="supplyMeApp.material.detail.title">Material</span> {{material | smMaterial }}</h2>
+            <h2>{{material | smMaterial }}</h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
@@ -15,7 +15,7 @@
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.material.description">Description</span></dt>
                 <dd>
-                    <span>{{material.description}}</span>
+                    <span>{{material.description | nullToDash }}</span>
                 </dd>
                 <dt><span jhiTranslate="supplyMeApp.material.category">Category</span></dt>
                 <dd>
@@ -34,6 +34,48 @@
                     <span>{{material.creationDate | datetimeFormat }}</span>
                 </dd>
             </dl>
+            <div class="accordion">
+                <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-availabilities">
+                    <ngb-panel id="ngb-panel-availabilities" *ngIf="availabilities.length > 0">
+                        <ng-template ngbPanelTitle>
+                            <fa-icon [icon]="'sort-down'"></fa-icon>
+                            <span class="title" jhiTranslate="supplyMeApp.supplier.home.title">Suppliers</span>
+                            <span class="title" >: {{ availabilities.length }} </span>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th class="text-left"><span jhiTranslate="supplyMeApp.materialAvailability.supplier">Supplier</span></th>
+                                            <th class="text-right"><span jhiTranslate="supplyMeApp.materialAvailability.purchasePrice">Price</span></th>
+                                            <th><span jhiTranslate="supplyMeApp.materialAvailability.updateDate">Update date</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let availability of availabilities">
+                                            <td class="text-left">
+                                                <a [routerLink]="['/supplier', availability.supplier?.id, 'view' ]">
+                                                    {{ availability.supplier | smSupplier }}
+                                                </a>
+                                            </td>
+                                            <td class="text-right">
+                                                <span class="numeric"
+                                                    [ngClass]="{'highestprice': availability.purchasePrice === maxPrice, 'lowestprice': availability.purchasePrice === minPrice}">
+                                                    {{ availability.purchasePrice | currencyCustom }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                {{ availability.updateDate | datetimeFormat }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                        </ng-template>
+                    </ngb-panel>
+                    <ngb-panel id="ngp-panel-empty" >
+                    </ngb-panel>
+                </ngb-accordion>
+            </div>
 
             <button type="submit" (click)="previousState()" class="btn btn-info">
                 <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
@@ -43,8 +85,7 @@
                     <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
                 </button>
                 <button *ngIf="material.temporary" type="button" class="btn btn-primary" (click)="validate()">
-                    <fa-icon [icon]="['far','check-circle']"></fa-icon>&nbsp;<span jhiTranslate="entity.action.validate">
-                        Validate</span>
+                    <fa-icon [icon]="['far','check-circle']"></fa-icon>&nbsp;<span jhiTranslate="entity.action.validate">Validate</span>
                 </button>
             </ng-container>
         </div>

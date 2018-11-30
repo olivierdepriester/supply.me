@@ -121,6 +121,12 @@ public class MaterialAvailabilityResource {
         return ResponseUtil.wrapOrNotFound(materialAvailability);
     }
 
+    @GetMapping("/material-availabilities/material/{materialId}")
+    public ResponseEntity<List<MaterialAvailability>> getMaterialAvailabilitiesForMaterial(@PathVariable Long materialId) {
+        log.debug("REST request to get MaterialAvailabilities for material : {}", materialId);
+        return ResponseEntity.ok().body(materialAvailabilityService.getAllForMaterial(materialId));
+    }
+
     /**
      * DELETE  /material-availabilities/:id : delete the "id" materialAvailability.
      *

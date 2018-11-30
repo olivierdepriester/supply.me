@@ -1,17 +1,25 @@
 package com.baosong.supplyme.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+import io.swagger.annotations.ApiModel;
 
 /**
  * Define if a material is a available for a supplier
@@ -36,18 +44,15 @@ public class MaterialAvailability implements Serializable {
     @Column(name = "update_date")
     private Instant updateDate;
 
-    @DecimalMin(value = "0")
     @Column(name = "purchase_price")
     private Double purchasePrice;
 
-    @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("availabilities")
+    @JsonIgnoreProperties({ "creationUser", "availabilities", "materialCategory" })
     private Material material;
 
-    @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("names")
+    @JsonIgnoreProperties({ "names", "creationUser" })
     private Supplier supplier;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -40,8 +40,9 @@ export class MaterialAvailabilityUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ materialAvailability }) => {
             this.materialAvailability = materialAvailability;
             this.startDate =
-                this.materialAvailability.startDate != null ? this.materialAvailability.startDate.format(DATE_TIME_FORMAT) : null;
-            this.endDate = this.materialAvailability.endDate != null ? this.materialAvailability.endDate.format(DATE_TIME_FORMAT) : null;
+                this.materialAvailability.creationDate != null ? this.materialAvailability.creationDate.format(DATE_TIME_FORMAT) : null;
+            this.endDate =
+                this.materialAvailability.updateDate != null ? this.materialAvailability.updateDate.format(DATE_TIME_FORMAT) : null;
         });
         this.materialService.query().subscribe(
             (res: HttpResponse<IMaterial[]>) => {
@@ -63,8 +64,8 @@ export class MaterialAvailabilityUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.materialAvailability.startDate = this.startDate != null ? moment(this.startDate, DATE_TIME_FORMAT) : null;
-        this.materialAvailability.endDate = this.endDate != null ? moment(this.endDate, DATE_TIME_FORMAT) : null;
+        this.materialAvailability.creationDate = this.startDate != null ? moment(this.startDate, DATE_TIME_FORMAT) : null;
+        this.materialAvailability.updateDate = this.endDate != null ? moment(this.endDate, DATE_TIME_FORMAT) : null;
         if (this.materialAvailability.id !== undefined) {
             this.subscribeToSaveResponse(this.materialAvailabilityService.update(this.materialAvailability));
         } else {

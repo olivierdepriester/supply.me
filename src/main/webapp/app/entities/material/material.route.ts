@@ -11,6 +11,8 @@ import { MaterialDetailComponent } from './material-detail.component';
 import { MaterialUpdateComponent } from './material-update.component';
 import { MaterialDeletePopupComponent } from './material-delete-dialog.component';
 import { IMaterial } from 'app/shared/model/material.model';
+import { MaterialAvailabilityService } from '../material-availability';
+import { IMaterialAvailability } from 'app/shared/model/material-availability.model';
 
 @Injectable({ providedIn: 'root' })
 export class MaterialResolve implements Resolve<IMaterial> {
@@ -28,6 +30,22 @@ export class MaterialResolve implements Resolve<IMaterial> {
     }
 }
 
+@Injectable({ providedIn: 'root' })
+export class MaterialAvailabilitiesResolve implements Resolve<IMaterialAvailability[]> {
+    constructor(private service: MaterialAvailabilityService) {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IMaterialAvailability[]> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.findForMaterial(id).pipe(
+                filter((response: HttpResponse<IMaterialAvailability[]>) => response.ok),
+                map((material: HttpResponse<IMaterialAvailability[]>) => material.body)
+            );
+        }
+        return of([]);
+    }
+}
+
 export const materialRoute: Routes = [
     {
         path: 'material',
@@ -42,7 +60,8 @@ export const materialRoute: Routes = [
         path: 'material/:id/view',
         component: MaterialDetailComponent,
         resolve: {
-            material: MaterialResolve
+            material: MaterialResolve,
+            availabilities: MaterialAvailabilitiesResolve
         },
         data: {
             authorities: ['ROLE_USER'],

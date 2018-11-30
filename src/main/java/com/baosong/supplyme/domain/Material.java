@@ -80,11 +80,12 @@ public class Material implements Serializable {
     private User creationUser;
 
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties({"creationUser","creationDate"})
+    @JsonIgnoreProperties({"creationUser", "creationDate"})
     private MaterialCategory materialCategory;
 
     @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnoreProperties("material")
     private Set<MaterialAvailability> availabilities = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not

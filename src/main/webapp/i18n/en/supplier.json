@@ -3,13 +3,13 @@
         "supplier": {
             "home": {
                 "title": "Suppliers",
-                "createLabel": "Create a new Supplier",
-                "createOrEditLabel": "Create or edit a Supplier",
-                "search": "Search for Supplier"
+                "createLabel": "Create a new supplier",
+                "createOrEditLabel": "Create or edit a supplier",
+                "search": "Search for suppliers"
             },
-            "created": "A new Supplier is created with identifier {{ param }}",
-            "updated": "A Supplier is updated with identifier {{ param }}",
-            "deleted": "A Supplier is deleted with identifier {{ param }}",
+            "created": "A new supplier is created with identifier {{ param }}",
+            "updated": "A supplier is updated with identifier {{ param }}",
+            "deleted": "A supplier is deleted with identifier {{ param }}",
             "delete": {
                 "question": "Are you sure you want to delete supplier <strong>{{ supplier }}</strong> ?"
             },

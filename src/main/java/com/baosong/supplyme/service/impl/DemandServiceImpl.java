@@ -404,22 +404,7 @@ public class DemandServiceImpl implements DemandService {
         if (demand.getMaterial().isTemporary()) {
             demand.getMaterial().setTemporary(false);
         }
-        // Update the default material price with the approved demand
-        demand.getMaterial().setEstimatedPrice(demand.getEstimatedPrice());
-        // Store the price for this supplier and this material
-        final Supplier supplier = demand.getSupplier();
-        // Get an existing availability for the demand supplier
-        MaterialAvailability availability = demand.getMaterial().getAvailabilities().stream()
-                .filter(a -> a.getSupplier().equals(supplier)).findAny().orElse(null);
-        if (availability == null) {
-            // No existing : create a new one and add it to the material
-            availability = new MaterialAvailability().supplier(supplier).creationDate(Instant.now());
-            demand.getMaterial().addAvailability(availability);
-        }
-        // Update price and last update date
-        availability.purchasePrice(demand.getEstimatedPrice()).setUpdateDate(Instant.now());
-        // Save the material indices
-        this.materialService.saveAndCascadeIndex(demand.getMaterial());
+        this.materialService.updateEstimatedPrice(demand.getMaterial(), demand.getSupplier(), demand.getEstimatedPrice());
     }
 
     /**

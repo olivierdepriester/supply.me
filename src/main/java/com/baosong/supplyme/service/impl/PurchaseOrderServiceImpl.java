@@ -19,6 +19,7 @@ import com.baosong.supplyme.repository.search.PurchaseOrderSearchRepository;
 import com.baosong.supplyme.security.AuthoritiesConstants;
 import com.baosong.supplyme.security.SecurityUtils;
 import com.baosong.supplyme.service.DemandService;
+import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.PurchaseOrderLineService;
 import com.baosong.supplyme.service.PurchaseOrderService;
@@ -52,6 +53,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private DemandService demandService;
 
     @Autowired
+    private MaterialService materialService;
+
+    @Autowired
     private PurchaseOrderLineService purchaseOrderLineService;
 
     @Autowired
@@ -72,7 +76,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     public PurchaseOrder save(PurchaseOrder purchaseOrder) throws ServiceException {
         log.debug("Request to save PurchaseOrder : {}", purchaseOrder);
-        PurchaseOrder persistedPurchaseOrder = null;
+        final PurchaseOrder persistedPurchaseOrder;
         boolean statusChange = false;
         if (purchaseOrder.getId() == null) {
             // New purchase order --> Generate a new code
@@ -87,7 +91,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             persistedPurchaseOrder = findOne(purchaseOrder.getId()).get();
             if (!persistedPurchaseOrder.getStatus().equals(purchaseOrder.getStatus())) {
                 // Update status
-                persistedPurchaseOrder.status(purchaseOrder.getStatus());
+                persistedPurchaseOrder.setStatus(purchaseOrder.getStatus());
+                if (PurchaseOrderStatus.SENT.equals(persistedPurchaseOrder.getStatus())) {
+                    persistedPurchaseOrder.getPurchaseOrderLines().forEach(pol ->
+                        this.materialService.updateEstimatedPrice(
+                            pol.getDemand().getMaterial(),
+                            persistedPurchaseOrder.getSupplier(),
+                            pol.getOrderPrice())
+                    );
+                }
                 statusChange = true;
             }
         }

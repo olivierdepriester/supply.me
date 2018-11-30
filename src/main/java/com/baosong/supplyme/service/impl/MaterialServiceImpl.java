@@ -3,10 +3,11 @@ package com.baosong.supplyme.service.impl;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 import com.baosong.supplyme.domain.Material;
+import com.baosong.supplyme.domain.MaterialAvailability;
+import com.baosong.supplyme.domain.Supplier;
 import com.baosong.supplyme.domain.errors.ServiceException;
 import com.baosong.supplyme.repository.MaterialRepository;
 import com.baosong.supplyme.repository.search.MaterialSearchRepository;
@@ -16,7 +17,6 @@ import com.baosong.supplyme.service.DemandService;
 import com.baosong.supplyme.service.MaterialService;
 import com.baosong.supplyme.service.MutablePropertiesService;
 import com.baosong.supplyme.service.UserService;
-import com.github.vanroy.springdata.jest.JestElasticsearchTemplate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +38,6 @@ public class MaterialServiceImpl implements MaterialService {
     private final MaterialRepository materialRepository;
 
     private final MaterialSearchRepository materialSearchRepository;
-
-    @Autowired(required = false)
-    private JestElasticsearchTemplate template;
 
     @Autowired
     private UserService userService;
@@ -68,20 +65,17 @@ public class MaterialServiceImpl implements MaterialService {
         log.debug("Request to save Material : {}", material);
         Material persistedMaterial = null;
         if (material.getId() == null) {
-            persistedMaterial = new Material()
-                .partNumber(mutablePropertiesService.getNewPartNumber())
-                .creationDate(Instant.now())
-                .creationUser(userService.getCurrentUser().get())
-                .temporary(material.isTemporary());
+            persistedMaterial = new Material().partNumber(mutablePropertiesService.getNewPartNumber())
+                    .creationDate(Instant.now()).creationUser(userService.getCurrentUser().get())
+                    .temporary(material.isTemporary());
         } else {
             // Get the persisted version of the material
             persistedMaterial = findOne(material.getId()).get();
         }
         if (!isMaterialEditable(persistedMaterial)) {
             // Check the persisted version in case of the
-            throw new ServiceException(
-                String.format("Material %d is not editable", persistedMaterial.getId()),
-                "material.edit.forbidden");
+            throw new ServiceException(String.format("Material %d is not editable", persistedMaterial.getId()),
+                    "material.edit.forbidden");
         }
         persistedMaterial = persistedMaterial.name(material.getName()).description(material.getDescription())
                 .estimatedPrice(material.getEstimatedPrice()).materialCategory(material.getMaterialCategory());
@@ -138,9 +132,8 @@ public class MaterialServiceImpl implements MaterialService {
     public void delete(Long id) throws ServiceException {
         log.debug("Request to delete Material : {}", id);
         if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MATERIAL_MANAGER)) {
-            throw new ServiceException(
-                String.format("The current user cannot delete Material %d", id),
-                "material.delete.forbidden");
+            throw new ServiceException(String.format("The current user cannot delete Material %d", id),
+                    "material.delete.forbidden");
         }
         materialRepository.deleteById(id);
         materialSearchRepository.deleteById(id);
@@ -172,5 +165,27 @@ public class MaterialServiceImpl implements MaterialService {
                     .forEach(demand -> this.demandService.saveAndCascadeIndex(demand));
         }
         return result;
+    }
+
+    @Override
+    public Material updateEstimatedPrice(final Material material, final Supplier supplier, final Double newPrice) {
+        if (material != null) {
+            // Update the default material price with the new price
+            material.setEstimatedPrice(newPrice);
+            // Store the price for this supplier and this material
+            // Get an existing availability for the demand supplier
+            MaterialAvailability availability = material.getAvailabilities().stream()
+                    .filter(a -> a.getSupplier().equals(supplier)).findAny().orElse(null);
+            if (availability == null) {
+                // No existing : create a new one and add it to the material
+                availability = new MaterialAvailability().supplier(supplier).creationDate(Instant.now());
+                material.addAvailability(availability);
+            }
+            // Update price and last update date
+            availability.purchasePrice(newPrice).setUpdateDate(Instant.now());
+            // Save the material indices
+            this.saveAndCascadeIndex(material);
+        }
+        return material;
     }
 }

@@ -1,6 +1,7 @@
 package com.baosong.supplyme.service;
 
 import com.baosong.supplyme.domain.Material;
+import com.baosong.supplyme.domain.Supplier;
 import com.baosong.supplyme.domain.errors.ServiceException;
 
 import org.springframework.data.domain.Page;
@@ -63,4 +64,13 @@ public interface MaterialService {
      * @return the list of entities
      */
     Page<Material> search(String query, Pageable pageable);
+
+    /**
+     * Update the material latest estimated price
+     * @param material Material to update
+     * @param supplier Supplier where the new price has been set
+     * @param newPrice Latest price for this supplier
+     * @return
+     */
+    Material updateEstimatedPrice(Material material, Supplier supplier, Double newPrice);
 }

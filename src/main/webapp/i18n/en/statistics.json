@@ -1,0 +1,17 @@
+{
+    "supplyMeApp": {
+        "statistics": {
+            "home": {
+                "title": "Statistics"
+            },
+            "material": {
+                "pricePerMonth": {
+                    "title": "Price evolution per month",
+                    "xAxis": "Months",
+                    "yAxis": "Price",
+                    "legend": "Suppliers"
+                }
+            }
+        }
+    }
+}

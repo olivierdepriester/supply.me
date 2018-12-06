@@ -43,36 +43,43 @@
                             <span class="title" >: {{ availabilities.length }} </span>
                         </ng-template>
                         <ng-template ngbPanelContent>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr class="text-center">
-                                            <th class="text-left"><span jhiTranslate="supplyMeApp.materialAvailability.supplier">Supplier</span></th>
-                                            <th class="text-right"><span jhiTranslate="supplyMeApp.materialAvailability.purchasePrice">Price</span></th>
-                                            <th><span jhiTranslate="supplyMeApp.materialAvailability.updateDate">Update date</span></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let availability of availabilities">
-                                            <td class="text-left">
-                                                <a [routerLink]="['/supplier', availability.supplier?.id, 'view' ]">
-                                                    {{ availability.supplier | smSupplier }}
-                                                </a>
-                                            </td>
-                                            <td class="text-right">
-                                                <span class="numeric"
-                                                    [ngClass]="{'highestprice': availability.purchasePrice === maxPrice, 'lowestprice': availability.purchasePrice === minPrice}">
-                                                    {{ availability.purchasePrice | currencyCustom }}
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                {{ availability.updateDate | datetimeFormat }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th class="text-left"><span jhiTranslate="supplyMeApp.materialAvailability.supplier">Supplier</span></th>
+                                        <th class="text-right"><span jhiTranslate="supplyMeApp.materialAvailability.purchasePrice">Price</span></th>
+                                        <th><span jhiTranslate="supplyMeApp.materialAvailability.updateDate">Update date</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let availability of availabilities">
+                                        <td class="text-left">
+                                            <a [routerLink]="['/supplier', availability.supplier?.id, 'view' ]">
+                                                {{ availability.supplier | smSupplier }}
+                                            </a>
+                                        </td>
+                                        <td class="text-right">
+                                            <span class="numeric"
+                                                [ngClass]="{'highestprice': availability.purchasePrice === maxPrice, 'lowestprice': availability.purchasePrice === minPrice}">
+                                                {{ availability.purchasePrice | currencyCustom }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            {{ availability.updateDate | datetimeFormat }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </ng-template>
                     </ngb-panel>
-                    <ngb-panel id="ngp-panel-empty" >
+                    <ngb-panel id="ngp-panel-statistics" >
+                        <ng-template ngbPanelTitle>
+                            <fa-icon [icon]="'sort-down'"></fa-icon>
+                            <span class="title" jhiTranslate="supplyMeApp.statistics.home.title">Statistics</span>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
+                            <jhi-material-statistics [material]="material"></jhi-material-statistics>
+                        </ng-template>
                     </ngb-panel>
                 </ngb-accordion>
             </div>

@@ -4,7 +4,7 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@a
 import { UserRouteAccessService } from 'app/core';
 import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { Material } from 'app/shared/model/material.model';
+import { Material } from 'app/shared/model/material.class.model';
 import { MaterialService } from './material.service';
 import { MaterialComponent } from './material.component';
 import { MaterialDetailComponent } from './material-detail.component';
@@ -62,6 +62,18 @@ export const materialRoute: Routes = [
         resolve: {
             material: MaterialResolve,
             availabilities: MaterialAvailabilitiesResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'supplyMeApp.material.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'material/:id/statistics',
+        component: MaterialDetailComponent,
+        resolve: {
+            material: MaterialResolve
         },
         data: {
             authorities: ['ROLE_USER'],

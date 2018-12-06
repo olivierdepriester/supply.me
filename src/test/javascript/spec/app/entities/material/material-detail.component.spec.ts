@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 
 import { SupplyMeTestModule } from '../../../test.module';
 import { MaterialDetailComponent } from 'app/entities/material/material-detail.component';
-import { Material } from 'app/shared/model/material.model';
+import { Material } from 'app/shared/model/material.class.model';
 
 describe('Component Tests', () => {
     describe('Material Management Detail Component', () => {

@@ -1,0 +1,11 @@
+<div class="chart">
+    <div class="chart-container">
+        <div class="title" jhiTranslate="supplyMeApp.statistics.material.pricePerMonth.title"></div>
+        <ngx-charts-line-chart [results]="results"
+            [showXAxisLabel]="true" [xAxis]="true" [xAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.xAxis' | translate"
+            [showYAxisLabel]="true" [yAxis]="true" [yAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.yAxis' | translate"
+            [legend]="true" [legendPosition]="'right'" [legendTitle]="'supplyMeApp.statistics.material.pricePerMonth.legend' | translate"
+            [gradient]="true" [autoScale]="false" [roundDomains]="true">
+        </ngx-charts-line-chart>
+    </div>
+</div>

@@ -419,3 +419,179 @@ ngb-progressbar {
     background-color: transparent;
     border-color: $success;
 }
+
+.chart {
+    text-align: left;
+    border: solid 1px lightgrey;
+    border-radius: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    height: 500px;
+
+    .chart-container {
+        height: 450px;
+    }
+
+    /**
+     * Backgrounds
+     */
+    $color-bg-darkest: #13141b;
+    $color-bg-darker: #1b1e27;
+    $color-bg-dark: #232837;
+    $color-bg-med: #2f3646;
+    $color-bg-light: #d9dce1;
+    $color-bg-lighter: #ffffff;
+
+    /**
+     * Text
+     */
+    $color-text-dark: #000000;
+    $color-text-med-dark: #919db5;
+    $color-text-med: #a0aabe;
+    $color-text-med-light: #d9dce1;
+    $color-text-light: #f0f1f6;
+    $color-text-lighter: #fff;
+
+    background: $color-bg-lighter;
+
+    .title {
+        color: $color-text-dark;
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .ngx-charts {
+        text {
+            fill: $color-text-med-dark;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .tooltip-anchor {
+            fill: rgb(255, 255, 255);
+        }
+        .gridline-path {
+            stroke: $color-bg-light;
+        }
+        .refline-path {
+            stroke: $color-bg-light;
+        }
+        .reference-area {
+            fill: $color-bg-lighter;
+        }
+        .grid-panel {
+            &.odd {
+                rect {
+                    fill: rgba(255, 255, 255, 0.05);
+                }
+            }
+        }
+        .force-directed-graph {
+            .edge {
+                stroke: $color-bg-light;
+            }
+        }
+
+        .number-card {
+            p {
+                color: $color-text-light;
+            }
+        }
+
+        .gauge {
+            .background-arc {
+                path {
+                    fill: $color-bg-med;
+                }
+            }
+
+            .gauge-tick {
+                path {
+                    stroke: $color-text-med;
+                }
+                text {
+                    fill: $color-text-med;
+                }
+            }
+        }
+
+        .linear-gauge {
+            .background-bar {
+                path {
+                    fill: $color-bg-med;
+                }
+            }
+
+            .units {
+                fill: $color-text-dark;
+            }
+        }
+
+        .timeline {
+            .brush-background {
+                fill: rgba(255, 255, 255, 0.05);
+            }
+
+            .brush {
+                .selection {
+                    fill: rgba(255, 255, 255, 0.1);
+                    stroke: #aaa;
+                }
+            }
+        }
+
+        .polar-chart .polar-chart-background {
+            fill: rgb(30, 34, 46);
+        }
+    }
+
+    // Legend frame
+    .chart-legend {
+        margin-top: 20px;
+
+        .legend-labels {
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+        // Title
+        .legend-title-text {
+            color: $color-text-med-dark;
+        }
+        .legend-item {
+            &:hover {
+                color: red;
+            }
+        }
+
+        .legend-label {
+            // Legend text color
+            color: $color-text-dark !important;
+            .active {
+                .legend-label-text {
+                    // hover
+                    color: $color-text-dark !important;
+                    font-weight: 700;
+                }
+            }
+        }
+
+        .scale-legend-label {
+            color: blue;
+        }
+    }
+
+    .advanced-pie-legend {
+        color: $color-text-med;
+
+        .legend-item {
+            &:hover {
+                color: $color-text-dark !important;
+            }
+        }
+    }
+
+    .number-card .number-card-label {
+        font-size: 0.8em;
+        color: $color-text-med;
+    }
+}

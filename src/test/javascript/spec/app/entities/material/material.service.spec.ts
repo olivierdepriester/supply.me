@@ -7,7 +7,8 @@ import { take, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { MaterialService } from 'app/entities/material/material.service';
-import { IMaterial, Material } from 'app/shared/model/material.model';
+import { IMaterial } from 'app/shared/model/material.model';
+import { Material } from 'app/shared/model/material.class.model';
 
 describe('Service Tests', () => {
     describe('Material Service', () => {

@@ -7,7 +7,7 @@ import { ActivatedRoute, Data } from '@angular/router';
 import { SupplyMeTestModule } from '../../../test.module';
 import { MaterialComponent } from 'app/entities/material/material.component';
 import { MaterialService } from 'app/entities/material/material.service';
-import { Material } from 'app/shared/model/material.model';
+import { Material } from 'app/shared/model/material.class.model';
 
 describe('Component Tests', () => {
     describe('Material Management Component', () => {

@@ -1,10 +1,11 @@
 package com.baosong.supplyme.service.dto.statistics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticsDTO<T, K> {
 
-    private List<Serie<T, K>> series;
+    private List<Serie<T, K>> series = new ArrayList<>();
 
     /**
      * @return the series
@@ -18,5 +19,11 @@ public class StatisticsDTO<T, K> {
      */
     public void setSeries(List<Serie<T, K>> series) {
         this.series = series;
+    }
+
+    public Serie<T, K> addSerie(T key) {
+        Serie<T, K> serie = new Serie<>(key);
+        this.series.add(serie);
+        return serie;
     }
 }

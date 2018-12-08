@@ -13,6 +13,7 @@ import { MaterialDeletePopupComponent } from './material-delete-dialog.component
 import { IMaterial } from 'app/shared/model/material.model';
 import { MaterialAvailabilityService } from '../material-availability';
 import { IMaterialAvailability } from 'app/shared/model/material-availability.model';
+import { MaterialStatisticsComponent } from './material-statistics.component';
 
 @Injectable({ providedIn: 'root' })
 export class MaterialResolve implements Resolve<IMaterial> {
@@ -71,7 +72,7 @@ export const materialRoute: Routes = [
     },
     {
         path: 'material/:id/statistics',
-        component: MaterialDetailComponent,
+        component: MaterialStatisticsComponent,
         resolve: {
             material: MaterialResolve
         },

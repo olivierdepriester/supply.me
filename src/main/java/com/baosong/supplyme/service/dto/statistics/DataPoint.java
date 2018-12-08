@@ -11,13 +11,18 @@ public class DataPoint<T> {
     private Double maxValue;
 
     public static <T> DataPoint<T> of(T name, Double value, boolean initMinMax) {
-        DataPoint<T> dataPoint = new DataPoint<>();
-        dataPoint.setName(name);
+        DataPoint<T> dataPoint = of(name);
         dataPoint.setValue(value);
         if (initMinMax) {
             dataPoint.setMinValue(value);
             dataPoint.setMaxValue(value);
         }
+        return dataPoint;
+    }
+
+    public static <T> DataPoint<T> of(T name) {
+        DataPoint<T> dataPoint = new DataPoint<>();
+        dataPoint.setName(name);
         return dataPoint;
     }
 

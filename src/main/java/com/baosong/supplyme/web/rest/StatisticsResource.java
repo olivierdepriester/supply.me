@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,18 +30,32 @@ public class StatisticsResource {
         this.statisticsService = statisticsService;
     }
 
-    /**
-     * GET /invoices : get all the invoices.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of invoices in
-     *         body
-     */
-    @GetMapping("/statistics/material/prices-by-month")
+    @GetMapping("/statistics/material/{id}/price-per-month")
     @Timed
-    public ResponseEntity<StatisticsDTO<Supplier, LocalDateTime>> getMaterialPriceEvolutionByMonth(Long materialId) {
-        log.debug("REST request to get a page of MaterialPriceEvolutionByMonth");
-        StatisticsDTO<Supplier, LocalDateTime> result = this.statisticsService.getAveragePriceEvolutionByMonth(materialId);
+    public ResponseEntity<StatisticsDTO<Supplier, LocalDateTime>> getMaterialPriceEvolutionPerMonth(@PathVariable Long id) {
+        log.debug("REST request to get stastistics : Price evolution per month for material {}", id);
+        LocalDateTime endDate = LocalDateTime.of(
+            LocalDateTime.now().getYear(),
+            LocalDateTime.now().getMonth(),
+            1, 0, 0, 0
+        ).plusMonths(1);
+        LocalDateTime startDate = endDate.minusMonths(13);
+        StatisticsDTO<Supplier, LocalDateTime> result = this.statisticsService.getPriceEvolutionPerMonth(id, startDate, endDate);
         return ResponseEntity.ok().body(result);
     }
+
+    @GetMapping("/statistics/material/{id}/quantity-per-month")
+    @Timed
+    public ResponseEntity<StatisticsDTO<Supplier, LocalDateTime>> getMaterialQuantityPerMonth(@PathVariable Long id) {
+        log.debug("REST request to get stastistics : Quantity ordered per month for material {}", id);
+        LocalDateTime endDate = LocalDateTime.of(
+            LocalDateTime.now().getYear(),
+            LocalDateTime.now().getMonth(),
+            1, 0, 0, 0
+        ).plusMonths(1);
+        LocalDateTime startDate = endDate.minusMonths(13);
+        StatisticsDTO<Supplier, LocalDateTime> result = this.statisticsService.getQuantityOrderedPerMonth(id, startDate, endDate);
+        return ResponseEntity.ok().body(result);
+    }
+
 }

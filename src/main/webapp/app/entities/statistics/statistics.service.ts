@@ -14,7 +14,10 @@ export class StatisticsService {
     constructor(private http: HttpClient) {}
 
     getPriceEvolutionForMaterial(id: number): Observable<EntityResponseType> {
-        const options = createRequestOption({ materialId: id });
-        return this.http.get<IStatistics>(`${this.resourceUrl}/material/prices-by-month/`, { params: options, observe: 'response' });
+        return this.http.get<IStatistics>(`${this.resourceUrl}/material/${id}/price-per-month/`, { observe: 'response' });
+    }
+
+    getQuantityOrderedForMaterial(id: number): Observable<EntityResponseType> {
+        return this.http.get<IStatistics>(`${this.resourceUrl}/material/${id}/quantity-per-month/`, { observe: 'response' });
     }
 }

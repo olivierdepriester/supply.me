@@ -10,5 +10,7 @@ import com.baosong.supplyme.service.dto.statistics.StatisticsDTO;
  */
 public interface StatisticsService {
 
-    StatisticsDTO<Supplier, LocalDateTime> getAveragePriceEvolutionByMonth(Long materialId);
+    StatisticsDTO<Supplier, LocalDateTime> getPriceEvolutionPerMonth(Long materialId, LocalDateTime startDate, LocalDateTime endDate);
+
+    StatisticsDTO<Supplier, LocalDateTime> getQuantityOrderedPerMonth(Long materialId, LocalDateTime startDate, LocalDateTime endDate);
 }

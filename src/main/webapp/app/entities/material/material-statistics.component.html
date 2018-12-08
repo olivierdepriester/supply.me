@@ -1,11 +1,26 @@
 <div class="chart">
     <div class="chart-container">
         <div class="title" jhiTranslate="supplyMeApp.statistics.material.pricePerMonth.title"></div>
-        <ngx-charts-line-chart [results]="results"
+        <ngx-charts-line-chart [results]="results[priceEvolution]"
+            [showXAxisLabel]="true" [xAxis]="true" [xAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.xAxis' | translate"
+            [showYAxisLabel]="true" [yAxis]="true" [yAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.yAxis' | translate"
+            [xScaleMin]="xScaleMin" [xScaleMax]="xScaleMax"
+            [legend]="true" [legendPosition]="'right'" [legendTitle]="'supplyMeApp.statistics.material.pricePerMonth.legend' | translate"
+            [scheme]="colorScheme" [schemeType]="schemeType" [curve]= "curvePrice"
+            [gradient]="true" [autoScale]="false" [roundDomains]="true">
+        </ngx-charts-line-chart>
+    </div>
+</div>
+<div class="chart">
+    <div class="chart-container">
+        <div class="title" jhiTranslate="supplyMeApp.statistics.material.pricePerMonth.title"></div>
+        <ngx-charts-area-chart-stacked [results]="results[quantityEvolution]"
             [showXAxisLabel]="true" [xAxis]="true" [xAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.xAxis' | translate"
             [showYAxisLabel]="true" [yAxis]="true" [yAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.yAxis' | translate"
             [legend]="true" [legendPosition]="'right'" [legendTitle]="'supplyMeApp.statistics.material.pricePerMonth.legend' | translate"
-            [gradient]="true" [autoScale]="false" [roundDomains]="true">
-        </ngx-charts-line-chart>
+            [xScaleMin]="xScaleMin" [xScaleMax]="xScaleMax"
+            [scheme]="colorScheme" [schemeType]="schemeType"
+            [gradient]="true" [autoScale]="false" [roundDomains]="false" [curve]= "curveQuantity">
+        </ngx-charts-area-chart-stacked>
     </div>
 </div>

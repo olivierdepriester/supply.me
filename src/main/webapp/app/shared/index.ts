@@ -7,6 +7,7 @@ export * from './auth/has-any-authority.directive';
 export * from './language/find-language-from-key.pipe';
 export * from './login/login.component';
 export * from './util/request-util';
+export * from './util/chart-utils';
 export * from './util/currency-custom.pipe';
 export * from './util/date-format.pipe';
 export * from './util/datetime-format.pipe';

@@ -4,7 +4,7 @@
         <ngx-charts-line-chart [results]="results[priceEvolution]"
             [showXAxisLabel]="true" [xAxis]="true" [xAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.xAxis' | translate"
             [showYAxisLabel]="true" [yAxis]="true" [yAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.yAxis' | translate"
-            [xScaleMin]="xScaleMin" [xScaleMax]="xScaleMax"
+            [xScaleMin]="xScaleMin" [xScaleMax]="xScaleMax" [xAxisTickFormatting]="calendarAxisTickFormatting"
             [legend]="true" [legendPosition]="'right'" [legendTitle]="'supplyMeApp.statistics.material.pricePerMonth.legend' | translate"
             [scheme]="colorScheme" [schemeType]="schemeType" [curve]= "curvePrice"
             [gradient]="true" [autoScale]="false" [roundDomains]="true">
@@ -18,7 +18,7 @@
             [showXAxisLabel]="true" [xAxis]="true" [xAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.xAxis' | translate"
             [showYAxisLabel]="true" [yAxis]="true" [yAxisLabel]="'supplyMeApp.statistics.material.pricePerMonth.yAxis' | translate"
             [legend]="true" [legendPosition]="'right'" [legendTitle]="'supplyMeApp.statistics.material.pricePerMonth.legend' | translate"
-            [xScaleMin]="xScaleMin" [xScaleMax]="xScaleMax"
+            [xScaleMin]="xScaleMin" [xScaleMax]="xScaleMax" [xAxisTickFormatting]="calendarAxisTickFormatting"
             [scheme]="colorScheme" [schemeType]="schemeType"
             [gradient]="true" [autoScale]="false" [roundDomains]="false" [curve]= "curveQuantity">
         </ngx-charts-area-chart-stacked>

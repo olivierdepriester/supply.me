@@ -10,6 +10,7 @@ import { ISupplier } from 'app/shared/model/supplier.model';
 import { SmSupplierPipe } from 'app/shared';
 import { Observable } from 'rxjs';
 import * as shape from 'd3-shape';
+import ChartUtils, { ColorSet } from 'app/shared/util/chart-utils';
 
 export let colorSets = [
     {
@@ -161,8 +162,8 @@ export class MaterialStatisticsComponent implements OnInit {
     quantityEvolution = 'quantityEvolution';
     curvePrice = shape.curveMonotoneX;
     curveQuantity = shape.curveStep; // shape.curveMonotoneX;
-    colorScheme: any;
-    schemeType = 'ordinal';
+    colorScheme: ColorSet;
+    schemeType: string;
     selectedColorScheme: string;
 
     xScaleMin: Date;
@@ -171,7 +172,8 @@ export class MaterialStatisticsComponent implements OnInit {
     constructor(private activatedRoute: ActivatedRoute, private statisticsService: StatisticsService) {}
 
     ngOnInit() {
-        this.colorScheme = colorSets.find(f => f.name === 'ocean');
+        this.colorScheme = ChartUtils.getDefaultColorSet();
+        this.schemeType = ChartUtils.getDefaultSchemeType();
         this.activatedRoute.data.subscribe(({ material }) => {
             this.material = material;
         });
@@ -203,23 +205,24 @@ export class MaterialStatisticsComponent implements OnInit {
             this.xScaleMax = res.body.series
                 .map(s => s.dataPoints.map(d => new Date(d.name)).reduce((e, f) => (e.getTime() > f.getTime() ? e : f)))
                 .reduce((g, h) => (g.getTime() > h.getTime() ? g : h));
-            console.log(this.xScaleMin);
-            console.log(this.xScaleMax);
             res.body.series.forEach(s => {
                 const serie = { name: this.supplierPipe.transform(s.key as ISupplier), series: [] };
                 s.dataPoints.forEach(point => {
                     // if (point.value != null) {
                     serie.series.push({
                         value: point.value == null ? 0 : point.value,
-                        min: initMinMax ? point.minValue : undefined,
-                        max: initMinMax ? point.maxValue : undefined,
+                        // min: initMinMax ? point.minValue : null,
+                        // max: initMinMax ? point.maxValue : null,
                         name: new Date(point.name) // this.datePipe.transform(point.name as Date, 'yyyy-MM', '+0800', 'en')
                     });
                     // }
                 });
                 this.results[targetChart].push(serie);
             });
-            console.log(this.results[targetChart]);
         });
+    }
+
+    calendarAxisTickFormatting(mondayString: Date) {
+        return new DatePipe('en').transform(mondayString, 'yyyy-MM', '+0800', 'en');
     }
 }
